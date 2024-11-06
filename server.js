@@ -35,6 +35,10 @@ app.use('/product', productRoutes);
 app.use('/coupons', cuponRoutes);
 app.use(errorHandler);
 
+app.use('/user', userRouter);
+
+app.use(errorHandler);
+
 const port = process.env.PORT || 5000;
 server.listen(port, () => {
   console.log(`Server running on port http://localhost:${port}`);
