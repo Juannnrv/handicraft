@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    name: {
+    username: {
         type: String,
         required: [true, 'Name is required']
     },
@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String,
-        default: 'default.jpg'
+        default: 'https://i.pinimg.com/474x/4c/92/2b/4c922b0a793123bcb292e005b7981df6.jpg'
     },
     address: {
         type: String,
@@ -24,12 +24,23 @@ const userSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
-        match: [/^\d{10}$/, 'Phone number must be 10 digits']
+        match: [/^\d{10}$/, 'Phone number must be 10 digits'],
+        unique: true
     },
     userType: {
         type: String,
-        enum: ['buyer', 'artisan'],
+        enum: ['comprador', 'artesano'],
+        default: 'comprador',
         required: [true, 'User type is required']
+    },
+    gender: {
+        type: String,
+        enum: ['hombre', 'mujer'],
+        required: [true, 'User Gender is required']
+    },
+    date: {
+        type: Date,
+        default: Date.now()
     },
     favorites: [{
         products: [{
