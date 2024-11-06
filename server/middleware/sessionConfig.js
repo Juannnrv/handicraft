@@ -17,7 +17,7 @@ class SessionService {
         resave: false,  // Prevents resaving the session if it was not modified.
         saveUninitialized: false,  // Prevents saving a session that is not initialized.
         cookie: {
-          secure: true,  // Ensures the cookie is sent over HTTPS only.
+          secure: false,  // Ensures the cookie is sent over HTTPS only.
           httpOnly: true,  // Prevents client-side JavaScript from accessing the cookie.
           maxAge: 30 * 60 * 1000,  // Sets the session cookie to expire in 30 minutes.
           sameSite: 'None',  // Allows cross-site cookies for third-party requests.
