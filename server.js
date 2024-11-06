@@ -2,6 +2,10 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
+const db = require('./server/helper/db');
+const { errorHandler } = require('./server/middleware/errorHandler');
+const SessionService = require('./server/middleware/sessionConfig');
+const userRouter = require('./server/router/userRouter');
 
 const app = express();
 app.use(cors());
@@ -14,6 +18,10 @@ const io = socketIo(server, {
   }
 });
 
+db.getInstace();
+
+SessionService.initializeSession(app);
+
 io.on('connection', (socket) => {
   console.log('Nuevo cliente conectado');
 
@@ -25,6 +33,10 @@ io.on('connection', (socket) => {
     console.log('Cliente desconectado');
   });
 });
+
+app.use('/user', userRouter);
+
+app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => {
