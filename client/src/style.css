@@ -1,7 +1,20 @@
 @font-face {
-    font-family: 'Bellota';
+    font-family: 'BellotaRegular';
     src: url('fonts/Bellota-Regular.ttf');
 }
+@font-face {
+    font-family: 'BellotaLight';
+    src: url('fonts/Bellota-Light.ttf');
+}
+@font-face {
+    font-family: 'BellotaBold';
+    src: url('fonts/Bellota-Bold.ttf');
+}
+
+
+
+
+
 
 *{
     margin: 0;
@@ -10,6 +23,30 @@
 }
 
 body{
+    overflow: hidden;
     width: 100vw;
     height: 100vh;
+}
+
+
+
+
+
+:root{
+    --color-W: #ffffff;
+}
+
+
+
+
+
+
+.bellotaRegular{
+    font-family: 'BellotaRegular', sans-serif;
+}
+.bellotaLight{
+    font-family: 'BellotaLight', sans-serif;
+}
+.bellotaBold{
+    font-family: 'BellotaBold', sans-serif;
 }
