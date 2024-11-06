@@ -34,6 +34,7 @@
       </div>
     </div>
     <p id="loginText" class="bellotaRegular">¿Ya tienes una cuenta?</p>
+    <router-link to="/login" class="bellotaBold" id="signInBtn">Inicia sesión</router-link>
   </div>
 </template>
 
@@ -79,6 +80,10 @@ export default {
   #loginText{
     margin-top: 16px;
     font-size: 24px;
+  }
+  #signInBtn{
+    font-size: 24px;
+    color: var(--black);
   }
 
   .loginBtn{
