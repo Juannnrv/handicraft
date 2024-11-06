@@ -111,6 +111,7 @@ export default {
   }
   #backgroundImg{
     position: absolute;
+    min-height: 100%;
     width: 100%;
     z-index: -1;
     filter: saturate(0);
