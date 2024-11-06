@@ -7,7 +7,6 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: [true, 'Email is required'],
         unique: true,
         match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address']
     },
@@ -21,11 +20,10 @@ const userSchema = new mongoose.Schema({
     },
     address: {
         type: String,
-        required: [true, 'Address is required']
+        default: null
     },
     phone: {
         type: String,
-        required: [true, 'Phone number is required'],
         match: [/^\d{10}$/, 'Phone number must be 10 digits']
     },
     userType: {
@@ -34,23 +32,29 @@ const userSchema = new mongoose.Schema({
         required: [true, 'User type is required']
     },
     favorites: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
-    }, {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Workshop'
+        products: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product'
+        }],
+        workshops: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Workshop'
+        }]
     }],
     purchases: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Order'
+        ref: 'Order',
+        default: null
     }],
     enrolledWorkshops: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Workshop' 
+        ref: 'Workshop',
+        default: null
     }],
     coupons: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Coupon'
+        ref: 'Coupon',
+        default: null
     }]
 }, {
     collection: 'user'
