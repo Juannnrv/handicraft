@@ -1,20 +1,12 @@
 <template>
   <div id="app">
-    <TestComponent />
+
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import TestComponent from './components/TestComponent.vue'
-
 export default {
-  name: 'App',
-  components: {
-    TestComponent
-  }
+  name: 'App'
 }
 </script>
-
-<style>
-/* Add any global styles here if needed */
-</style>
