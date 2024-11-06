@@ -36,6 +36,6 @@ app.use('/coupons', cuponRoutes);
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
-app.listen(port, () => {
-    console.log(`Server running on port http://localhost:${port}`);
+server.listen(port, () => {
+  console.log(`Server running on port http://localhost:${port}`);
 });
