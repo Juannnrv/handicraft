@@ -100,16 +100,24 @@
           </a>
         </div>
       </form>
+  
+      <!-- Mensajes de error -->
+      <div v-if="formError" class="error-message">
+        <p>{{ formError }}</p>
+      </div>
     </div>
   </template>
+  Cambios en el script:
+  Añadimos la lógica para mostrar el error cuando las validaciones no se cumplen. Lo que se muestra en el contenedor es el mensaje de error.
   
+  javascript
+  Copiar código
   <script setup>
   import { ref, computed } from 'vue'
   import rotatedSquare from '../images/rotatedSquare.svg'
   import backArrow from '../images/backArrow.svg'
   import squareBG from '../images/squareBG.svg'
   
-  // Form data structure matching the database schema
   const formData = ref({
     username: '',
     email: '',
@@ -126,11 +134,8 @@
     birthday: ''
   })
   
-  // Confirmation fields
   const phoneConfirmation = ref('')
   const passwordConfirmation = ref('')
-  
-  // Birth date handling
   const birthDate = ref({
     day: '',
     month: '',
@@ -146,31 +151,36 @@
     return years
   })
   
-  // Format phone number to match database format
+  // Para manejar los errores
+  const formError = ref('')
+  
+  // Formato de número de teléfono
   const formatPhoneNumber = () => {
-    // Remove any non-digit characters
     formData.value.phone = formData.value.phone.replace(/\D/g, '')
   }
   
-  // Validate form before submission
+  // Validación de formulario
   const validateForm = () => {
+    // Limpiar error antes de validar
+    formError.value = ''
+  
     if (formData.value.phone !== phoneConfirmation.value) {
-      alert('Los números de teléfono no coinciden')
+      formError.value = 'Los números de teléfono no coinciden'
       return false
     }
   
     if (formData.value.password !== passwordConfirmation.value) {
-      alert('Las contraseñas no coinciden')
+      formError.value = 'Las contraseñas no coinciden'
       return false
     }
   
     if (formData.value.phone.length < 9) {
-      alert('El número de teléfono debe tener 9 dígitos')
+      formError.value = 'El número de teléfono debe tener 9 dígitos'
       return false
     }
   
     if (!birthDate.value.day || !birthDate.value.month || !birthDate.value.year) {
-      alert('Por favor complete la fecha de nacimiento')
+      formError.value = 'Por favor complete la fecha de nacimiento'
       return false
     }
   
@@ -180,14 +190,13 @@
   const handleSubmit = async () => {
     if (!validateForm()) return
   
-    // Format birthday to match database format (YYYY-MM-DDTHH:mm:ss.sssZ)
+    // Formato de fecha de nacimiento
     const formattedBirthday = new Date(
       birthDate.value.year,
       birthDate.value.month - 1,
       birthDate.value.day
     ).toISOString()
   
-    // Prepare data for submission
     const dataToSubmit = {
       ...formData.value,
       birthday: formattedBirthday,
@@ -195,10 +204,9 @@
     }
   
     try {
-      // Example API call - replace with your actual API endpoint
+      // Ejemplo de API
       delete dataToSubmit.countryCode;
       console.log(JSON.stringify(dataToSubmit))
-      console.log(dataToSubmit)
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
@@ -213,10 +221,9 @@
   
       const data = await response.json()
       console.log('Registration successful:', data)
-      
-      // Handle successful registration (e.g., redirect to login)
+      // Manejo de éxito (e.g., redirección)
     } catch (error) {
-      console.error('Registration error:', error)
+      console.error('Error en el registro:', error)
       alert('Error en el registro. Por favor intente nuevamente.')
     }
   }
@@ -224,6 +231,11 @@
   
 
   <style scoped>
+  .error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 20px;
+}
     .square-bg{
         position: absolute;
         left: 0;
