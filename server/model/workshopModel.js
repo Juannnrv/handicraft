@@ -1,19 +1,5 @@
 const mongoose = require('mongoose');
 
-const materialSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'Material name is required']
-    },
-    quantity: {
-        type: String,
-        required: [true, 'Material quantity is required']
-    },
-    description: {
-        type: String,
-        default: ''
-    }
-}, { _id: false });
 
 const workshopSchema = new mongoose.Schema({
     name: {
@@ -42,11 +28,11 @@ const workshopSchema = new mongoose.Schema({
         required: [true, 'Duration is required']
     },
     materialsProvided: {
-        type: [materialSchema],
+        type: [String],
         required: [true, 'Materials provided are required']
     },
     materialsRequired: {
-        type: [materialSchema],
+        type: [String],
         required: [true, 'Materials required are required']
     },
     documentary: {
