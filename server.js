@@ -19,7 +19,12 @@ const io = socketIo(server, {
     origin: "http://localhost:3000",
   }
 });
-
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 db.getInstace();
 
 SessionService.initializeSession(app);

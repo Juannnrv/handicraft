@@ -1,6 +1,6 @@
 const express = require("express");
 const passport = require("passport");
-const { loginWithGoogle, loginWithDiscord, loginWithFacebook } = require("../controllers/authController");
+const { loginWithGoogle, loginWithDiscord, loginWithFacebook } = require("../controller/authController");
 
 const router = express.Router();
 

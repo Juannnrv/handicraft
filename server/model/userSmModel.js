@@ -33,5 +33,5 @@ userSchema.statics.findOneOrCreate = async function (profile) {
   return newUser;
 };
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('UserSm', userSchema);
 module.exports = User;
