@@ -6,6 +6,8 @@ const db = require('./server/helper/db');
 const { errorHandler } = require('./server/middleware/errorHandler');
 const SessionService = require('./server/middleware/sessionConfig');
 const userRouter = require('./server/router/userRouter');
+const authRoutes = require("./server/router/authRoutes");
+const passport = require("./server/middleware/passportConfig"); // Asegúrate de que la ruta sea correcta
 
 const app = express();
 app.use(cors());
@@ -22,6 +24,9 @@ db.getInstace();
 
 SessionService.initializeSession(app);
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 io.on('connection', (socket) => {
   console.log('Nuevo cliente conectado');
 
@@ -35,6 +40,7 @@ io.on('connection', (socket) => {
 });
 
 app.use('/user', userRouter);
+app.use("/auth", authRoutes);
 
 app.use(errorHandler);
 
