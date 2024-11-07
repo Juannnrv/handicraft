@@ -248,9 +248,10 @@ import homeBGImg from '../images/homeBG.svg';
     }
 
     #homeBGImg{
-        width: 60%;
+        filter: saturate(0);
+        width: 70%;
         position: absolute;
-        margin-left: 20%;
+        margin-left: 15%;
         transform: translate(0px, 50px);
     }
 
