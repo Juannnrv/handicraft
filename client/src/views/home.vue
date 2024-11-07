@@ -14,7 +14,8 @@
             </div>
         </div>
         <div class="homeGridSection">
-
+            <p class="bellotaBold" id="categoryText">Categorías</p>
+            <img id="squareImg" :src="squareImg">
         </div>
         <div class="homeGridSection">
 
@@ -25,6 +26,7 @@
     </div>
 </template>
 <script>
+import squareImg from '../images/square.svg'
 import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
 import ubicationImg from '../images/ubication.svg';
@@ -33,7 +35,8 @@ import ubicationImg from '../images/ubication.svg';
       return {
         menuImg,
         glassImg,
-        ubicationImg
+        ubicationImg,
+        squareImg
       };
     },
         name: 'TestComponent'
@@ -113,6 +116,17 @@ import ubicationImg from '../images/ubication.svg';
         margin-left: 10px;
         font-size: 16px;
         color: var(--color-B-44);
+    }
+
+
+    #categoryText{
+        color: var(--color-B);
+        margin-left: 25px;
+        font-size: 20px;
+    }
+    #squareImg{
+        position: absolute;
+        height: 100%;
     }
 
 </style>
