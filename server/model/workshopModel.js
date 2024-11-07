@@ -48,6 +48,10 @@ const workshopSchema = new mongoose.Schema({
     collection: 'workshop'
 });
 
+// Índices para mejorar el rendimiento de las consultas
+workshopSchema.index({ modality: 1 }); // Crea un índice en el campo "modality"
+workshopSchema.index({ location: 1 }); // Crea un índice en el campo "location"
+
 const Workshop = mongoose.model('Workshop', workshopSchema);
 
 module.exports = Workshop;

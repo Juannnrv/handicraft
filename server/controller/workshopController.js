@@ -9,7 +9,7 @@ class ProductController {
    * @param {Object} res - The response object.
    * @returns {Promise<void>} - A promise that resolves when the products are listed.
    */
-  static async listProducts(req, res) {
+  static async listWorkshops(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -62,7 +62,7 @@ class ProductController {
    * @param {Object} res - The response object.
    * @returns {Promise<void>} - A promise that resolves when the product details are fetched.
    */
-  static async viewProduct(req, res) {
+  static async viewWorkshop(req, res) {
     const { id } = req.params;
 
     try {
@@ -84,9 +84,75 @@ class ProductController {
       res.status(500).json({
         status: 500,
         message: "Error fetching product details",
+        prueba:"?",
       });
     }
   }
+
+    /**
+   * Search workshops based on different criteria.
+   *
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Promise<void>} - A promise that resolves when the workshops are listed.
+   */
+    static async searchWorkshops(req, res) {
+
+      const { page = 1, limit = 10, modality, location } = req.query;
+      console.log(modality)
+  
+      try {
+          // Construir los filtros basados en los parámetros de la consulta
+          const filters = {};
+  
+          // Validamos y aplicamos los filtros según los parámetros recibidos
+          if (modality) {
+              filters.modality = modality;
+          } else {
+              console.log("No modality filter provided");
+          }
+  
+          if (location) {
+              filters.location = location;
+          } else {
+              console.log("No location filter provided");
+          }
+  
+          console.log("Search filters:", filters);  // Logueamos los filtros para asegurarnos que se están construyendo correctamente
+  
+          // Buscar los talleres según los filtros
+          const workshops = await Workshop.find(filters)
+              .skip((page - 1) * limit)
+              .limit(parseInt(limit))
+              .exec();
+  
+          // Contamos el número total de talleres con los mismos filtros
+          const totalWorkshops = await Workshop.countDocuments(filters).exec();
+  
+          // Responder con los talleres encontrados
+          res.status(200).json({
+              status: 200,
+              message: "Workshops fetched successfully",
+              data: {
+                  workshops,
+                  total: totalWorkshops,
+                  page: parseInt(page),
+                  totalPages: Math.ceil(totalWorkshops / limit),
+              },
+          });
+      } catch (error) {
+          console.error("Error fetching workshops:", error);  // Logueamos el error detallado
+  
+          res.status(500).json({
+              status: 500,
+              otro:"esto realmente funciona?",
+              message: "Error fetching workshops",
+              error: error.message,  // Mostramos el mensaje de error específico
+          });
+      }
+  }
+  
+
 }
 
 module.exports = ProductController;
