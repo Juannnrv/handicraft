@@ -3,11 +3,10 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
-        required: [true, 'Name is required']
+        required: [true, 'Name is required'],
     },
     email: {
         type: String,
-        unique: true,
         match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address']
     },
     password: {
@@ -18,14 +17,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'https://i.pinimg.com/474x/4c/92/2b/4c922b0a793123bcb292e005b7981df6.jpg'
     },
-    address: {
-        type: String,
-        default: null
-    },
     phone: {
         type: String,
         match: [/^\d{10}$/, 'Phone number must be 10 digits'],
-        unique: true
     },
     userType: {
         type: String,
@@ -38,9 +32,9 @@ const userSchema = new mongoose.Schema({
         enum: ['hombre', 'mujer'],
         required: [true, 'User Gender is required']
     },
-    date: {
+    birthday: {
         type: Date,
-        default: Date.now()
+        required: [true, 'Birthday is required'],
     },
     favorites: {
         products: [{

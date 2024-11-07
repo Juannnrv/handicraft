@@ -37,7 +37,7 @@ class UserController {
 
     try {
       const user = await User.findByIdAndUpdate(
-        id,
+        userId,
         { profilePicture, username, email, phone, gender, birthday },
         { new: true }
       );

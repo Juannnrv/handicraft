@@ -12,8 +12,7 @@ const {
 const userValidator = require('../validator/userValidator');
 const { versioning } = require('../middleware/versioning');
 const { limit } = require('../middleware/limit');
-const verifyJwt = require('../middleware/authJwt');
-const user = express.Router();  
+const user = express.Router();
 
 user.post('/favorites', limit('post'), versioning('1.0.0'), createUserFavorite);
 user.get('/', limit('get'), versioning('1.0.0'), findUser);
