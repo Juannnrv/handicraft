@@ -21,13 +21,13 @@
         <p class="bellotaRegular loginBtnText">Regístrate con <span class="bellotaBold">Discord</span></p>
       </div>
     </div>
-    <div class="loginBtn">
+    <div class="loginBtn" @click="redirectToRegister">
       <div class="loginBtnSection"><img class="loginBtnImg" :src="emailImg" /></div>
       <div class="loginBtnSection">
         <p class="bellotaRegular loginBtnText">Regístrate con <span class="bellotaBold">Correo</span></p>
       </div>
     </div>
-    <div class="loginBtn">
+    <div class="loginBtn" @click="redirectToPhone">
       <div class="loginBtnSection"><img class="loginBtnImg" :src="celImg" /></div>
       <div class="loginBtnSection">
         <p class="bellotaRegular loginBtnText">Regístrate con <span class="bellotaBold">Celular</span></p>
@@ -46,6 +46,14 @@ import emailImg from '../images/email.svg';
 import celImg from '../images/cel.svg';
 import backgroundImg from '../images/background.png';
 export default {
+  methods: {
+    redirectToRegister() {
+      this.$router.push('/registerEmail');
+    },
+    redirectToPhone() {
+      this.$router.push('/registerPhone');
+    }
+  },
   data() {
     return {
       facebookImg,
