@@ -17,7 +17,28 @@
           <label for="phone" class="label bellotaBold">Número de celular*</label>
           <div class="phone-input">
             <select v-model="formData.countryCode" class="country-code">
-              <option value="+51">+51</option>
+                <option value="+1">+1 (EE. UU., Canadá, Caribe)</option>
+                <option value="+54">+54 (Argentina)</option>
+                <option value="+55">+55 (Brasil)</option>
+                <option value="+56">+56 (Chile)</option>
+                <option value="+57">+57 (Colombia)</option>
+                <option value="+58">+58 (Venezuela)</option>
+                <option value="+51">+51 (Perú)</option>
+                <option value="+52">+52 (México)</option>
+                <option value="+53">+53 (Cuba)</option>
+                <option value="+34">+34 (España)</option>
+                <option value="+44">+44 (Reino Unido)</option>
+                <option value="+33">+33 (Francia)</option>
+                <option value="+49">+49 (Alemania)</option>
+                <option value="+61">+61 (Australia)</option>
+                <option value="+81">+81 (Japón)</option>
+                <option value="+91">+91 (India)</option>
+                <option value="+62">+62 (Indonesia)</option>
+                <option value="+65">+65 (Singapur)</option>
+                <option value="+27">+27 (Sudáfrica)</option>
+                <option value="+61">+61 (Australia)</option>
+                <option value="+61">+61 (Australia)</option>
+
             </select>
             <input 
               type="tel" 
@@ -34,7 +55,28 @@
           <label for="phoneConfirmation" class="label bellotaBold">Confirma tu celular*</label>
           <div class="phone-input">
             <select v-model="formData.countryCode" class="country-code">
-              <option value="+51">+51</option>
+                <option value="+1">+1 (EE. UU., Canadá, Caribe)</option>
+                <option value="+54">+54 (Argentina)</option>
+                <option value="+55">+55 (Brasil)</option>
+                <option value="+56">+56 (Chile)</option>
+                <option value="+57">+57 (Colombia)</option>
+                <option value="+58">+58 (Venezuela)</option>
+                <option value="+51">+51 (Perú)</option>
+                <option value="+52">+52 (México)</option>
+                <option value="+53">+53 (Cuba)</option>
+                <option value="+34">+34 (España)</option>
+                <option value="+44">+44 (Reino Unido)</option>
+                <option value="+33">+33 (Francia)</option>
+                <option value="+49">+49 (Alemania)</option>
+                <option value="+61">+61 (Australia)</option>
+                <option value="+81">+81 (Japón)</option>
+                <option value="+91">+91 (India)</option>
+                <option value="+62">+62 (Indonesia)</option>
+                <option value="+65">+65 (Singapur)</option>
+                <option value="+27">+27 (Sudáfrica)</option>
+                <option value="+61">+61 (Australia)</option>
+                <option value="+61">+61 (Australia)</option>
+
             </select>
             <input 
               type="tel" 
@@ -361,13 +403,16 @@
 .phone-input {
     width: 100%;
     border-radius: 4px;
-    overflow: hidden;
   display: flex;
   gap: 10px;
 }
 
+.phone-input > input {
+    width: 100%;
+}
+
 .country-code {
-  width: 70px;
+  width: 75px;
 }
 
   </style>
