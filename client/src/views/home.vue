@@ -30,7 +30,13 @@
 <div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="picturesImg"></div><p class="categoryText bellotaRegular">Pintura tradicional</p></div>
         </div>
         <div class="homeGridSection">
-
+            <img id="squaresGroupImg1" :src="squaresGroupImg">
+            <img id="squaresGroupImg2" :src="squaresGroupImg">
+            <p class="bellotaRegular" id="monthWorkshops">Talleres del mes</p>
+            <p class="bellotaRegular" id="monthWorkshopsText">¡Aprende como hacerlos en estos talleres educativos!</p>
+        </div>
+        <div class="homeGridSection">
+            <img id="homeBGImg" :src="homeBGImg">
         </div>
     </div>
 </template>
@@ -51,6 +57,9 @@ import tinsmithImg from '../images/tinsmith.svg';
 import printImg from '../images/print.svg';
 import picturesImg from '../images/pictures.svg';
 
+import squaresGroupImg from '../images/squaresGroup.svg';
+import homeBGImg from '../images/homeBG.svg';
+
     export default {
     data() {
       return {
@@ -67,7 +76,9 @@ import picturesImg from '../images/pictures.svg';
         jewelryImg,
         tinsmithImg,
         printImg,
-        picturesImg
+        picturesImg,
+        squaresGroupImg,
+        homeBGImg
       };
     },
         name: 'TestComponent'
@@ -77,7 +88,7 @@ import picturesImg from '../images/pictures.svg';
 
     #homeGrid{
         display: grid;
-        grid-template-rows: 80px 60px 40px 220px calc(100% - 400px);
+        grid-template-rows: 80px 60px 40px 180px 60px calc(100% - 420px);
         width: 100vw;
         height: 100vh;
     }
@@ -201,6 +212,46 @@ import picturesImg from '../images/pictures.svg';
         height: 50px;
         text-align: center;
         font-size: 16px;
+    }
+
+    #squaresGroupImg1{
+        margin-top: 18px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 14px;
+        margin-left: 10px;
+    }
+    #squaresGroupImg2{
+        margin-top: 18px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 14px;
+        margin-right: 10px;
+    }
+    #monthWorkshops{
+        margin-top: 10px;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 22px;
+    }
+    #monthWorkshopsText{
+        color: var(--color-B-44);
+        font-size: 16px;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    #homeBGImg{
+        width: 60%;
+        position: absolute;
+        margin-left: 20%;
+        transform: translate(0px, 50px);
     }
 
 </style>
