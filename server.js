@@ -11,9 +11,12 @@ const workshopRoutes = require("./server/router/workshopRoutes");
 const productRoutes = require("./server/router/productRouter");
 const passport = require("./server/middleware/passportConfig");
 const verifyJwt = require("./server/middleware/authJwt");
+<<<<<<< HEAD
 
 // Importar el manejo de sockets
 const { setupSockets } = require('./server/sockets/socketHandler.js');
+=======
+>>>>>>> d75f9b3 ("feat(workshops):  :sparkles: add search endpoint with filters (modality, location))
 
 const app = express();
 app.use(cors({
