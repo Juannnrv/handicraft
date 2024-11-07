@@ -17,8 +17,17 @@
             <p class="bellotaBold" id="categoryText">Categorías</p>
             <img id="squareImg" :src="squareImg">
         </div>
-        <div class="homeGridSection">
-
+<div id="grid-container">
+<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="textileImg"></div><p class="categoryText bellotaRegular">Textilería</p></div>
+<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="ceramicImg"></div><p class="categoryText bellotaRegular">Cerámica</p></div>
+<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="goldsmithingImg"></div><p class="categoryText bellotaRegular">Orfebrería</p></div>
+<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="stoneCarvingImg"></div><p class="categoryText bellotaRegular">Talla en piedra</p></div>
+<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="woodCarvingImg"></div><p class="categoryText bellotaRegular">Talla en madera</p></div>
+<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="embroideryImg"></div><p class="categoryText bellotaRegular">Bordado</p></div>
+<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="jewelryImg"></div><p class="categoryText bellotaRegular">Joyería</p></div>
+<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="tinsmithImg"></div><p class="categoryText bellotaRegular">Hojalatería</p></div>
+<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="printImg"></div><p class="categoryText bellotaRegular">Estampado</p></div>
+<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="picturesImg"></div><p class="categoryText bellotaRegular">Pintura tradicional</p></div>
         </div>
         <div class="homeGridSection">
 
@@ -30,13 +39,35 @@ import squareImg from '../images/square.svg'
 import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
 import ubicationImg from '../images/ubication.svg';
+
+import textileImg from '../images/textile.svg';
+import ceramicImg from '../images/ceramic.svg';
+import goldsmithingImg from '../images/goldsmithing.svg';
+import stoneCarvingImg from '../images/stoneCarving.svg';
+import woodCarvingImg from '../images/woodCarving.svg';
+import embroideryImg from '../images/embroidery.svg';
+import jewelryImg from '../images/jewelry.svg';
+import tinsmithImg from '../images/tinsmith.svg';
+import printImg from '../images/print.svg';
+import picturesImg from '../images/pictures.svg';
+
     export default {
     data() {
       return {
         menuImg,
         glassImg,
         ubicationImg,
-        squareImg
+        squareImg,
+        textileImg,
+        ceramicImg,
+        goldsmithingImg,
+        stoneCarvingImg,
+        woodCarvingImg,
+        embroideryImg,
+        jewelryImg,
+        tinsmithImg,
+        printImg,
+        picturesImg
       };
     },
         name: 'TestComponent'
@@ -46,14 +77,13 @@ import ubicationImg from '../images/ubication.svg';
 
     #homeGrid{
         display: grid;
-        grid-template-rows: 80px 60px 40px 120px calc(100% - 300px);
+        grid-template-rows: 80px 60px 40px 220px calc(100% - 400px);
         width: 100vw;
         height: 100vh;
     }
     .homeGridSection{
         display: flex;
         align-items: center;
-        border: 1px solid gray;
         position: relative;
     }
     .homeGridSectionB{
@@ -127,6 +157,50 @@ import ubicationImg from '../images/ubication.svg';
     #squareImg{
         position: absolute;
         height: 100%;
+    }
+
+
+    #grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        grid-template-rows: repeat(2, 1fr);
+        grid-gap: 10px;
+        width: calc(100% - 50px);
+        margin-left: 25px;
+        max-width: 100%;
+        overflow: auto;
+    }
+    .grid-item {
+        position: relative;
+        padding: 20px;
+        display: grid;
+        min-height: 110px;
+    }
+
+    .categoryImgDiv{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        overflow: hidden;
+        position: absolute;
+        background-color: var(--color-B3);
+        width: 54px;
+        margin-left: calc((100% - 54px) / 2);
+        height: 54px;
+        overflow: hidden;
+    }
+    .categoryImg{
+        width: 70%;
+    }
+
+    .categoryText{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 50px;
+        text-align: center;
+        font-size: 16px;
     }
 
 </style>
