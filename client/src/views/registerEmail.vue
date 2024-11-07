@@ -1,6 +1,7 @@
 <!-- src/components/RegistrationForm.vue -->
 <template>
     <div class="registration-container">
+      <img class="squareBG" :src="squareBG" alt="">
        <img class="square-bg" :src="rotatedSquare" alt="">
       <a class="a-back" href="">
         <img class="back-arrow" :src="backArrow" alt="">
@@ -78,6 +79,7 @@
         </div>
           
       </form>
+      
     </div>
   </template>
   
@@ -85,6 +87,7 @@
   import { ref, computed } from 'vue'
   import rotatedSquare from '../images/rotatedSquare.svg';
   import backArrow from '../images/backArrow.svg';
+  import squareBG from '../images/squareBG.svg';
   
   
   const form = ref({
@@ -169,7 +172,7 @@
   input, select {
     padding: 12px;
     border: none;
-    background-color: #a7a7a78c;
+    background-color: #bebebe;
     border-radius: 4px;
     font-size: 16px;
   }
@@ -223,6 +226,13 @@
   }
   .continue{
     color: black;
+  }
+  .squareBG{
+    width: 60vh;
+    position: absolute;
+    bottom: 0;
+    right: -29vh;
+    z-index: -1;
   }
   </style>
   
