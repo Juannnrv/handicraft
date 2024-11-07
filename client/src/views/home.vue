@@ -8,6 +8,18 @@
             </div>
         </div>
         <div class="homeGridSection">
+            <div id="ubicationDiv">
+                <img id="ubicationImg" :src="ubicationImg">
+                <p class="bellotaRegular" id="ubicationText">Ubicación de entrega actual</p>
+            </div>
+        </div>
+        <div class="homeGridSection">
+
+        </div>
+        <div class="homeGridSection">
+
+        </div>
+        <div class="homeGridSection">
 
         </div>
     </div>
@@ -15,11 +27,13 @@
 <script>
 import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
+import ubicationImg from '../images/ubication.svg';
     export default {
     data() {
       return {
         menuImg,
-        glassImg
+        glassImg,
+        ubicationImg
       };
     },
         name: 'TestComponent'
@@ -29,11 +43,14 @@ import glassImg from '../images/glass.svg';
 
     #homeGrid{
         display: grid;
-        grid-template-rows: 80px calc(100% - 80px);
+        grid-template-rows: 80px 60px 40px 120px calc(100% - 300px);
         width: 100vw;
         height: 100vh;
     }
     .homeGridSection{
+        display: flex;
+        align-items: center;
+        border: 1px solid gray;
         position: relative;
     }
     .homeGridSectionB{
@@ -51,6 +68,7 @@ import glassImg from '../images/glass.svg';
         margin-left: 10px;
     }
     #glassImg{
+        margin-left: 10px;
         width: 25px;
         height: 25px;
         position: absolute;
@@ -60,7 +78,7 @@ import glassImg from '../images/glass.svg';
         align-items: center;
         position: absolute;
         height: 50%;
-        width: calc(100% - 90px);
+        width: calc(100% - 80px);
         right: 0;
         margin-right: 10px;
     }
@@ -69,13 +87,32 @@ import glassImg from '../images/glass.svg';
         height: 100%;
         position: absolute;
         right: 0;
-        margin-right: 10px;
         background-color: var(--color-B2);
         outline: none;
         border: none;
         border-radius: 8px;
         padding-left: 40px;
         color: var(--color-W);
+    }
+
+
+    #ubicationDiv{
+        display: flex;
+        align-items: center;
+        margin-left: 10px;
+        background-color: var(--color-B3);
+        height: 70%;
+        width: calc(100% - 20px);
+        border-radius: 8px;
+    }
+    #ubicationImg{
+        height: 70%;
+        margin-left: 10px;
+    }
+    #ubicationText{
+        margin-left: 10px;
+        font-size: 16px;
+        color: var(--color-B-44);
     }
 
 </style>
