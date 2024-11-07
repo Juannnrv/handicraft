@@ -202,7 +202,7 @@ import homeBGImg from '../images/homeBG.svg';
         overflow: hidden;
     }
     .categoryImg{
-        width: 70%;
+        width: 60%;
     }
 
     .categoryText{
@@ -240,7 +240,7 @@ import homeBGImg from '../images/homeBG.svg';
     }
     #monthWorkshopsText{
         color: var(--color-B-44);
-        font-size: 16px;
+        font-size: 12px;
         position: absolute;
         bottom: 0;
         width: 100%;
