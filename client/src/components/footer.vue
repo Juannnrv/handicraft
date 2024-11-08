@@ -5,6 +5,7 @@
         :key="index" 
         class="footerGridSection"
         :class="{ selected: selectedIndex === index }"
+        @click="navigateTo(index)"
       >
         <div class="footerImgDiv">
           <img class="footerImg" :src="img" />
@@ -30,7 +31,19 @@
     data() {
       return {
         images: [workshopImg, discountImg, homeImg, carImg, userImg],
+        routes: [
+          '/workshops',    
+          '/home',    
+          '/home',            
+          '/home',          
+          '/home',
+        ]
       };
+    },
+    methods: {
+      navigateTo(index) {
+        this.$router.push(this.routes[index]);
+      },
     },
     name: 'Footer',
   };
