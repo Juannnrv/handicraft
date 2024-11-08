@@ -3,6 +3,7 @@ import signUp from './views/signUp.vue';
 import login from './views/login.vue';
 import RegistrationView from './views/registerEmail.vue'
 import RegistrationPhoneView from './views/registerPhone.vue'
+import ConfirmRegisterPhone from './views/confirmRegisPhone.vue';
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/registerPhone',
     name: 'RegisterPhone',
     component: RegistrationPhoneView 
+  },
+  {
+    path: '/confirmRegisterPhone',
+    name: 'confirmRegisterPhone',
+    component: ConfirmRegisterPhone,
   }
 ];
 
