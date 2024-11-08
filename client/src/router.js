@@ -8,6 +8,7 @@ import ConfirmRegisterEmail from './views/confirmRegisEmail.vue';
 import loginForm from './views/loginForm.vue';
 import ajustes from './views/ajustes.vue';
 import customerService from './views/customerService.vue';
+import comments from './views/comments.vue';
 
 const routes = [
   {
@@ -54,6 +55,11 @@ const routes = [
     path: '/customerService',
     name: 'customerService',
     component: customerService 
+  },
+  { 
+    path: '/comments',
+    name: 'comments',
+    component: comments 
   }
 ];
 
