@@ -1,6 +1,9 @@
 const express = require("express");
 const passport = require("passport");
-const { loginWithGoogle, loginWithDiscord, loginWithFacebook } = require("../controller/authController");
+const userValidator = require("../validator/userValidator");
+const {limit} = require("../middleware/limit");
+const {versioning} = require("../middleware/versioning");
+const { loginWithGoogle, loginWithDiscord, loginWithFacebook, createAccount, logIn } = require("../controller/authController");
 
 const router = express.Router();
 
@@ -31,4 +34,8 @@ router.get("/user", (req, res) => {
   }
   return res.status(401).json({ message: "No estás autenticado" });
 });
+
+router.post('/create', limit('post'), versioning('1.0.0'), userValidator.createAccount, createAccount);
+router.post('/login', versioning('1.0.0'), userValidator.logIn, logIn);
+
 module.exports = router;

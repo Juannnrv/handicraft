@@ -8,7 +8,9 @@ const SessionService = require('./server/middleware/sessionConfig');
 const userRouter = require('./server/router/userRouter');
 const authRoutes = require("./server/router/authRoutes");
 const workshopRoutes = require("./server/router/workshopRoutes");
+const productRoutes = require("./server/router/productRouter");
 const passport = require("./server/middleware/passportConfig");
+const verifyJwt = require("./server/middleware/authJwt");
 
 const app = express();
 app.use(cors());
@@ -45,9 +47,11 @@ io.on('connection', (socket) => {
   });
 });
 
-app.use('/user', userRouter);
 app.use("/auth", authRoutes);
-app.use('/workshops', workshopRoutes);
+// app.use(verifyJwt);
+app.use('/user', userRouter);
+app.use('/workshop', workshopRoutes);
+app.use('/product', productRoutes);
 
 app.use(errorHandler);
 
