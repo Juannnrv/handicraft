@@ -6,6 +6,7 @@ import RegistrationPhoneView from './views/registerPhone.vue'
 import ConfirmRegisterPhone from './views/confirmRegisPhone.vue';
 import ConfirmRegisterEmail from './views/confirmRegisEmail.vue';
 import loginForm from './views/loginForm.vue';
+import ajustes from './views/ajustes.vue';
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: '/loginForm',
     name: 'loginForm',
     component: loginForm 
+  },
+  { 
+    path: '/ajustes',
+    name: 'ajustes',
+    component: ajustes 
   }
 ];
 
