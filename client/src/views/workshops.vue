@@ -8,16 +8,9 @@
             </div>
         </div>
         <div class="workshopsGridSection">
-
-        </div>
-        <div class="workshopsGridSection">
-
-        </div>
-        <div class="workshopsGridSection">
-
-        </div>
-        <div class="workshopsGridSection">
-
+            <p class="bellotaBold" id="workshopTitle">Talleres y tiendas artesanales</p>
+            <p class="bellotaRegular" id="workshopText">Tiendas de artesanías de todas partes del Perú</p>
+            <img id="squareImg" :src="squareImg">
         </div>
         <div class="workshopsGridSection">
 
@@ -32,12 +25,14 @@ import Footer from '../components/footer.vue';
 
 import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
+import squareImg from '../images/square.svg';
 
     export default {
         data() {
             return {
                 menuImg,
-                glassImg
+                glassImg,
+                squareImg
             }
         },
         components: {
@@ -50,7 +45,7 @@ import glassImg from '../images/glass.svg';
 
     #workshopsGrid{
         display: grid;
-        grid-template-rows: 80px 60px 40px 180px 60px calc(100% - 420px);
+        grid-template-rows: 80px 80px calc(100% - 220px);
         width: 100vw;
         height: 100vh;
     }
@@ -99,5 +94,22 @@ import glassImg from '../images/glass.svg';
         border-radius: 8px;
         padding-left: 40px;
         color: var(--color-W);
+    }
+
+
+    #workshopTitle{
+        font-size: 20px;
+        margin-left: 25px;
+    }
+    #workshopText{
+        color: var(--color-B-44);
+        position: absolute;
+        bottom: 0;
+        font-size: 16px;
+        margin-left: 25px;
+    }
+    #squareImg{
+        position: absolute;
+        height: 60%;
     }
 </style>
