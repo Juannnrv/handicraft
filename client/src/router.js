@@ -7,6 +7,7 @@ import ConfirmRegisterPhone from './views/confirmRegisPhone.vue';
 import ConfirmRegisterEmail from './views/confirmRegisEmail.vue';
 import loginForm from './views/loginForm.vue';
 import ajustes from './views/ajustes.vue';
+import customerService from './views/customerService.vue';
 
 const routes = [
   {
@@ -48,6 +49,11 @@ const routes = [
     path: '/ajustes',
     name: 'ajustes',
     component: ajustes 
+  },
+  { 
+    path: '/customerService',
+    name: 'customerService',
+    component: customerService 
   }
 ];
 
