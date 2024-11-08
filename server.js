@@ -28,17 +28,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/auth", authRoutes);
-// app.use(verifyJwt);
+app.use(verifyJwt);
 app.use('/user', userRouter);
 app.use('/workshop', workshopRoutes);
 app.use('/product', productRoutes);
 app.use('/coupons', cuponRoutes);
-app.use(errorHandler);
-
-app.use("/auth", authRoutes);
-app.use(verifyJwt);
-app.use('/user', userRouter);
-
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
