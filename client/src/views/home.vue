@@ -36,7 +36,7 @@
             <p class="bellotaRegular" id="monthWorkshopsText">¡Aprende como hacerlos en estos talleres educativos!</p>
         </div>
         <div class="homeGridSection">
-            <img id="homeBGImg" :src="homeBGImg">
+            <img @click="redirectToWorkshops" id="homeBGImg" :src="homeBGImg">
         </div>
     </div>
     <Footer :selectedIndex="2" />
@@ -86,6 +86,11 @@ import Footer from '../components/footer.vue';
     },
     components: {
         Footer,
+    },
+    methods: {
+        redirectToWorkshops() {
+            this.$router.push('/workshops');
+        }
     },
         name: 'TestComponent'
     }

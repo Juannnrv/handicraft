@@ -11,6 +11,7 @@
             <p class="bellotaBold" id="workshopTitle">Talleres y tiendas artesanales</p>
             <p class="bellotaRegular" id="workshopText">Tiendas de artesanías de todas partes del Perú</p>
             <img id="squareImg" :src="squareImg">
+            <img id="filterImg" :src="filterImg">
         </div>
         <div class="workshopsGridSection">
 
@@ -26,13 +27,15 @@ import Footer from '../components/footer.vue';
 import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
 import squareImg from '../images/square.svg';
+import filterImg from '../images/filters.svg';
 
     export default {
         data() {
             return {
                 menuImg,
                 glassImg,
-                squareImg
+                squareImg,
+                filterImg
             }
         },
         components: {
@@ -105,11 +108,19 @@ import squareImg from '../images/square.svg';
         color: var(--color-B-44);
         position: absolute;
         bottom: 0;
-        font-size: 16px;
+        font-size: 14px;
         margin-left: 25px;
     }
     #squareImg{
         position: absolute;
         height: 60%;
+    }
+    #filterImg{
+        cursor: pointer;
+        position: absolute;
+        height: 60%;
+        right: 0;
+        margin-right: 25px;
+        transform: translate(0px, 12px);
     }
 </style>
