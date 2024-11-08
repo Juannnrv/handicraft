@@ -252,7 +252,7 @@ import homeBGImg from '../images/homeBG.svg';
         width: 70%;
         position: absolute;
         margin-left: 15%;
-        transform: translate(0px, 50px);
+        transform: translate(0px, 12vh);
     }
 
 </style>
