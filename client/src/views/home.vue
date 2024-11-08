@@ -39,7 +39,7 @@
             <img id="homeBGImg" :src="homeBGImg">
         </div>
     </div>
-    <Footer />
+    <Footer :selectedIndex="2" />
 </template>
 <script>
 import squareImg from '../images/square.svg';
