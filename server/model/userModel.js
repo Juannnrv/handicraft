@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
         type: Date,
         required: [true, 'Birthday is required'],
     },
-    favorites: [{
+    favorites: {
         products: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Product'
@@ -45,13 +45,13 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Workshop'
         }]
-    }],
+    },
     purchases: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
         default: null
     }],
-    enrolledWorkshops: [{
+    workshopsEnrolled: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Workshop',
         default: null

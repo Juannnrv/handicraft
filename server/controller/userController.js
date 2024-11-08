@@ -1,13 +1,11 @@
 const User = require("../model/userModel");
 const Workshop = require("../model/workshopModel");
 const Product = require("../model/productModel");
-const JwtService = require("../middleware/jwtService");
-const bcrypt = require("bcrypt");
+const Order = require("../model/orderModel");
 const { validationResult } = require("express-validator");
+const mongoose = require("mongoose");
 
 class UserController {
-  
-
   /**
    * Updates a user account.
    *
@@ -25,7 +23,7 @@ class UserController {
       });
     }
 
-    const userId = req.user._id
+    const userId = req.user._id;
 
     const {
       profilePicture,
@@ -71,8 +69,8 @@ class UserController {
    * @param {Object} res - The response object.
    * @returns {Promise<void>} - A promise that resolves when the user is found or an error occurs.
    */
-  static async findUserById(req, res) {
-    const userId = req.user._id
+  static async findUser(req, res) {
+    const userId = req.user._id;
 
     try {
       const user = await User.findById(userId);
@@ -105,7 +103,7 @@ class UserController {
    * @returns {Promise<void>} - A promise that resolves when the favorites are found.
    */
   static async findUserFavorites(req, res) {
-    const userId = req.user._id
+    const userId = req.user._id;
 
     try {
       const user = await User.findById(userId).populate("favorites");
@@ -130,9 +128,90 @@ class UserController {
     }
   }
 
+  /**
+   * Creates a user favorite.
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Promise<void>} - A promise that resolves with the user's favorites data or rejects with an error.
+   */
   static async createUserFavorite(req, res) {
     const userId = req.user._id;
     const { favoriteId } = req.body;
+
+    try {
+      const user = await User.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({
+          status: 404,
+          message: "User not found",
+        });
+      }
+
+      const [productFavorite, workshopFavorite] = await Promise.all([
+        Product.findById(favoriteId),
+        Workshop.findById(favoriteId),
+      ]);
+
+      if (!productFavorite && !workshopFavorite) {
+        return res.status(404).json({
+          status: 404,
+          message: "Product or Workshop not found",
+        });
+      }
+
+      if (productFavorite) {
+        if (!user.favorites.products) {
+          user.favorites.products = [];
+        }
+        if (user.favorites.products.includes(favoriteId)) {
+          return res.status(400).json({
+            status: 400,
+            message: "Product already in favorites",
+          });
+        }
+        user.favorites.products.push(favoriteId);
+      } else if (workshopFavorite) {
+        if (!user.favorites.workshops) {
+          user.favorites.workshops = [];
+        }
+        if (user.favorites.workshops.includes(favoriteId)) {
+          return res.status(400).json({
+            status: 400,
+            message: "Workshop already in favorites",
+          });
+        }
+        user.favorites.workshops.push(favoriteId);
+      }
+
+      await user.save();
+      await user.populate("favorites.products favorites.workshops");
+
+      return res.status(200).json({
+        status: 200,
+        message: "User favorite added",
+        data: user.favorites,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: 500,
+        message: "Error adding user favorite",
+        error: error.message,
+      });
+    }
+  }
+
+  /**
+   * Deletes a user's favorite product or workshop.
+   *
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Object} The response object with status, message, and data properties.
+   * @throws {Object} The response object with status, message, and error properties if an error occurs.
+   */
+  static async deleteUserFavorite(req, res) {
+    const { id } = req.params;
+    const userId = req.user._id;
   
     try {
       const user = await User.findById(userId);
@@ -144,125 +223,60 @@ class UserController {
         });
       }
   
-      const [productFavorite, workshopFavorite] = await Promise.all([
-        Product.findById(favoriteId),
-        Workshop.findById(favoriteId),
-      ]);
+      const objectId = new mongoose.Types.ObjectId(id);
   
-      if (!productFavorite && !workshopFavorite) {
+      const favorite = await Product.findById(objectId) || await Workshop.findById(objectId);
+  
+      if (!favorite) {
         return res.status(404).json({
           status: 404,
           message: "Product or Workshop not found",
         });
       }
   
-      if (productFavorite) {
-        if (!user.favorites.products) {
-          user.favorites.products = [];
-        }
-        user.favorites.products.push({ $oid: favoriteId });
-        await user.save();
-        await user.populate("favorites.products.$oid").execPopulate();
+      user.favorites.products = user.favorites.products.filter(
+        (product) => product.toString() !== id
+      );
+      user.favorites.workshops = user.favorites.workshops.filter(
+        (workshop) => workshop.toString() !== id
+      );
   
-        return res.status(200).json({
-          status: 200,
-          message: "User product favorite added",
-          data: user.favorites.products,
-        });
-      } else if (workshopFavorite) {
-        if (!user.favorites.workshops) {
-          user.favorites.workshops = [];
-        }
-        user.favorites.workshops.push({ $oid: favoriteId });
-        await user.save();
-        await user.populate("favorites.workshops.$oid").execPopulate();
+      await user.save();
+      await user.populate("favorites.products favorites.workshops");
   
-        return res.status(200).json({
-          status: 200,
-          message: "User workshop favorite added",
-          data: user.favorites.workshops,
-        });
-      }
-    } catch (error) {
-      res.status(500).json({
-        status: 500,
-        message: "Error adding user favorite",
-        error: error.message
+      return res.status(200).json({
+        status: 200,
+        message: "User favorite deleted",
+        data: user.favorites,
       });
-    }
-  }
-
-  static async deleteUserFavorite(req, res) {
-    const { id, favoriteId } = req.params;
-
-    try {
-      const user = await User.findById(id);
-
-      if (!user) {
-        return res.status(404).json({
-          status: 404,
-          message: "User not found",
-        });
-      }
-
-      const [productFavorite, workshopFavorite] = await Promise.all([
-        Product.findById(favoriteId),
-        Workshop.findById(favoriteId),
-      ]);
-
-      if (!productFavorite && !workshopFavorite) {
-        return res.status(404).json({
-          status: 404,
-          message: "Product or Workshop not found",
-        });
-      }
-
-      if (productFavorite) {
-        user.favorites.products = user.favorites.products.filter(
-          (product) => product.toString() !== favoriteId
-        );
-        await user.save();
-        await user.populate("favorites.products").execPopulate();
-
-        return res.status(200).json({
-          status: 200,
-          message: "User product favorite deleted",
-          data: user.favorites,
-        });
-      } else if (workshopFavorite) {
-        user.favorites.workshops = user.favorites.workshops.filter(
-          (workshop) => workshop.toString() !== favoriteId
-        );
-        await user.save();
-        await user.populate("favorites.workshops").execPopulate();
-
-        return res.status(200).json({
-          status: 200,
-          message: "User workshop favorite deleted",
-          data: user.favorites,
-        });
-      }
     } catch (error) {
       res.status(500).json({
         status: 500,
         message: "Error deleting user favorite",
+        error: error.message,
       });
     }
   }
 
+  /**
+   * Finds the orders made by a user.
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Promise<void>} - A promise that resolves with the user's orders or an error message.
+   */
   static async findUserOrders(req, res) {
-    const userId = req.user._id
-
+    const userId = req.user._id;
+  
     try {
-      const user = await User.findById(id).populate("purchases");
-
+      const user = await User.findById(userId);
+  
       if (!user) {
         return res.status(404).json({
           status: 404,
           message: "User not found",
         });
       }
-
+  
       if (user.purchases.length === 0) {
         return res.status(200).json({
           status: 200,
@@ -270,25 +284,34 @@ class UserController {
           data: [],
         });
       }
-
+  
+      const orders = await Order.find({ _id: { $in: user.purchases } });
+  
       res.status(200).json({
         status: 200,
-        message: "User orders found",
-        data: user.orders,
+        message: "User purchases found",
+        data: orders,
       });
     } catch (error) {
       res.status(500).json({
         status: 500,
-        message: "Error finding user orders",
+        message: "Error finding user purchases",
+        error: error.message,
       });
     }
   }
 
+  /**
+   * Retrieves the workshop enrollments of a user.
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Promise<void>} - A promise that resolves with the workshop enrollments of the user or an error message.
+   */
   static async findUserWorkshopEnrollments(req, res) {
-    const userId = req.user._id
+    const userId = req.user._id;
 
     try {
-      const user = await User.findById(id).populate("workshopsEnrolled");
+      const user = await User.findById(userId).populate("workshopsEnrolled");
 
       if (!user) {
         return res.status(404).json({
@@ -314,15 +337,22 @@ class UserController {
       res.status(500).json({
         status: 500,
         message: "Error finding user workshop enrollments",
+        error: error.message
       });
     }
   }
 
+  /**
+   * Retrieves the coupons associated with a user.
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Promise<void>} - A promise that resolves when the coupons are retrieved.
+   */
   static async findUserCoupons(req, res) {
-    const userId = req.user._id
+    const userId = req.user._id;
 
     try {
-      const user = await User.findById(id).populate("coupons");
+      const user = await User.findById(userId).populate("coupons");
 
       if (!user) {
         return res.status(404).json({
@@ -348,6 +378,7 @@ class UserController {
       res.status(500).json({
         status: 500,
         message: "Error finding user coupons",
+        error: error.message
       });
     }
   }
