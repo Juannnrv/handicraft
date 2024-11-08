@@ -188,6 +188,7 @@ const handleSubmit = async () => {
 
     const data = await response.json()
     console.log('Registro exitoso:', data)
+    location.href = "confirmRegisterEmail"
     // Implementar redirección o manejo posterior
   } catch (error) {
     console.error('Error en el registro:', error)

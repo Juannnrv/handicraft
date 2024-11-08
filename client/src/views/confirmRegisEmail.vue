@@ -3,7 +3,7 @@
       <img class="squareBGTop" :src="squareBG" alt="">
       <img class="squareBG" :src="squareBG" alt="">
       <img class="square-bg" :src="rotatedSquare" alt="">
-      <a class="a-back" href="">
+      <a class="a-back" href="registerEmail">
         <img class="back-arrow" :src="backArrow" alt="">
       </a>
       <div class="checkbox-group">

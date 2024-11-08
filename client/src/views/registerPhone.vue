@@ -260,9 +260,10 @@
       if (!response.ok) {
         throw new Error('Error en el registro')
       }
-  
+      
       const data = await response.json()
       console.log('Registration successful:', data)
+      location.href = "confirmRegisterPhone"
       // Manejo de éxito (e.g., redirección)
     } catch (error) {
       console.error('Error en el registro:', error)
