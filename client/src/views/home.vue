@@ -32,16 +32,17 @@
         <div class="homeGridSection">
             <img id="squaresGroupImg1" :src="squaresGroupImg">
             <img id="squaresGroupImg2" :src="squaresGroupImg">
-            <p class="bellotaRegular" id="monthWorkshops">Talleres del mes</p>
+            <router-link to="/workshops" class="bellotaRegular" id="monthWorkshops">Talleres del mes</router-link>
             <p class="bellotaRegular" id="monthWorkshopsText">¡Aprende como hacerlos en estos talleres educativos!</p>
         </div>
         <div class="homeGridSection">
             <img id="homeBGImg" :src="homeBGImg">
         </div>
     </div>
+    <Footer />
 </template>
 <script>
-import squareImg from '../images/square.svg'
+import squareImg from '../images/square.svg';
 import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
 import ubicationImg from '../images/ubication.svg';
@@ -59,6 +60,8 @@ import picturesImg from '../images/pictures.svg';
 
 import squaresGroupImg from '../images/squaresGroup.svg';
 import homeBGImg from '../images/homeBG.svg';
+
+import Footer from '../components/footer.vue';
 
     export default {
     data() {
@@ -80,6 +83,9 @@ import homeBGImg from '../images/homeBG.svg';
         squaresGroupImg,
         homeBGImg
       };
+    },
+    components: {
+        Footer,
     },
         name: 'TestComponent'
     }
@@ -231,6 +237,7 @@ import homeBGImg from '../images/homeBG.svg';
         margin-right: 10px;
     }
     #monthWorkshops{
+        color: var(--color-B);
         margin-top: 10px;
         position: absolute;
         top: 0;
