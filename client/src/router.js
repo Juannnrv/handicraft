@@ -4,6 +4,7 @@ import login from './views/login.vue';
 import RegistrationView from './views/registerEmail.vue'
 import RegistrationPhoneView from './views/registerPhone.vue'
 import ConfirmRegisterPhone from './views/confirmRegisPhone.vue';
+import ConfirmRegisterEmail from './views/confirmRegisEmail.vue';
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/confirmRegisterPhone',
     name: 'confirmRegisterPhone',
     component: ConfirmRegisterPhone,
+  },
+  { 
+    path: '/confirmRegisterEmail',
+    name: 'confirmRegisterEmail',
+    component: ConfirmRegisterEmail 
   }
 ];
 
