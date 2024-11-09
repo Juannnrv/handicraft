@@ -3,7 +3,7 @@ const passport = require("passport");
 const userValidator = require("../validator/userValidator");
 const {limit} = require("../middleware/limit");
 const {versioning} = require("../middleware/versioning");
-const { loginWithGoogle, loginWithDiscord, loginWithFacebook, createAccount, logIn } = require("../controller/authController");
+const { loginWithGoogle, loginWithDiscord, loginWithFacebook, createAccount, logIn, checkIfUserExists } = require("../controller/authController");
 
 const router = express.Router();
 
@@ -37,5 +37,6 @@ router.get("/user", (req, res) => {
 
 router.post('/create', limit('post'), versioning('1.0.0'), userValidator.createAccount, createAccount);
 router.post('/login', versioning('1.0.0'), userValidator.logIn, logIn);
+router.post('/check', versioning('1.0.0'), checkIfUserExists);
 
 module.exports = router;

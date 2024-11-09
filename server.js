@@ -35,6 +35,18 @@ SessionService.initializeSession(app);
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+db.getInstace();
+
+SessionService.initializeSession(app);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 io.on('connection', (socket) => {
   console.log('Nuevo cliente conectado');

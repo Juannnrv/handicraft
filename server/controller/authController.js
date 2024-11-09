@@ -234,11 +234,40 @@ const logIn = async (req, res) => {
       error: error.message,
     });
   }
+
+  const checkIfUserExists = async (req, res, next) => {
+    const { email, username, phone } = req.body;
+
+    try {
+      const user = await User.findOne({
+        $or: [{ email: email }, { username: username }, { phone: phone }],
+      });
+
+      if (user) {
+        return res.status(400).json({
+          status: 400,
+          message: "Username, phone, or email already exists",
+        });
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: "User does not exist",
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: 500,
+        message: "Error checking user existence",
+        error: error.message,
+      });
+    }
+  };
 };
 
 module.exports = {
   createAccount,
   logIn,
+  checkIfUserExists,
   loginWithGoogle: passport.authenticate("google", {
     scope: ["profile", "email"],
   }),
