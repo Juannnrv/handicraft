@@ -13,7 +13,35 @@
             <img id="squareImg" :src="squareImg">
             <img id="filterImg" :src="filterImg">
         </div>
-        <div class="workshopsGridSection">
+        <div class="workshopsGridSection" id="wrokshopsGrid">
+
+            <div class="wrokshopsGridSection">
+                <div class="wrokshopsGridSectionDivB">
+                    <p class="wrokshopsGridSectionText bellotaBold">Arte Abedail Aller</p>
+                    <p class="wrokshopsGridSectionText2 bellotaRegular">Cusco</p>
+                </div>
+                <div class="wrokshopsGridSectionDiv">
+                    <img class="workshopImg" :src="workshopImg">
+                </div>
+            </div>
+            <div class="wrokshopsGridSection">
+                <div class="wrokshopsGridSectionDivB">
+                    <p class="wrokshopsGridSectionText bellotaBold">Arte Abedail Aller</p>
+                    <p class="wrokshopsGridSectionText2 bellotaRegular">Cusco</p>
+                </div>
+                <div class="wrokshopsGridSectionDiv">
+                    <img class="workshopImg" :src="workshopImg">
+                </div>
+            </div>
+            <div class="wrokshopsGridSection">
+                <div class="wrokshopsGridSectionDivB">
+                    <p class="wrokshopsGridSectionText bellotaBold">Arte Abedail Aller</p>
+                    <p class="wrokshopsGridSectionText2 bellotaRegular">Cusco</p>
+                </div>
+                <div class="wrokshopsGridSectionDiv">
+                    <img class="workshopImg" :src="workshopImg">
+                </div>
+            </div>
 
         </div>
     </div>
@@ -29,13 +57,16 @@ import glassImg from '../images/glass.svg';
 import squareImg from '../images/square.svg';
 import filterImg from '../images/filters.svg';
 
+import workshopImg from '../images/test/workshop.svg';
+
     export default {
         data() {
             return {
                 menuImg,
                 glassImg,
                 squareImg,
-                filterImg
+                filterImg,
+                workshopImg
             }
         },
         components: {
@@ -122,5 +153,56 @@ import filterImg from '../images/filters.svg';
         right: 0;
         margin-right: 25px;
         transform: translate(0px, 12px);
+    }
+
+    #wrokshopsGrid{
+        margin: 25px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-template-rows: repeat(4, 1fr);
+        grid-gap: 10px;
+        overflow: auto;
+    }
+    .wrokshopsGridSection{
+        border-radius: 10px;
+        position: relative;
+        display: grid;
+        overflow: hidden;
+        grid-template-rows: 60px calc(100% - 60px);
+        height: 180px;
+    }
+    .wrokshopsGridSectionDiv{
+        position: relative;
+        display: flex;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .wrokshopsGridSectionDivB{
+        position: relative;
+        display: flex;
+        overflow: hidden;
+        background-color: var(--color-B);
+    }
+
+    .wrokshopsGridSectionText{
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin-top: 6px;
+        margin-left: 4px;
+        color: var(--color-W);
+        font-size: 16px;
+    }
+    .wrokshopsGridSectionText2{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        margin-bottom: 6px;
+        margin-left: 4px;
+        color: var(--color-W);
+        font-size: 16px;
+    }
+    .workshopImg{
+        height: 100%;
     }
 </style>
