@@ -33,7 +33,7 @@
         images: [workshopImg, discountImg, homeImg, carImg, userImg],
         routes: [
           '/workshops',    
-          '/home',    
+          '/discounts',    
           '/home',            
           '/home',          
           '/home',

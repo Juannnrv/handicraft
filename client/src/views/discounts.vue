@@ -8,10 +8,12 @@
             </div>
         </div>
         <div class="workshopsGridSection">
-            <p class="bellotaBold" id="workshopTitle">Talleres y tiendas artesanales</p>
-            <p class="bellotaRegular" id="workshopText">Tiendas de artesanías de todas partes del Perú</p>
+            <p class="bellotaBold" id="workshopTitle">Descuentos y promociones</p>
+            <p class="bellotaRegular" id="workshopText">En cientos de artesanías</p>
             <img id="squareImg" :src="squareImg">
-            <img id="filterImg" :src="filterImg">
+        </div>
+        <div class="workshopsGridSection" id="">
+            
         </div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
 
@@ -46,7 +48,7 @@
         </div>
     </div>
 
-    <Footer :selectedIndex="0" />
+    <Footer :selectedIndex="1" />
 </template>
 <script>
 
@@ -55,7 +57,6 @@ import Footer from '../components/footer.vue';
 import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
 import squareImg from '../images/square.svg';
-import filterImg from '../images/filters.svg';
 
 import workshopImg from '../images/test/workshop.svg';
 
@@ -65,7 +66,6 @@ import workshopImg from '../images/test/workshop.svg';
                 menuImg,
                 glassImg,
                 squareImg,
-                filterImg,
                 workshopImg
             }
         },
@@ -79,7 +79,7 @@ import workshopImg from '../images/test/workshop.svg';
 
     #workshopsGrid{
         display: grid;
-        grid-template-rows: 80px 80px calc(100% - 220px);
+        grid-template-rows: 80px 80px 30px calc(100% - 200px);
         width: 100vw;
         height: 100vh;
     }
@@ -145,14 +145,6 @@ import workshopImg from '../images/test/workshop.svg';
     #squareImg{
         position: absolute;
         height: 60%;
-    }
-    #filterImg{
-        cursor: pointer;
-        position: absolute;
-        height: 60%;
-        right: 0;
-        margin-right: 25px;
-        transform: translate(0px, 12px);
     }
 
     #wrokshopsGrid{
