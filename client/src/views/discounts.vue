@@ -25,12 +25,17 @@
         </div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
             <div class="wrokshopsGridSection" v-for="(workshop, index) in workshops" :key="index">
-                <div class="wrokshopsGridSectionDivB">
-                    <p class="wrokshopsGridSectionText bellotaBold">{{ workshop.title }}</p>
-                    <p class="wrokshopsGridSectionText2 bellotaRegular">{{ workshop.location }}</p>
+                <div class="discountPercentDiv">
+                    <p class="discountPercent bellotaBold">-{{ workshop.percent }}%</p>
+                    <img class="dcImg" :src="workshop.dcImg">
                 </div>
                 <div class="wrokshopsGridSectionDiv">
                     <img class="workshopImg" :src="workshop.img">
+                </div>
+                <div class="wrokshopsGridSectionDivB">
+                    <p class="wrokshopsGridSectionText bellotaBold">{{ workshop.title }}</p>
+                    <p class="wrokshopsGridSectionPrice bellotaBold"><span class="lineText">{{ workshop.Oprice }}</span> / {{ workshop.Fprice }}</p>
+                    <p class="wrokshopsGridSectionText2 bellotaRegular">{{ workshop.location }}</p>
                 </div>
             </div>
         </div>
@@ -45,6 +50,7 @@ import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
 import squareImg from '../images/square.svg';
 import workshopImg from '../images/test/workshop.svg';
+import discountImg from '../images/discount.svg';
 
 export default {
     data() {
@@ -58,12 +64,8 @@ export default {
                 'Hojalatería', 'Bordado'
             ],
             workshops: [
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg },
-                { title: 'Cerámica Shanti', location: 'Bogotá', img: workshopImg },
-                { title: 'Joyería Maya', location: 'Medellín', img: workshopImg },
-                { title: 'Talla en Piedra', location: 'Quito', img: workshopImg },
-                { title: 'Orfebrería Real', location: 'Lima', img: workshopImg },
-                { title: 'Bordado del Sol', location: 'Cartagena', img: workshopImg },
+                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', Fprice: '$16', dcImg: discountImg, percent: '25'},
+                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', Fprice: '$16', dcImg: discountImg, percent: '50'}
             ],
             selectedCategoryIndex: 0
         };
@@ -161,11 +163,11 @@ export default {
         overflow: auto;
     }
     .wrokshopsGridSection {
+        overflow: hidden;
         border-radius: 10px;
         position: relative;
         display: grid;
-        overflow: hidden;
-        grid-template-rows: 60px calc(100% - 60px);
+        grid-template-rows: 60% 40%;
         height: 180px;
     }
     .wrokshopsGridSectionDiv {
@@ -177,6 +179,7 @@ export default {
     .wrokshopsGridSectionDivB {
         position: relative;
         display: flex;
+        align-items: center;
         overflow: hidden;
         background-color: var(--color-B);
     }
@@ -195,6 +198,15 @@ export default {
         left: 0;
         margin-bottom: 6px;
         margin-left: 4px;
+        color: var(--color-W);
+        font-size: 16px;
+    }
+    .wrokshopsGridSectionPrice{
+        position: absolute;
+        left: 0;
+        margin-bottom: 6px;
+        margin-left: 4px;
+        margin-top: 8px;
         color: var(--color-W);
         font-size: 16px;
     }
@@ -225,5 +237,32 @@ export default {
         height: 100%;
         background-color: var(--color-B);
         color: var(--color-W);
+    }
+    .lineText {
+    text-decoration: line-through;
+    }
+
+    .discountPercentDiv{
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        top: 0;
+        left: 0;
+        z-index: +1;
+    }
+    .dcImg{
+        position: absolute;
+        width: 100%;
+    }
+    .discountPercent{
+        position: absolute;
+        z-index: +1;
+        color: var(--color-W);
+        font-size: 14px;
     }
 </style>
