@@ -11,6 +11,7 @@ import customerService from './views/customerService.vue';
 import comments from './views/comments.vue';
 import workshops from './views/workshops.vue';
 import workshopDetails from './views/workshopDetails.vue';
+import redeemCoupon from './views/redeemCoupon.vue';
 
 const routes = [
   {
@@ -72,6 +73,11 @@ const routes = [
     path: '/workshopDetails',
     name: 'workshopDetails',
     component: workshopDetails 
+  },
+  { 
+    path: '/redeemCoupon',
+    name: 'redeemCoupon',
+    component: redeemCoupon 
   }
 ];
 
