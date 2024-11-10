@@ -10,6 +10,7 @@ import ajustes from './views/ajustes.vue';
 import customerService from './views/customerService.vue';
 import comments from './views/comments.vue';
 import workshops from './views/workshops.vue';
+import workshopDetails from './views/workshopDetails.vue';
 
 const routes = [
   {
@@ -66,6 +67,11 @@ const routes = [
     path: '/workshops',
     name: 'workshops',
     component: workshops 
+  },
+  { 
+    path: '/workshopDetails',
+    name: 'workshopDetails',
+    component: workshopDetails 
   }
 ];
 
