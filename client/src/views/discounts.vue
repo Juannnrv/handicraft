@@ -12,103 +12,109 @@
             <p class="bellotaRegular" id="workshopText">En cientos de artesanías</p>
             <img id="squareImg" :src="squareImg">
         </div>
-        <div class="workshopsGridSection" id="">
-            
+        <div class="workshopsGridSection"></div>
+        <div class="workshopsGridSection" id="categoryGrid">
+            <div
+                v-for="(category, index) in categories"
+                :key="index"
+                :class="getCategoryClass(index)"
+                @click="selectCategory(index)"
+            >
+                <p class="bellotaBold">{{ category }}</p>
+            </div>
         </div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
-
-            <div class="wrokshopsGridSection">
+            <div class="wrokshopsGridSection" v-for="(workshop, index) in workshops" :key="index">
                 <div class="wrokshopsGridSectionDivB">
-                    <p class="wrokshopsGridSectionText bellotaBold">Arte Abedail Aller</p>
-                    <p class="wrokshopsGridSectionText2 bellotaRegular">Cusco</p>
+                    <p class="wrokshopsGridSectionText bellotaBold">{{ workshop.title }}</p>
+                    <p class="wrokshopsGridSectionText2 bellotaRegular">{{ workshop.location }}</p>
                 </div>
                 <div class="wrokshopsGridSectionDiv">
-                    <img class="workshopImg" :src="workshopImg">
+                    <img class="workshopImg" :src="workshop.img">
                 </div>
             </div>
-            <div class="wrokshopsGridSection">
-                <div class="wrokshopsGridSectionDivB">
-                    <p class="wrokshopsGridSectionText bellotaBold">Arte Abedail Aller</p>
-                    <p class="wrokshopsGridSectionText2 bellotaRegular">Cusco</p>
-                </div>
-                <div class="wrokshopsGridSectionDiv">
-                    <img class="workshopImg" :src="workshopImg">
-                </div>
-            </div>
-            <div class="wrokshopsGridSection">
-                <div class="wrokshopsGridSectionDivB">
-                    <p class="wrokshopsGridSectionText bellotaBold">Arte Abedail Aller</p>
-                    <p class="wrokshopsGridSectionText2 bellotaRegular">Cusco</p>
-                </div>
-                <div class="wrokshopsGridSectionDiv">
-                    <img class="workshopImg" :src="workshopImg">
-                </div>
-            </div>
-
         </div>
     </div>
 
     <Footer :selectedIndex="1" />
 </template>
+
 <script>
-
 import Footer from '../components/footer.vue';
-
 import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
 import squareImg from '../images/square.svg';
-
 import workshopImg from '../images/test/workshop.svg';
 
-    export default {
-        data() {
-            return {
-                menuImg,
-                glassImg,
-                squareImg,
-                workshopImg
-            }
+export default {
+    data() {
+        return {
+            menuImg,
+            glassImg,
+            squareImg,
+            categories: [
+                'Textileria', 'Cerámica', 'Joyería', 'Talla en piedra',
+                'Talla en madera', 'Orfebrería', 'Estampado', 'Pintura tradicional',
+                'Hojalatería', 'Bordado'
+            ],
+            workshops: [
+                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg },
+                { title: 'Cerámica Shanti', location: 'Bogotá', img: workshopImg },
+                { title: 'Joyería Maya', location: 'Medellín', img: workshopImg },
+                { title: 'Talla en Piedra', location: 'Quito', img: workshopImg },
+                { title: 'Orfebrería Real', location: 'Lima', img: workshopImg },
+                { title: 'Bordado del Sol', location: 'Cartagena', img: workshopImg },
+            ],
+            selectedCategoryIndex: 0
+        };
+    },
+    components: {
+        Footer,
+    },
+    methods: {
+        selectCategory(index) {
+            this.selectedCategoryIndex = index;
         },
-        components: {
-            Footer,
-        },
-        name: 'TestComponent'
-    }
+        getCategoryClass(index) {
+            return index === this.selectedCategoryIndex ? 'categoryGridDivB' : 'categoryGridDiv';
+        }
+    },
+    name: 'TestComponent'
+};
 </script>
-<style scoped>
 
-    #workshopsGrid{
+<style scoped>
+    #workshopsGrid {
         display: grid;
-        grid-template-rows: 80px 80px 30px calc(100% - 200px);
+        grid-template-rows: 80px 80px 20px 30px calc(100% - 270px);
         width: 100vw;
         height: 100vh;
     }
-    .workshopsGridSection{
+    .workshopsGridSection {
         display: flex;
         align-items: center;
         position: relative;
     }
-    .workshopsGridSectionB{
+    .workshopsGridSectionB {
         display: flex;
         align-items: center;
         position: relative;
         background-color: var(--color-B);
     }
-
-    #menuImg{
+    #menuImg {
         width: 40px;
         cursor: pointer;
         position: absolute;
         height: 50%;
         margin-left: 10px;
     }
-    #glassImg{
+    #glassImg {
         margin-left: 10px;
         width: 25px;
         height: 25px;
         position: absolute;
     }
-    #homeInputDiv{
+    #homeInputDiv {
         display: flex;
         align-items: center;
         position: absolute;
@@ -117,7 +123,7 @@ import workshopImg from '../images/test/workshop.svg';
         right: 0;
         margin-right: 10px;
     }
-    #homeInput{
+    #homeInput {
         width: 100%;
         height: 100%;
         position: absolute;
@@ -129,25 +135,24 @@ import workshopImg from '../images/test/workshop.svg';
         padding-left: 40px;
         color: var(--color-W);
     }
-
-
-    #workshopTitle{
+    #workshopTitle {
         font-size: 20px;
         margin-left: 25px;
     }
-    #workshopText{
+    #workshopText {
         color: var(--color-B);
         position: absolute;
         bottom: 0;
         font-size: 14px;
         margin-left: 25px;
     }
-    #squareImg{
+    #squareImg {
         position: absolute;
         height: 60%;
     }
-
-    #wrokshopsGrid{
+    #wrokshopsGrid {
+        height: 100%;
+        padding-bottom: 30px;
         margin: 25px;
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -155,7 +160,7 @@ import workshopImg from '../images/test/workshop.svg';
         grid-gap: 10px;
         overflow: auto;
     }
-    .wrokshopsGridSection{
+    .wrokshopsGridSection {
         border-radius: 10px;
         position: relative;
         display: grid;
@@ -163,20 +168,19 @@ import workshopImg from '../images/test/workshop.svg';
         grid-template-rows: 60px calc(100% - 60px);
         height: 180px;
     }
-    .wrokshopsGridSectionDiv{
+    .wrokshopsGridSectionDiv {
         position: relative;
         display: flex;
         justify-content: center;
         overflow: hidden;
     }
-    .wrokshopsGridSectionDivB{
+    .wrokshopsGridSectionDivB {
         position: relative;
         display: flex;
         overflow: hidden;
         background-color: var(--color-B);
     }
-
-    .wrokshopsGridSectionText{
+    .wrokshopsGridSectionText {
         position: absolute;
         top: 0;
         left: 0;
@@ -185,7 +189,7 @@ import workshopImg from '../images/test/workshop.svg';
         color: var(--color-W);
         font-size: 16px;
     }
-    .wrokshopsGridSectionText2{
+    .wrokshopsGridSectionText2 {
         position: absolute;
         bottom: 0;
         left: 0;
@@ -194,7 +198,32 @@ import workshopImg from '../images/test/workshop.svg';
         color: var(--color-W);
         font-size: 16px;
     }
-    .workshopImg{
+    .workshopImg {
         height: 100%;
+    }
+    #categoryGrid {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 140px;
+        overflow-x: auto;
+        border-bottom: 2px solid var(--color-B);
+    }
+    .categoryGridDiv {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        height: 100%;
+    }
+    .categoryGridDivB {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        height: 100%;
+        background-color: var(--color-B);
+        color: var(--color-W);
     }
 </style>

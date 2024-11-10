@@ -1,80 +1,63 @@
 <template>
     <div id="workshopsGrid">
-        <div class="workshopsGridSectionB">
-            <img id="menuImg" :src="menuImg">
-            <div id="homeInputDiv">
-                <input class="bellotaRegular" type="text" id="homeInput" placeholder="Buscar producto o tienda...">
-                <img id="glassImg" :src="glassImg">
-            </div>
+      <div class="workshopsGridSectionB">
+        <img id="menuImg" :src="menuImg">
+        <div id="homeInputDiv">
+          <input class="bellotaRegular" type="text" id="homeInput" placeholder="Buscar producto o tienda...">
+          <img id="glassImg" :src="glassImg">
         </div>
-        <div class="workshopsGridSection">
-            <p class="bellotaBold" id="workshopTitle">Talleres y tiendas artesanales</p>
-            <p class="bellotaRegular" id="workshopText">Tiendas de artesanías de todas partes del Perú</p>
-            <img id="squareImg" :src="squareImg">
-            <img id="filterImg" :src="filterImg">
+      </div>
+      <div class="workshopsGridSection">
+        <p class="bellotaBold" id="workshopTitle">Talleres y tiendas artesanales</p>
+        <p class="bellotaRegular" id="workshopText">Tiendas de artesanías de todas partes del Perú</p>
+        <img id="squareImg" :src="squareImg">
+        <img id="filterImg" :src="filterImg">
+      </div>
+      <div class="workshopsGridSection" id="wrokshopsGrid">
+        <div v-for="(workshop, index) in workshops" :key="index" class="wrokshopsGridSection">
+          <div class="wrokshopsGridSectionDivB">
+            <p class="wrokshopsGridSectionText bellotaBold">{{ workshop.name }}</p>
+            <p class="wrokshopsGridSectionText2 bellotaRegular">{{ workshop.location }}</p>
+          </div>
+          <div class="wrokshopsGridSectionDiv">
+            <img class="workshopImg" :src="workshopImg">
+          </div>
         </div>
-        <div class="workshopsGridSection" id="wrokshopsGrid">
-
-            <div class="wrokshopsGridSection">
-                <div class="wrokshopsGridSectionDivB">
-                    <p class="wrokshopsGridSectionText bellotaBold">Arte Abedail Aller</p>
-                    <p class="wrokshopsGridSectionText2 bellotaRegular">Cusco</p>
-                </div>
-                <div class="wrokshopsGridSectionDiv">
-                    <img class="workshopImg" :src="workshopImg">
-                </div>
-            </div>
-            <div class="wrokshopsGridSection">
-                <div class="wrokshopsGridSectionDivB">
-                    <p class="wrokshopsGridSectionText bellotaBold">Arte Abedail Aller</p>
-                    <p class="wrokshopsGridSectionText2 bellotaRegular">Cusco</p>
-                </div>
-                <div class="wrokshopsGridSectionDiv">
-                    <img class="workshopImg" :src="workshopImg">
-                </div>
-            </div>
-            <div class="wrokshopsGridSection">
-                <div class="wrokshopsGridSectionDivB">
-                    <p class="wrokshopsGridSectionText bellotaBold">Arte Abedail Aller</p>
-                    <p class="wrokshopsGridSectionText2 bellotaRegular">Cusco</p>
-                </div>
-                <div class="wrokshopsGridSectionDiv">
-                    <img class="workshopImg" :src="workshopImg">
-                </div>
-            </div>
-
-        </div>
+      </div>
     </div>
-
     <Footer :selectedIndex="0" />
-</template>
-<script>
-
-import Footer from '../components/footer.vue';
-
-import menuImg from '../images/menu.svg';
-import glassImg from '../images/glass.svg';
-import squareImg from '../images/square.svg';
-import filterImg from '../images/filters.svg';
-
-import workshopImg from '../images/test/workshop.svg';
-
-    export default {
-        data() {
-            return {
-                menuImg,
-                glassImg,
-                squareImg,
-                filterImg,
-                workshopImg
-            }
-        },
-        components: {
-            Footer,
-        },
-        name: 'TestComponent'
-    }
-</script>
+  </template>
+  
+  <script>
+  import Footer from '../components/footer.vue';
+  import menuImg from '../images/menu.svg';
+  import glassImg from '../images/glass.svg';
+  import squareImg from '../images/square.svg';
+  import filterImg from '../images/filters.svg';
+  import workshopImg from '../images/test/workshop.svg';
+  
+  export default {
+    data() {
+      return {
+        menuImg,
+        glassImg,
+        squareImg,
+        filterImg,
+        workshopImg,
+        workshops: [
+          { name: "Arte Abedail Aller", location: "Cusco" },
+          { name: "Taller de Cerámica", location: "Lima" },
+          { name: "Arte Textil Andino", location: "Arequipa" },
+          { name: "Arte Textil Andino", location: "Arequipa" }
+        ]
+      }
+    },
+    components: {
+      Footer,
+    },
+    name: 'TestComponent'
+  }
+  </script>
 <style scoped>
 
     #workshopsGrid{
@@ -156,6 +139,8 @@ import workshopImg from '../images/test/workshop.svg';
     }
 
     #wrokshopsGrid{
+        height: 100%;
+        padding-bottom: 30px;
         margin: 25px;
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
