@@ -9,6 +9,7 @@
         <h1 class="bellotaBold">Comentarios a la app</h1>
       </header>
   
+      <div class="scroll">
       <form @submit.prevent="handleSubmit" class="feedback-form">
         <section class="common-problems">
           <h2 class="bellotaBold">Problemas frecuentes</h2>
@@ -29,6 +30,7 @@
         <section class="other-feedback">
           <h2 class="bellotaBold">Otro</h2>
           <textarea
+          class="bellotaBold"
             v-model="customFeedback"
             placeholder="Describe aquí tu problema..."
             rows="5"
@@ -44,6 +46,7 @@
           </button>
         </div>
       </form>
+    </div>
     </div>
   </template>
   
@@ -85,9 +88,12 @@
   
   <style scoped>
   .feedback-container {
+    height: 100vh;
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
   }
   
   .header {
@@ -129,7 +135,7 @@
     width: 100%;
     padding: 12px;
     text-align: left;
-    background-color: #f5f5f5;
+    background-color: #D9D9D9;
     border: none;
     border-radius: 8px;
     font-size: 12px;
@@ -151,7 +157,7 @@
     padding: 16px;
     border: none;
     border-radius: 8px;
-    background-color: #f5f5f5;
+    background-color: #D9D9D9;
     font-size: 14px;
     resize: vertical;
     margin-bottom: 24px;
@@ -166,10 +172,11 @@
     display: flex;
     justify-content: space-between;
     gap: 16px;
+
   }
   
   .attach-button, .submit-button {
-    padding: 12px 24px;
+    padding: 7px;
     border: none;
     border-radius: 8px;
     font-size: 14px;
@@ -178,23 +185,25 @@
   }
   
   .attach-button {
-    background-color: #f5f5f5;
-    color: #333;
-    flex-grow: 1;
+    background-color: #3D3D3D;
+    color:  white;
+ 
   }
   
   .attach-button:hover {
-    background-color: #ebebeb;
+    background-color: #D9D9D9;
+    color: black;
   }
   
   .submit-button {
-    background-color: #333;
+    background-color: #3D3D3D;
     color: white;
-    min-width: 100px;
+
   }
   
   .submit-button:hover {
-    background-color: #444;
+    background-color: #D9D9D9;
+    color: black;
   }
 
   .title-square{
@@ -222,5 +231,10 @@
   
     .a-back > img{
       width: 100%;
+    }
+    .scroll{
+      height: 100%;
+      overflow-y: scroll;
+      scrollbar-width: none;
     }
   </style>

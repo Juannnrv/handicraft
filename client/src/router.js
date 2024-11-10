@@ -49,8 +49,8 @@ const routes = [
     component: loginForm 
   },
   { 
-    path: '/ajustes',
-    name: 'ajustes',
+    path: '/settings',
+    name: 'settings',
     component: ajustes 
   },
   { 
