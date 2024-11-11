@@ -17,18 +17,17 @@
             <p class="bellotaBold" id="categoryText">Categorías</p>
             <img id="squareImg" :src="squareImg">
         </div>
-<div id="grid-container">
-<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="textileImg"></div><p class="categoryText bellotaRegular">Textilería</p></div>
-<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="ceramicImg"></div><p class="categoryText bellotaRegular">Cerámica</p></div>
-<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="goldsmithingImg"></div><p class="categoryText bellotaRegular">Orfebrería</p></div>
-<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="stoneCarvingImg"></div><p class="categoryText bellotaRegular">Talla en piedra</p></div>
-<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="woodCarvingImg"></div><p class="categoryText bellotaRegular">Talla en madera</p></div>
-<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="embroideryImg"></div><p class="categoryText bellotaRegular">Bordado</p></div>
-<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="jewelryImg"></div><p class="categoryText bellotaRegular">Joyería</p></div>
-<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="tinsmithImg"></div><p class="categoryText bellotaRegular">Hojalatería</p></div>
-<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="printImg"></div><p class="categoryText bellotaRegular">Estampado</p></div>
-<div class="grid-item"><div class="categoryImgDiv"><img class="categoryImg" :src="picturesImg"></div><p class="categoryText bellotaRegular">Pintura tradicional</p></div>
+        
+        <!-- Contenedor de categorías -->
+        <div id="grid-container">
+            <div v-for="(category, index) in categories" :key="index" class="grid-item">
+                <div class="categoryImgDiv">
+                    <img class="categoryImg" :src="category.image">
+                </div>
+                <p class="categoryText bellotaRegular">{{ category.name }}</p>
+            </div>
         </div>
+        
         <div class="homeGridSection">
             <img id="squaresGroupImg1" :src="squaresGroupImg">
             <img id="squaresGroupImg2" :src="squaresGroupImg">
@@ -46,6 +45,10 @@ import squareImg from '../images/square.svg';
 import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
 import ubicationImg from '../images/ubication.svg';
+import squaresGroupImg from '../images/squaresGroup.svg';
+import homeBGImg from '../images/homeBG.svg';
+
+import Footer from '../components/footer.vue';
 
 import textileImg from '../images/textile.svg';
 import ceramicImg from '../images/ceramic.svg';
@@ -58,31 +61,28 @@ import tinsmithImg from '../images/tinsmith.svg';
 import printImg from '../images/print.svg';
 import picturesImg from '../images/pictures.svg';
 
-import squaresGroupImg from '../images/squaresGroup.svg';
-import homeBGImg from '../images/homeBG.svg';
-
-import Footer from '../components/footer.vue';
-
-    export default {
+export default {
     data() {
-      return {
-        menuImg,
-        glassImg,
-        ubicationImg,
-        squareImg,
-        textileImg,
-        ceramicImg,
-        goldsmithingImg,
-        stoneCarvingImg,
-        woodCarvingImg,
-        embroideryImg,
-        jewelryImg,
-        tinsmithImg,
-        printImg,
-        picturesImg,
-        squaresGroupImg,
-        homeBGImg
-      };
+        return {
+            menuImg,
+            glassImg,
+            ubicationImg,
+            squareImg,
+            squaresGroupImg,
+            homeBGImg,
+            categories: [
+                { name: 'Textilería', image: textileImg },
+                { name: 'Cerámica', image: ceramicImg },
+                { name: 'Orfebrería', image: goldsmithingImg },
+                { name: 'Talla en piedra', image: stoneCarvingImg },
+                { name: 'Talla en madera', image: woodCarvingImg },
+                { name: 'Bordado', image: embroideryImg },
+                { name: 'Joyería', image: jewelryImg },
+                { name: 'Hojalatería', image: tinsmithImg },
+                { name: 'Estampado', image: printImg },
+                { name: 'Pintura tradicional', image: picturesImg }
+            ]
+        };
     },
     components: {
         Footer,
@@ -92,8 +92,8 @@ import Footer from '../components/footer.vue';
             this.$router.push('/workshops');
         }
     },
-        name: 'TestComponent'
-    }
+    name: 'TestComponent'
+}
 </script>
 <style scoped>
 
