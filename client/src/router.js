@@ -5,6 +5,7 @@ import login from './views/login.vue';
 import home from './views/home.vue';
 import workshops from './views/workshops.vue';
 import discounts from './views/discounts.vue';
+import categories from './views/categories.vue';
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     path: '/discounts',
     name: 'Discounts',
     component: discounts
+  },
+  {
+    path: '/categories',
+    name: 'Categories',
+    component: categories
   }
 ];
 
