@@ -26,10 +26,6 @@
         </div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
             <div class="wrokshopsGridSection" v-for="(workshop, index) in workshops" :key="index">
-                <div class="discountPercentDiv">
-                    <p class="discountPercent bellotaBold">-{{ workshop.percent }}%</p>
-                    <img class="dcImg" :src="workshop.dcImg">
-                </div>
                 <div class="wrokshopsGridSectionDiv">
                     <img class="workshopImg" :src="workshop.img">
                 </div>
@@ -50,7 +46,6 @@ import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
 import squareImg from '../images/square.svg';
 import workshopImg from '../images/test/workshop.svg';
-import discountImg from '../images/discount.svg';
 import fSquareImg from '../images/fullSquare.svg';
 import arrowImg from '../images/arrow.svg';
 import filtersImg from '../images/filters.svg';
@@ -70,8 +65,8 @@ export default {
                 'Hojalatería', 'Bordado'
             ],
             workshops: [
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', dcImg: discountImg, percent: '25'},
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', dcImg: discountImg, percent: '50'}
+                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '25'},
+                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'}
             ],
             selectedCategoryIndex: 0
         };
