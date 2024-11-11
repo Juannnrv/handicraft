@@ -18,7 +18,6 @@
             <img id="squareImg" :src="squareImg">
         </div>
         
-        <!-- Contenedor de categorías -->
         <div id="grid-container">
             <div v-for="(category, index) in categories" :key="index" class="grid-item">
                 <div class="categoryImgDiv">
