@@ -13,8 +13,6 @@
         <div class="homeGridSection">
 
         </div>
-        
-        
         <div class="homeGridSection">
 
         </div>
@@ -34,17 +32,6 @@ import homeBGImg from '../images/homeBG.svg';
 
 import Footer from '../components/footer.vue';
 
-import textileImg from '../images/textile.svg';
-import ceramicImg from '../images/ceramic.svg';
-import goldsmithingImg from '../images/goldsmithing.svg';
-import stoneCarvingImg from '../images/stoneCarving.svg';
-import woodCarvingImg from '../images/woodCarving.svg';
-import embroideryImg from '../images/embroidery.svg';
-import jewelryImg from '../images/jewelry.svg';
-import tinsmithImg from '../images/tinsmith.svg';
-import printImg from '../images/print.svg';
-import picturesImg from '../images/pictures.svg';
-
 export default {
     data() {
         return {
@@ -53,19 +40,7 @@ export default {
             ubicationImg,
             squareImg,
             squaresGroupImg,
-            homeBGImg,
-            categories: [
-                { name: 'Textilería', image: textileImg },
-                { name: 'Cerámica', image: ceramicImg },
-                { name: 'Orfebrería', image: goldsmithingImg },
-                { name: 'Talla en piedra', image: stoneCarvingImg },
-                { name: 'Talla en madera', image: woodCarvingImg },
-                { name: 'Bordado', image: embroideryImg },
-                { name: 'Joyería', image: jewelryImg },
-                { name: 'Hojalatería', image: tinsmithImg },
-                { name: 'Estampado', image: printImg },
-                { name: 'Pintura tradicional', image: picturesImg }
-            ]
+            homeBGImg
         };
     },
     components: {
