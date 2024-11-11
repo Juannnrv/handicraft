@@ -221,6 +221,7 @@ export default {
         border-bottom: 2px solid var(--color-B);
     }
     .categoryGridDiv {
+        background-color: var(--color-B3);
         cursor: pointer;
         display: flex;
         align-items: center;
