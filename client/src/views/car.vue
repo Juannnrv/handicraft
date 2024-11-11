@@ -8,36 +8,21 @@
             </div>
         </div>
         <div class="homeGridSection">
-            <div id="ubicationDiv">
-                <img id="ubicationImg" :src="ubicationImg">
-                <p class="bellotaRegular" id="ubicationText">Ubicación de entrega actual</p>
-            </div>
+
         </div>
         <div class="homeGridSection">
-            <p class="bellotaBold" id="categoryText">Categorías</p>
-            <img id="squareImg" :src="squareImg">
+
         </div>
         
-        <div id="grid-container">
-            <div v-for="(category, index) in categories" :key="index" class="grid-item">
-                <div class="categoryImgDiv">
-                    <img class="categoryImg" :src="category.image">
-                </div>
-                <p class="categoryText bellotaRegular">{{ category.name }}</p>
-            </div>
-        </div>
         
         <div class="homeGridSection">
-            <img id="squaresGroupImg1" :src="squaresGroupImg">
-            <img id="squaresGroupImg2" :src="squaresGroupImg">
-            <router-link to="/workshops" class="bellotaRegular" id="monthWorkshops">Talleres del mes</router-link>
-            <p class="bellotaRegular" id="monthWorkshopsText">¡Aprende como hacerlos en estos talleres educativos!</p>
+
         </div>
         <div class="homeGridSection">
-            <img @click="redirectToWorkshops" id="homeBGImg" :src="homeBGImg">
+            
         </div>
     </div>
-    <Footer :selectedIndex="2" />
+    <Footer :selectedIndex="3" />
 </template>
 <script>
 import squareImg from '../images/square.svg';
@@ -148,122 +133,4 @@ export default {
         padding-left: 40px;
         color: var(--color-W);
     }
-
-
-    #ubicationDiv{
-        display: flex;
-        align-items: center;
-        margin-left: 10px;
-        background-color: var(--color-B3);
-        height: 70%;
-        width: calc(100% - 20px);
-        border-radius: 8px;
-    }
-    #ubicationImg{
-        height: 70%;
-        margin-left: 10px;
-    }
-    #ubicationText{
-        margin-left: 10px;
-        font-size: 16px;
-        color: var(--color-B-44);
-    }
-
-
-    #categoryText{
-        color: var(--color-B);
-        margin-left: 25px;
-        font-size: 20px;
-    }
-    #squareImg{
-        position: absolute;
-        height: 100%;
-    }
-
-
-    #grid-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-        grid-template-rows: repeat(2, 1fr);
-        grid-gap: 10px;
-        width: calc(100% - 50px);
-        margin-left: 25px;
-        max-width: 100%;
-        overflow: auto;
-    }
-    .grid-item {
-        position: relative;
-        padding: 20px;
-        display: grid;
-        min-height: 110px;
-    }
-
-    .categoryImgDiv{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        overflow: hidden;
-        position: absolute;
-        background-color: var(--color-B3);
-        width: 54px;
-        margin-left: calc((100% - 54px) / 2);
-        height: 54px;
-        overflow: hidden;
-    }
-    .categoryImg{
-        width: 60%;
-    }
-
-    .categoryText{
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 50px;
-        text-align: center;
-        font-size: 16px;
-    }
-
-    #squaresGroupImg1{
-        margin-top: 18px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 14px;
-        margin-left: 10px;
-    }
-    #squaresGroupImg2{
-        margin-top: 18px;
-        position: absolute;
-        top: 0;
-        right: 0;
-        height: 14px;
-        margin-right: 10px;
-    }
-    #monthWorkshops{
-        color: var(--color-B);
-        margin-top: 10px;
-        position: absolute;
-        top: 0;
-        width: 100%;
-        text-align: center;
-        font-size: 22px;
-    }
-    #monthWorkshopsText{
-        color: var(--color-B-44);
-        font-size: 12px;
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        text-align: center;
-    }
-
-    #homeBGImg{
-        filter: saturate(0);
-        width: 70%;
-        position: absolute;
-        margin-left: 15%;
-        transform: translate(0px, 12vh);
-    }
-
 </style>
