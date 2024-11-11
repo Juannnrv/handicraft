@@ -35,7 +35,7 @@
           '/workshops',    
           '/discounts',    
           '/home',            
-          '/home',          
+          '/car',          
           '/home',
         ]
       };
