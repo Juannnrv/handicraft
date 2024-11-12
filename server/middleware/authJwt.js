@@ -15,7 +15,7 @@ const jwt = require("jsonwebtoken");
 const verifyJwt = (req, res, next) => {
   // Retrieve the authentication token from the session
   const token = req.session.authToken;
-  
+  console.log(token);
   // If no token is found, return an error response indicating the session has expired
   if (!token) {
     return res.status(401).json({ status: 401, message: 'Session expired.' });
@@ -27,6 +27,8 @@ const verifyJwt = (req, res, next) => {
     
     // Attach the decoded user information to the request object for further use in route handlers
     req.user = decoded; 
+    // console.log("token:", token);
+    console.log("prueba",req.user);
     
     // Proceed to the next middleware or route handler if the token is valid
     next();

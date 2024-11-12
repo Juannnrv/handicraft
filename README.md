@@ -1,5 +1,81 @@
-# Vue 3 + Vite
+# Documentación de Endpoints de Autenticación
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Endpoints
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+### Autenticación con Google
+
+- **URL para inicio de sesión**: `/auth/google`
+- **Método**: `GET`
+- **Descripción**: Redirecciona al usuario a la pantalla de inicio de sesión de Google. La autenticación se maneja usando el perfil y el correo electrónico del usuario.
+- **Uso**: 
+  ```http
+  GET /auth/google
+  ```
+- **Callback URL**: 
+  ```http
+  GET /auth/google/callback
+  ```
+    - **Descripción**: URL de retorno de Google después de la autenticación.
+    - **Uso**: GET /auth/google/callback
+    - **Parámetros de URL**: Ninguno
+    - **Redirección en caso de éxito**: Muestra un mensaje en laconsola logeado con exito.
+    - **Redirección en caso de falla**: Redirecciona a /
+
+### Autenticación con Discord
+
+- **URL para inicio de sesión**: `/auth/discord`
+- **Método**: `GET`
+- **Descripción**: Redirecciona al usuario a la pantalla de inicio de sesión de Discord. Requiere permisos para obtener la identidad y el correo electrónico del usuario.
+
+- **Uso**: 
+  ```http
+  GET /auth/discord
+  ```
+- **Callback URL**: 
+  ```http
+  GET /auth/discord/callback
+  ```
+    - **Descripción**: URL de retorno de discord después de la autenticación.
+    - **Uso**: GET /auth/discord/callback
+    - **Parámetros de URL**: Ninguno
+    - **Redirección en caso de éxito**: Muestra un mensaje en laconsola logeado con exito.
+    - **Redirección en caso de falla**: Redirecciona a /
+
+### Autenticación con Facebook
+
+- **URL para inicio de sesión**: `/auth/facebook`
+- **Método**: `GET`
+- **Descripción**: Redirecciona al usuario a la pantalla de inicio de sesión de facebook. Requiere permisos para obtener la identidad y el correo electrónico del usuario.
+
+- **Uso**: 
+  ```http
+  GET /auth/facebook
+  ```
+- **Callback URL**: 
+  ```http
+  GET /auth/facebook/callback
+  ```
+    - **Descripción**: URL de retorno de facebook después de la autenticación.
+    - **Uso**: GET /auth/facebook/callback
+    - **Parámetros de URL**: Ninguno
+    - **Redirección en caso de éxito**: Muestra un mensaje en laconsola logeado con exito.
+    - **Redirección en caso de falla**: Redirecciona a /
+
+### Obtención de Datos del Usuario
+
+- **URL para inicio de sesión**: `/auth/user`
+- **Método**: `GET`
+- **Descripción**: Retorna los datos del usuario autenticado.
+- **Respuesta Exitosa**: 
+  ```json
+    {
+        "displayName": "Nombre del Usuario"
+    }
+
+  ```
+- **Respuesta Fallida**: 
+  ```json
+    {
+    "message": "No estás autenticado"
+    }
+  ```
