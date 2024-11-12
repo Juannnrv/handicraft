@@ -1,6 +1,8 @@
 <template>
   <div class="user-page">
-    <h1>Welcome, {{ user.displayName }}</h1>
+    <!-- Mostrar el username aquí -->
+    <h1 v-if="user">Welcome, {{ user }}</h1>
+    <p v-else>Loading...</p> <!-- Mensaje cuando los datos no están cargados aún -->
   </div>
 </template>
 
@@ -8,27 +10,31 @@
 export default {
   data() {
     return {
-      user: {},
+      user: {}, // Inicializamos un objeto vacío para almacenar los datos del usuario
     };
   },
-  methods: {
-  },
   mounted() {
-    // Suponiendo que el backend ya ha asociado la sesión correctamente
+    // Hacer la solicitud al backend para obtener los datos del usuario
     fetch('http://localhost:5000/user/favorites', {
       method: 'GET',
       credentials: 'include', // Incluir las cookies de sesión
+      headers: {
+        "x-version": "1.0.0",
+      }
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data) {
-          console.log(data); // Mostrar los datos del usuario si la autenticación fue exitosa
+        if (data) { // Verifica que la respuesta contenga un username
+          this.user = data; // Asignamos los datos del usuario al estado
+          console.log(data); // Puedes ver los datos del usuario en la consola
+        } else {
+          console.log("User data not found");
         }
       })
-      .catch(() => {
-        // Si ocurre un error, redirigir a la página de login
-        // window.location.href = '/';
-        console.log("murio");
+      .catch((error) => {
+        console.log("Error fetching user data:", error);
+        // Aquí puedes redirigir a la página de login si lo necesitas
+        // window.location.href = '/login';
       });
   }
 };

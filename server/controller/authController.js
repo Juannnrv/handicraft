@@ -53,43 +53,41 @@ passport.use(
     {
       clientID: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
-      callbackURL: "http://localhost:5000/auth/discord/callback",
+      callbackURL: "/auth/discord/callback",
       scope: ["identify", "email"],
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // console.log(profile);
-        // console.log(done);
+        // Busca si el usuario ya existe con discordId
         let existingUser = await User.findOne({ discordId: profile.id });
-        // console.log(existingUser)
 
         if (existingUser) {
-          return done(null, existingUser);
+          // Genera el JWT y lo guarda en la sesión
+          const token = JwtService.generateToken({ _id: existingUser._id });
+          done(null, existingUser);
+        } else {
+          // Si no existe, crea un nuevo usuario
+          const newUser = new User({
+            username: profile.username || "",
+            email: profile.email,
+            profilePicture: profile.avatar ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png` : "",
+            discordId: profile.id,
+            tipo: "comprador",
+          });
+
+          await newUser.save();
+
+          // Genera el JWT y lo guarda en la sesión
+          const token = JwtService.generateToken({ _id: newUser._id });
+          done(null, newUser);  // Retorna el nuevo usuario
         }
-
-        const existingUserName = await User.findOne({ userName: profile.username });
-        if (existingUserName) {
-          return done(null, existingUserName);
-        }
-
-        const newUser = new User({
-          username: profile.username || "",
-          email: profile.email,
-          password: "",
-          profilePicture: profile.avatar ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png` : "",
-          phone: "",
-          gender: "na",
-          birthday: null,
-          tipo: "comprador",
-          discordId: profile.id || "",
-        });
-
-        await newUser.save();
-        done(null, newUser);
       } catch (error) {
         done(error, null);
       }
-    }));
+    }
+  )
+);
+
 
 
 // Configuración de Facebook Strategy

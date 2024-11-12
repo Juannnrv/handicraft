@@ -14,21 +14,23 @@ const passport = require("./server/middleware/passportConfig");
 const verifyJwt = require("./server/middleware/authJwt");
 
 const app = express();
-app.use(cors());
-app.use(express.json());
-
-const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: "http://localhost:3000",
-  }
-});
 app.use(
   cors({
     origin: "http://localhost:3000",
     credentials: true,
   })
 );
+
+app.use(express.json());
+
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    credentials: true,
+  }
+});
+
 db.getInstace();
 
 SessionService.initializeSession(app);
