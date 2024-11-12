@@ -1,7 +1,7 @@
 <template>
     <div id="workshopsGrid">
         <div class="workshopsGridSection center">
-            <p class="bellotaBold" id="categoryTitle">Categorías</p>
+            <p class="bellotaBold" id="categoryTitle">Tus artesanías<br>favoritas</p>
             <img id="fSquareImg" :src="fSquareImg">
             <img id="squareImg" :src="squareImg">
             <img id="arrowImg" :src="arrowImg" @click="goToHome">
@@ -19,9 +19,7 @@
         </div>
         <div class="workshopsGridSection"></div>
         <div class="workshopsGridSection">
-            <input id="categoriesInputInput" class="bellotaRegular" placeholder="Buscar producto o palabra clave...">
-                <img id="glassImg" :src="glassImg">
-                <img id="filtersImg" :src="filtersImg">
+
         </div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
             <div class="wrokshopsGridSection" v-for="(workshop, index) in workshops" :key="index">
@@ -236,6 +234,7 @@ export default {
         width: 76px;
     }
     #categoryTitle{
+        text-align: center;
         z-index: +1;
         position: absolute;
         font-size: 22px;
