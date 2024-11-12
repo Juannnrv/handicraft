@@ -8,6 +8,7 @@ import discounts from './views/discounts.vue';
 import categories from './views/categories.vue';
 import car from './views/car.vue';
 import favorites from './views/favorites.vue';
+import workshop from './views/workshop.vue';
 
 const routes = [
   {
@@ -49,6 +50,11 @@ const routes = [
     path: '/favorites',
     name: 'Favorites',
     component: favorites
+  },
+  {
+    path: '/workshop',
+    name: 'Workshop',
+    component: workshop
   }
 ];
 
