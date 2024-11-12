@@ -14,9 +14,19 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Password is required']
     },
     profilePicture: {
-        type: String,
-        default: 'https://i.pinimg.com/474x/4c/92/2b/4c922b0a793123bcb292e005b7981df6.jpg'
-    },
+        data: {
+          type: Buffer,
+          default: null
+        },
+        contentType: {
+          type: String,
+          default: 'image/png'
+        },
+        url: {
+          type: String,
+          default: 'https://i.pinimg.com/474x/4c/92/2b/4c922b0a793123bcb292e005b7981df6.jpg'
+        }
+      },
     phone: {
         type: String,
         match: [/^\d{10}$/, 'Phone number must be 10 digits'],

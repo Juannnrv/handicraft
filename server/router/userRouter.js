@@ -1,31 +1,21 @@
 const express = require('express');
 const {
-  createAccount,
-  logIn,
-  updateUser,
-  findUserFavorites,
-  createUserFavorite,
-  findUserById,
-  findUserCoupons,
-  findUserOrders,
-  findUserWorkshopEnrollments,
-  deleteUserFavorite
+  updateUser, findUserFavorites, createUserFavorite, findUser, findUserCoupons, findUserOrders, findUserWorkshopEnrollments, deleteUserFavorite
 } = require('../controller/userController');
 const userValidator = require('../validator/userValidator');
 const { versioning } = require('../middleware/versioning');
 const { limit } = require('../middleware/limit');
-const verifyJwt = require('../middleware/authJwt');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 const user = express.Router();
 
-user.post('/create', limit('post'), versioning('1.0.0'), userValidator.createAccount, createAccount);
-user.post('/login', versioning('1.0.0'), userValidator.logIn, logIn);
-user.post('/favorites', verifyJwt, limit('post'), versioning('1.0.0'), createUserFavorite);
-user.get('/', verifyJwt, limit('get'), versioning('1.0.0'), findUserById);
-user.get('/favorites', verifyJwt, limit('get'), versioning('1.0.0'), findUserFavorites);
-user.get('/coupons', verifyJwt, limit('get'), versioning('1.0.0'), findUserCoupons);
-user.get('/orders', verifyJwt, limit('get'), versioning('1.0.0'), findUserOrders);
-user.get('/workshop', verifyJwt, limit('get'), versioning('1.0.0'), findUserWorkshopEnrollments);
-user.put('/', verifyJwt, limit('put'), versioning('1.0.0'), userValidator.update, updateUser);
-user.delete('/favorites/:id', verifyJwt, limit('delete'), versioning('1.0.0'), deleteUserFavorite);
+user.post('/favorites', limit('post'), versioning('1.0.0'), createUserFavorite);
+user.get('/', limit('get'), versioning('1.0.0'), findUser);
+user.get('/favorites', limit('get'), versioning('1.0.0'), findUserFavorites);
+user.get('/coupons', limit('get'), versioning('1.0.0'), findUserCoupons);
+user.get('/orders', limit('get'), versioning('1.0.0'), findUserOrders);
+user.get('/workshops', limit('get'), versioning('1.0.0'), findUserWorkshopEnrollments);
+user.put('/', upload.single('profilePicture'), limit('put'), versioning('1.0.0'), userValidator.update, UserController.updateUser);
+user.delete('/favorites/:id', limit('delete'), versioning('1.0.0'), deleteUserFavorite);
 
 module.exports = user;

@@ -1,8 +1,8 @@
 const User = require("../model/userModel");
 const Workshop = require("../model/workshopModel");
 const Product = require("../model/productModel");
-const JwtService = require("../middleware/jwtService");
-const bcrypt = require("bcrypt");
+const Order = require("../model/orderModel");
+const ProfileImg = require("../middleware/profileImage");
 const { validationResult } = require("express-validator");
 
 class UserController {
@@ -162,24 +162,12 @@ class UserController {
       });
     }
 
-    const userId = req.user._id
-
-    const {
-      profilePicture,
-      username,
-      email,
-      phone,
-      gender,
-      birthday,
-      password,
-    } = req.body;
+    const userId = req.user._id;
+    const { username, email, phone, gender, birthday, password } = req.body;
 
     try {
-      const user = await User.findByIdAndUpdate(
-        userId,
-        { profilePicture, username, email, phone, gender, birthday },
-        { new: true }
-      );
+      const updateData = { username, email, phone, gender, birthday };
+      const user = await UserService.updateUser(userId, updateData, req.file?.path);
 
       if (!user) {
         return res.status(404).json({
@@ -330,10 +318,11 @@ class UserController {
   }
 
   static async deleteUserFavorite(req, res) {
-    const { id, favoriteId } = req.params;
+    const { id } = req.params;
+    const userId = req.user._id;
 
     try {
-      const user = await User.findById(id);
+      const user = await User.findById(userId);
 
       if (!user) {
         return res.status(404).json({
@@ -342,43 +331,34 @@ class UserController {
         });
       }
 
-      const [productFavorite, workshopFavorite] = await Promise.all([
-        Product.findById(favoriteId),
-        Workshop.findById(favoriteId),
-      ]);
+      const objectId = new mongoose.Types.ObjectId(id);
 
-      if (!productFavorite && !workshopFavorite) {
+      const favorite =
+        (await Product.findById(objectId)) ||
+        (await Workshop.findById(objectId));
+
+      if (!favorite) {
         return res.status(404).json({
           status: 404,
           message: "Product or Workshop not found",
         });
       }
 
-      if (productFavorite) {
-        user.favorites.products = user.favorites.products.filter(
-          (product) => product.toString() !== favoriteId
-        );
-        await user.save();
-        await user.populate("favorites.products").execPopulate();
+      user.favorites.products = user.favorites.products.filter(
+        (product) => product.toString() !== id
+      );
+      user.favorites.workshops = user.favorites.workshops.filter(
+        (workshop) => workshop.toString() !== id
+      );
 
-        return res.status(200).json({
-          status: 200,
-          message: "User product favorite deleted",
-          data: user.favorites,
-        });
-      } else if (workshopFavorite) {
-        user.favorites.workshops = user.favorites.workshops.filter(
-          (workshop) => workshop.toString() !== favoriteId
-        );
-        await user.save();
-        await user.populate("favorites.workshops").execPopulate();
+      await user.save();
+      await user.populate("favorites.products favorites.workshops");
 
-        return res.status(200).json({
-          status: 200,
-          message: "User workshop favorite deleted",
-          data: user.favorites,
-        });
-      }
+      return res.status(200).json({
+        status: 200,
+        message: "User favorite deleted",
+        data: user.favorites,
+      });
     } catch (error) {
       res.status(500).json({
         status: 500,
@@ -388,10 +368,10 @@ class UserController {
   }
 
   static async findUserOrders(req, res) {
-    const userId = req.user._id
+    const userId = req.user._id;
 
     try {
-      const user = await User.findById(id).populate("purchases");
+      const user = await User.findById(userId);
 
       if (!user) {
         return res.status(404).json({
@@ -407,6 +387,8 @@ class UserController {
           data: [],
         });
       }
+
+      const orders = await Order.find({ _id: { $in: user.purchases } });
 
       res.status(200).json({
         status: 200,
@@ -451,6 +433,7 @@ class UserController {
       res.status(500).json({
         status: 500,
         message: "Error finding user workshop enrollments",
+        error: error.message,
       });
     }
   }
@@ -485,6 +468,7 @@ class UserController {
       res.status(500).json({
         status: 500,
         message: "Error finding user coupons",
+        error: error.message,
       });
     }
   }
