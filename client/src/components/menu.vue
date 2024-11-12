@@ -7,14 +7,14 @@
       <p id="profileName" class="bellotaBold">Username</p>
     </div>
 
-    <div v-for="(option, index) in menuOptions" :key="index" class="menuOptionDiv">
+    <div v-for="(option, index) in menuOptions" :key="index" class="menuOptionDiv" @click="redirectTo(option.route)">
       <img class="menuOptionImg" :src="option.imgSrc" alt="menu option">
       <p class="menuOptionText bellotaRegular">{{ option.text }}</p>
     </div>
 
     <img id="squaresImg" :src="squaresImg">
 
-    <div v-for="(option, index) in menuOptions2" :key="index" class="menuOptionDiv">
+    <div v-for="(option, index) in menuOptions2" :key="index" class="menuOptionDiv" @click="redirectTo(option.route)">
       <img class="menuOptionImg" :src="option.imgSrc" alt="menu option">
       <p class="menuOptionText bellotaRegular">{{ option.text }}</p>
     </div>
@@ -40,17 +40,22 @@
         profileImg,
         squaresImg,
         menuOptions: [
-          { imgSrc: favoriteImg, text: 'Lista de favoritos' },
-          { imgSrc: shopsImg, text: 'Compras' },
-          { imgSrc: workshopsImg, text: 'Talleres' },
-          { imgSrc: couponImg, text: 'Canjear cupón' }
+          { imgSrc: favoriteImg, text: 'Lista de favoritos', route: '/favorites' },
+          { imgSrc: shopsImg, text: 'Compras', route: '/home' },
+          { imgSrc: workshopsImg, text: 'Talleres', route: '/home' },
+          { imgSrc: couponImg, text: 'Canjear cupón', route: '/home' }
         ],
         menuOptions2: [
-          { imgSrc: settingsImg, text: 'Ajustes' },
-          { imgSrc: commentsImg, text: 'Comentarios' },
-          { imgSrc: clientImg, text: 'Atención al cliente' }
+          { imgSrc: settingsImg, text: 'Ajustes', route: '/home' },
+          { imgSrc: commentsImg, text: 'Comentarios', route: '/home' },
+          { imgSrc: clientImg, text: 'Atención al cliente', route: '/home' }
         ]
       };
+    },
+    methods: {
+      redirectTo(route) {
+        this.$router.push(route);
+      }
     },
     name: 'Menu',
   };
