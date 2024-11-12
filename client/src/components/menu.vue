@@ -11,6 +11,14 @@
       <img class="menuOptionImg" :src="option.imgSrc" alt="menu option">
       <p class="menuOptionText bellotaRegular">{{ option.text }}</p>
     </div>
+
+    <img id="squaresImg" :src="squaresImg">
+
+    <div v-for="(option, index) in menuOptions2" :key="index" class="menuOptionDiv">
+      <img class="menuOptionImg" :src="option.imgSrc" alt="menu option">
+      <p class="menuOptionText bellotaRegular">{{ option.text }}</p>
+    </div>
+
   </div>
 </template>
   
@@ -20,16 +28,27 @@
   import shopsImg from '../images/menu/shops.svg';
   import workshopsImg from '../images/menu/workshops.svg';
   import couponImg from '../images/menu/coupons.svg';
+  import settingsImg from '../images/menu/settings.svg';
+  import commentsImg from '../images/menu/comments.svg';
+  import clientImg from '../images/menu/client.svg';
+
+  import squaresImg from '../images/squaresGroup2.svg';
   
   export default {
     data() {
       return {
         profileImg,
+        squaresImg,
         menuOptions: [
           { imgSrc: favoriteImg, text: 'Lista de favoritos' },
           { imgSrc: shopsImg, text: 'Compras' },
           { imgSrc: workshopsImg, text: 'Talleres' },
           { imgSrc: couponImg, text: 'Canjear cupón' }
+        ],
+        menuOptions2: [
+          { imgSrc: settingsImg, text: 'Ajustes' },
+          { imgSrc: commentsImg, text: 'Comentarios' },
+          { imgSrc: clientImg, text: 'Atención al cliente' }
         ]
       };
     },
@@ -106,5 +125,10 @@
     color: var(--color-W);
     left: 0;
     margin-left: 50px;
+  }
+  #squaresImg{
+    margin-top: 20px;
+    width: calc(100% - 20px);
+    margin-left: 10px;
   }
 </style>
