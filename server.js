@@ -31,7 +31,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/auth", authRoutes);
-app.use(verifyJwt);
+// app.use(verifyJwt);
 app.use('/user', userRouter);
 app.use('/workshop', workshopRoutes);
 app.use('/product', productRoutes);
