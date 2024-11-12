@@ -18,9 +18,6 @@
             </div>
         </div>
         <div class="workshopsGridSection"></div>
-        <div class="workshopsGridSection">
-
-        </div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
             <div class="wrokshopsGridSection" v-for="(workshop, index) in workshops" :key="index">
                 <div class="wrokshopsGridSectionDiv">
@@ -63,6 +60,9 @@ export default {
             ],
             workshops: [
                 { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '25'},
+                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'},
+                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'},
+                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'},
                 { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'}
             ],
             selectedCategoryIndex: 0
@@ -89,7 +89,7 @@ export default {
 <style scoped>
     #workshopsGrid {
         display: grid;
-        grid-template-rows: 80px 80px 20px 40px calc(100% - 260px);
+        grid-template-rows: 80px 80px 20px calc(100% - 240px);
         width: 100vw;
         height: 100vh;
     }
