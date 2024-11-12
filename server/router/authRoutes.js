@@ -17,9 +17,7 @@ router.get("/google/callback", passport.authenticate("google", { failureRedirect
 
 router.get("/discord", loginWithDiscord);
 router.get("/discord/callback", passport.authenticate("discord", { failureRedirect: "/" }), (req, res) => {
-  // res.redirect("http://localhost:3000/home");
-  console.log("logeado con exito");
-  
+  res.redirect("http://localhost:3000/user");
 });
 
 router.get("/facebook", loginWithFacebook);

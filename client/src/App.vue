@@ -1,20 +1,25 @@
 <template>
   <div id="app">
-    <TestComponent />
+    <!-- Contenedor principal de la aplicación -->
+    <router-view></router-view> <!-- Aquí se renderizarán las vistas según las rutas configuradas -->
   </div>
 </template>
 
 <script>
-import TestComponent from './components/TestComponent.vue'
-
 export default {
   name: 'App',
-  components: {
-    TestComponent
-  }
+  // Aquí no necesitamos lógica adicional por ahora
 }
 </script>
 
 <style>
-/* Add any global styles here if needed */
+/* Estilos globales opcionales */
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
 </style>

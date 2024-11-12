@@ -1,5 +1,4 @@
 const passport = require("passport");
-const UserSm = require("../model/userSmModel");
 const User = require("../model/userModel");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const DiscordStrategy = require("passport-discord").Strategy;
@@ -19,7 +18,7 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         // Utiliza findOneOrCreate para encontrar o crear el usuario
-        const user = await UserSm.findOneOrCreate({
+        const user = await User.findOneOrCreate({
           googleId: profile.id,
           email: profile.emails[0].value,
           displayName: profile.displayName,
@@ -44,7 +43,7 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         // Utiliza findOneOrCreate para encontrar o crear el usuario
-        const user = await UserSm.findOneOrCreate({
+        const user = await User.findOneOrCreate({
           discordId: profile.id,
           email: profile.email,
           displayName: profile.username,
@@ -69,7 +68,7 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         // Utiliza findOneOrCreate para encontrar o crear el usuario
-        const user = await UserSm.findOneOrCreate({
+        const user = await User.findOneOrCreate({
           facebookId: profile.id,
           email: profile.emails[0].value,
           displayName: profile.displayName,
@@ -84,13 +83,13 @@ passport.use(
 
 // Serializar el usuario
 passport.serializeUser((user, done) => {
-  done(null, { id: user.id, displayName: user.displayName });
+  done(null, { id: user._id, displayName: user.displayName });
 });
 
 // Deserializar el usuario
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await UserSm.findById(id);
+    const user = await User.findById(id);
     done(null, user);
   } catch (error) {
     done(error, null);
@@ -117,6 +116,7 @@ const createAccount = async (req, res) => {
   const { username, password, email, phone, gender, birthday } = req.body;
 
   try {
+    // Validación de unicidad para email, username y teléfono (solo si están presentes)
     if (username) {
       const existingUsername = await User.findOne({ username });
       if (existingUsername) {
@@ -149,9 +149,11 @@ const createAccount = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Formateamos la fecha de nacimiento
     const [month, day, year] = birthday.split("/");
     const formattedBirthday = new Date(`${year}-${month}-${day}`);
 
+    // Creamos el nuevo usuario
     const user = await User.create({
       username,
       password: hashedPassword,
@@ -202,6 +204,7 @@ const logIn = async (req, res) => {
         { phone: identifier },
       ],
     });
+    console.log("Usuario encontrado:", user);
 
     if (!user) {
       return res.status(404).json({
@@ -209,7 +212,8 @@ const logIn = async (req, res) => {
         message: "User not found",
       });
     }
-
+    console.log("Usuario encontrado:", password);
+    console.log("Contraseña almacenada:", user.password); 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -234,34 +238,41 @@ const logIn = async (req, res) => {
       error: error.message,
     });
   }
+};
 
-  const checkIfUserExists = async (req, res, next) => {
-    const { email, username, phone } = req.body;
+/**
+ * Checks if the user exists by email, username, or phone.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves when the check is done.
+ */
+const checkIfUserExists = async (req, res) => {
+  const { email, username, phone } = req.body;
 
-    try {
-      const user = await User.findOne({
-        $or: [{ email: email }, { username: username }, { phone: phone }],
-      });
+  try {
+    const user = await User.findOne({
+      $or: [{ email }, { username }, { phone }],
+    });
 
-      if (user) {
-        return res.status(400).json({
-          status: 400,
-          message: "Username, phone, or email already exists",
-        });
-      }
-
-      res.status(200).json({
-        status: 200,
-        message: "User does not exist",
-      });
-    } catch (error) {
-      res.status(500).json({
-        status: 500,
-        message: "Error checking user existence",
-        error: error.message,
+    if (user) {
+      return res.status(400).json({
+        status: 400,
+        message: "Username, phone, or email already exists",
       });
     }
-  };
+
+    res.status(200).json({
+      status: 200,
+      message: "User does not exist",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: "Error checking user existence",
+      error: error.message,
+    });
+  }
 };
 
 module.exports = {
