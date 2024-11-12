@@ -27,6 +27,8 @@ const verifyJwt = (req, res, next) => {
     
     // Attach the decoded user information to the request object for further use in route handlers
     req.user = decoded; 
+    console.log("token:", token);
+    console.log("prueba",req.user);
     
     // Proceed to the next middleware or route handler if the token is valid
     next();

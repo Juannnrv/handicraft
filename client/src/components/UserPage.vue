@@ -15,14 +15,14 @@ export default {
   },
   mounted() {
     // Suponiendo que el backend ya ha asociado la sesión correctamente
-    fetch('http://localhost:5000/user', {
+    fetch('http://localhost:5000/user/favorites', {
       method: 'GET',
       credentials: 'include', // Incluir las cookies de sesión
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.displayName) {
-          this.user = data; // Mostrar los datos del usuario si la autenticación fue exitosa
+        if (data) {
+          console.log(data); // Mostrar los datos del usuario si la autenticación fue exitosa
         }
       })
       .catch(() => {
