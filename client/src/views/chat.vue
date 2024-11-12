@@ -1,16 +1,17 @@
 <template>
     <div class="chat-container">
       <header class="chat-header">
-        <button class="back-button" @click="goBack">
-          <span class="arrow-left"></span>
-        </button>
-        <div class="header-title">
-          <span class="chat-icon"></span>
+        <img class="square-bg" style="filter: invert(100%);" :src="rotatedSquare" alt="">
+        <a class="a-back" href="registerEmail">
+            <img class="back-arrow" style="filter: invert(100%);" :src="backArrow" alt="">
+        </a>
+        <div class="header-title bellotaBold">
+          <img :src="chatImg" style="width: 30px;" alt="">
           Chat con Taller Awaq Ayllus
         </div>
       </header>
   
-      <div class="messages-container" ref="messagesContainer">
+      <div class="messages-container bellotaRegular" ref="messagesContainer">
         <div v-for="message in messages" 
              :key="message.id" 
              :class="['message', message.type]">
@@ -18,16 +19,16 @@
         </div>
       </div>
   
-      <form class="message-form" @submit.prevent="sendMessage">
+      <form class="message-form bellotaRegular" @submit.prevent="sendMessage">
         <input 
           v-model="newMessage" 
           type="text" 
           placeholder="Mandar mensaje a Taller Awaq Ayllus"
-          class="message-input"
+          class="message-input bellotaRegular"
         />
         <button type="submit" class="send-button">
-          <span class="send-icon"></span>
-        </button>
+          <img :src="send" style="width: 20px;" alt="">
+        </button>   
       </form>
     </div>
   </template>
@@ -35,6 +36,11 @@
   <script setup>
   import { ref, onMounted, onUnmounted } from 'vue'
   import { io } from 'socket.io-client'
+
+  import rotatedSquare from '../images/rotatedSquare.svg'
+  import backArrow from '../images/backArrow.svg'
+  import chatImg from '../images/chat.svg'
+  import send from '../images/send.svg'
   
   const socket = io('http://localhost:3000') // Replace with your server URL
   const messages = ref([])
@@ -89,16 +95,17 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #f0f0f0;
   }
   
   .chat-header {
-    background-color: #4a4a4a;
-    color: white;
+    background-color: #D9D9D9;
+    color: #000000;
     padding: 0.5rem;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
+    height: 80px;
   }
   
   .back-button {
@@ -157,7 +164,6 @@
   
   .message-form {
     padding: 0.5rem;
-    background-color: #e0e0e0;
     display: flex;
     gap: 0.5rem;
   }
@@ -166,9 +172,10 @@
     flex: 1;
     padding: 0.6rem 0.8rem;
     border: none;
-    border-radius: 1.5rem;
+    border-radius: 10px;
     font-size: 0.9rem;
-    background-color: white;
+    background-color: #D9D9D9;
+    margin-bottom: 15px;
   }
   
   .message-input:focus {
@@ -177,6 +184,8 @@
   }
   
   .send-button {
+    position: absolute;
+    right: 15px;
     background: none;
     border: none;
     cursor: pointer;
@@ -188,4 +197,23 @@
     font-size: 1.2rem;
     color: #4a4a4a;
   }
+
+  .square-bg{
+    position: absolute;
+    left: 0;
+    top: 0px;
+    width: 40px;
+}
+
+.a-back{
+position: absolute;
+width: 25px;
+left: 3px;
+top: 25px;
+display: flex
+}
+
+.a-back > img{
+width: 100%;
+}
   </style>
