@@ -14,35 +14,47 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "/auth/google/callback",
+      scope: ["profile", "email"],
     },
     async (accessToken, refreshToken, profile, done) => {
+      console.log("llega aca");
       try {
         // Busca si el usuario ya existe con googleId
+        console.log("llega aca2");
+
         let existingUser = await User.findOne({ googleId: profile.id });
+        console.log(existingUser);
 
         if (existingUser) {
-          return done(null, existingUser);
+          // Genera el JWT y lo guarda en la sesión
+          const token = JwtService.generateToken({ _id: existingUser._id });
+          done(null, existingUser);
+        }else {
+            // Si no existe, crea un nuevo usuario
+            const newUser = new User({
+              username: profile.displayName || "",
+              email: profile.emails[0].value,
+              password: "", // No se necesita contraseña para los usuarios de Google
+              profilePicture: profile.photos ? profile.photos[0].value : "",
+              phone: "",
+              gender: "na", // Definir si se usa o no
+              birthday: null, // Definir si se usa o no
+              tipo: "comprador", // Tipo de usuario, por ejemplo
+              googleId: profile.id,
+            });
+            console.log(newUser);
+
+            await newUser.save();
+            const token = JwtService.generateToken({ _id: newUser._id });
+            console.log(token);
+            console.log("aqui ta muere");
+            
+            done(null, newUser);
+          }
+        } catch (error) {
+          done(error, null);
         }
-
-        // Si no existe, crea un nuevo usuario
-        const newUser = new User({
-          username: profile.displayName || "",
-          email: profile.emails[0].value,
-          password: "", // No se necesita contraseña para los usuarios de Google
-          profilePicture: profile.photos ? profile.photos[0].value : "",
-          phone: "",
-          gender: "na", // Definir si se usa o no
-          birthday: null, // Definir si se usa o no
-          tipo: "comprador", // Tipo de usuario, por ejemplo
-          googleId: profile.id,
-        });
-
-        await newUser.save();
-        return done(null, newUser);
-      } catch (error) {
-        return done(error, null);
       }
-    }
   )
 );
 
@@ -132,16 +144,16 @@ passport.use(
 
 
 // Serializar el usuario
-passport.serializeUser ((user, done) => {
+passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser (async (id, done) => {
+passport.deserializeUser(async (id, done) => {
   try {
-      const user = await User.findById(id);
-      done(null, user);
+    const user = await User.findById(id);
+    done(null, user);
   } catch (error) {
-      done(error, null);
+    done(error, null);
   }
 });
 

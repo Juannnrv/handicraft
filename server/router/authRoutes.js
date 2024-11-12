@@ -11,10 +11,13 @@ const router = express.Router();
 // Rutas para autenticación
 router.get("/google", loginWithGoogle);
 router.get("/google/callback", passport.authenticate("google", { failureRedirect: "/" }), (req, res) => {
-  // const token = JwtService.generateToken({ _id: req.user._id });
-  // req.session.authToken = token;
-  res.redirect("http://localhost:3000/user");
-});
+    // const token = JwtService.generateToken({ _id: req.user._id });
+    // req.session.authToken = token;
+    // res.redirect("http://localhost:3000/user");
+    console.log("llego");
+    
+  }
+);
 
 router.get("/discord", loginWithDiscord);
 router.get("/discord/callback", passport.authenticate("discord", { failureRedirect: "/" }), (req, res) => {
