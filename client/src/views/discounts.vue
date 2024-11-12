@@ -1,7 +1,10 @@
 <template>
+    <div v-if="isMenuVisible" ref="menu" class="menuContainer">
+        <Menu />
+    </div>
     <div id="workshopsGrid">
         <div class="workshopsGridSectionB">
-            <img id="menuImg" :src="menuImg">
+            <img id="menuImg" :src="menuImg" @click="toggleMenuVisibility">
             <div id="homeInputDiv">
                 <input class="bellotaRegular" type="text" id="homeInput" placeholder="Buscar producto o tienda...">
                 <img id="glassImg" :src="glassImg">
@@ -46,6 +49,8 @@
 
 <script>
 import Footer from '../components/footer.vue';
+import Menu from '../components/menu.vue';
+
 import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
 import squareImg from '../images/square.svg';
@@ -67,11 +72,13 @@ export default {
                 { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', Fprice: '$16', dcImg: discountImg, percent: '25'},
                 { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', Fprice: '$16', dcImg: discountImg, percent: '50'}
             ],
-            selectedCategoryIndex: 0
+            selectedCategoryIndex: 0,
+            isMenuVisible: false
         };
     },
     components: {
         Footer,
+        Menu
     },
     methods: {
         selectCategory(index) {
@@ -79,7 +86,21 @@ export default {
         },
         getCategoryClass(index) {
             return index === this.selectedCategoryIndex ? 'categoryGridDivB' : 'categoryGridDiv';
+        },
+        toggleMenuVisibility() {
+            this.isMenuVisible = !this.isMenuVisible;
+        },
+        handleClickOutside(event) {
+            if (this.isMenuVisible && this.$refs.menu && !this.$refs.menu.contains(event.target)) {
+                this.isMenuVisible = false;
+            }
         }
+    },
+    mounted() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+    },
+    beforeDestroy() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
     },
     name: 'TestComponent'
 };

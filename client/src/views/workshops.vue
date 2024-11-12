@@ -1,7 +1,10 @@
 <template>
+    <div v-if="isMenuVisible" ref="menu" class="menuContainer">
+        <Menu />
+    </div>
     <div id="workshopsGrid">
       <div class="workshopsGridSectionB">
-        <img id="menuImg" :src="menuImg">
+        <img id="menuImg" :src="menuImg" @click="toggleMenuVisibility">
         <div id="homeInputDiv">
           <input class="bellotaRegular" type="text" id="homeInput" placeholder="Buscar producto o tienda...">
           <img id="glassImg" :src="glassImg">
@@ -30,6 +33,8 @@
   
   <script>
   import Footer from '../components/footer.vue';
+  import Menu from '../components/menu.vue';
+
   import menuImg from '../images/menu.svg';
   import glassImg from '../images/glass.svg';
   import squareImg from '../images/square.svg';
@@ -49,11 +54,29 @@
           { name: "Taller de Cerámica", location: "Lima" },
           { name: "Arte Textil Andino", location: "Arequipa" },
           { name: "Arte Textil Andino", location: "Arequipa" }
-        ]
+        ],
+        isMenuVisible: false
       }
     },
     components: {
       Footer,
+      Menu
+    },
+    methods: {
+        toggleMenuVisibility() {
+            this.isMenuVisible = !this.isMenuVisible;
+        },
+        handleClickOutside(event) {
+            if (this.isMenuVisible && this.$refs.menu && !this.$refs.menu.contains(event.target)) {
+                this.isMenuVisible = false;
+            }
+        }
+    },
+    mounted() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+    },
+    beforeDestroy() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
     },
     name: 'TestComponent'
   }

@@ -1,7 +1,10 @@
 <template>
+    <div v-if="isMenuVisible" ref="menu" class="menuContainer">
+        <Menu />
+    </div>
     <div id="homeGrid">
         <div class="homeGridSectionB">
-            <img id="menuImg" :src="menuImg">
+            <img id="menuImg" :src="menuImg" @click="toggleMenuVisibility">
             <div id="homeInputDiv">
                 <input class="bellotaRegular" type="text" id="homeInput" placeholder="Buscar producto o tienda...">
                 <img id="glassImg" :src="glassImg">
@@ -48,6 +51,7 @@ import squaresGroupImg from '../images/squaresGroup.svg';
 import homeBGImg from '../images/homeBG.svg';
 
 import Footer from '../components/footer.vue';
+import Menu from '../components/menu.vue';
 
 import textileImg from '../images/textile.svg';
 import ceramicImg from '../images/ceramic.svg';
@@ -80,16 +84,32 @@ export default {
                 { name: 'Hojalatería', image: tinsmithImg },
                 { name: 'Estampado', image: printImg },
                 { name: 'Pintura tradicional', image: picturesImg }
-            ]
+            ],
+            isMenuVisible: false
         };
     },
     components: {
         Footer,
+        Menu
     },
     methods: {
         redirectToWorkshops() {
             this.$router.push('/workshops');
+        },
+        toggleMenuVisibility() {
+            this.isMenuVisible = !this.isMenuVisible;
+        },
+        handleClickOutside(event) {
+            if (this.isMenuVisible && this.$refs.menu && !this.$refs.menu.contains(event.target)) {
+                this.isMenuVisible = false;
+            }
         }
+    },
+    mounted() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+    },
+    beforeDestroy() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
     },
     name: 'TestComponent'
 }
