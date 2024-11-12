@@ -264,6 +264,7 @@ export default {
         width: 80%;
     }
     .trashImg{
+        cursor: pointer;
         position: absolute;
         right: 0;
         top: 0;
