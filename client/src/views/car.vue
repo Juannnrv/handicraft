@@ -35,8 +35,9 @@
             </div>
         </div>
         <div class="homeGridSection">
-            <div class="bellotaBold" id="couponDiv">
-                Añadir cupón de descuento
+            <div class="bellotaBold" id="couponDiv" @click="showCouponInput">
+                <p v-if="!isCouponInputVisible">Añadir cupón de descuento</p>
+                <input class="bellotaRegular" placeholder="Ingrese codigo del cupon..." v-if="isCouponInputVisible" id="couponInput" type="text">
             </div>
         </div>
         <div class="homeGridSection2">
@@ -84,7 +85,8 @@ export default {
             productImg,
             trashImg,
             minusImg,
-            plusImg
+            plusImg,
+            isCouponInputVisible: false,
         };
     },
     components: {
@@ -93,6 +95,11 @@ export default {
     methods: {
         redirectToWorkshops() {
             this.$router.push('/workshops');
+        },
+        showCouponInput() {
+            if (!this.isCouponInputVisible) {
+                this.isCouponInputVisible = true;
+            }
         }
     },
     name: 'TestComponent'
@@ -321,13 +328,22 @@ export default {
         background-color: var(--color-B2);
         height: 30px;
         color: var(--color-W);
-        width: 50%;
+        width: 180px;
         margin-left: 25px;
         margin-top: 15px;
         border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+    #couponInput{
+        background-color: var(--color-B3);
+        width: 100%;
+        height: 100%;
+        border-radius: 8px;
+        border: none;
+        padding-left: 20px;
+        outline: none;
     }
 
     .center{
