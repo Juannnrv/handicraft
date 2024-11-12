@@ -20,7 +20,7 @@ class SessionService {
           secure: false,  // Ensures the cookie is sent over HTTPS only.
           httpOnly: true,  // Prevents client-side JavaScript from accessing the cookie.
           maxAge: 30 * 60 * 1000,  // Sets the session cookie to expire in 30 minutes.
-          sameSite: 'None',  // Allows cross-site cookies for third-party requests.
+          sameSite: 'Lax',  // Allows cross-site cookies for third-party requests.
         },
       })
     );

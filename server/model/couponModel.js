@@ -25,7 +25,17 @@ const couponSchema = new mongoose.Schema({
     expirationDate: {
         type: Date,
         required: [true, 'Expiration date is required']
-    }
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: null
+    },
+    WorkshopId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Workshop',
+        default: null
+    },
 }, {
     collection: 'coupon'
 });

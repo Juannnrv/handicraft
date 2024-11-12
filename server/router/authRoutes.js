@@ -4,22 +4,26 @@ const userValidator = require("../validator/userValidator");
 const {limit} = require("../middleware/limit");
 const {versioning} = require("../middleware/versioning");
 const { loginWithGoogle, loginWithDiscord, loginWithFacebook, createAccount, logIn, checkIfUserExists } = require("../controller/authController");
+const JwtService = require("../middleware/jwtService");
 
 const router = express.Router();
 
 // Rutas para autenticación
 router.get("/google", loginWithGoogle);
 router.get("/google/callback", passport.authenticate("google", { failureRedirect: "/" }), (req, res) => {
-  // res.redirect("http://localhost:3000/home");
-  console.log("logeado con exito");
-  
-});
+    // const token = JwtService.generateToken({ _id: req.user._id });
+    // req.session.authToken = token;
+    // res.redirect("http://localhost:3000/user");
+    console.log("llego");
+    
+  }
+);
 
 router.get("/discord", loginWithDiscord);
 router.get("/discord/callback", passport.authenticate("discord", { failureRedirect: "/" }), (req, res) => {
-  // res.redirect("http://localhost:3000/home");
-  console.log("logeado con exito");
-  
+  const token = JwtService.generateToken({ _id: req.user._id });
+  req.session.authToken = token;
+  res.redirect("http://localhost:3000/user");
 });
 
 router.get("/facebook", loginWithFacebook);

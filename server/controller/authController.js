@@ -1,5 +1,4 @@
 const passport = require("passport");
-const UserSm = require("../model/userSmModel");
 const User = require("../model/userModel");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const DiscordStrategy = require("passport-discord").Strategy;
@@ -15,22 +14,50 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "/auth/google/callback",
+      scope: ["profile", "email"],
     },
     async (accessToken, refreshToken, profile, done) => {
+      console.log("llega aca");
       try {
-        // Utiliza findOneOrCreate para encontrar o crear el usuario
-        const user = await UserSm.findOneOrCreate({
-          googleId: profile.id,
-          email: profile.emails[0].value,
-          displayName: profile.displayName,
-        });
-        return done(null, user);
-      } catch (error) {
-        return done(error, null);
+        // Busca si el usuario ya existe con googleId
+        console.log("llega aca2");
+
+        let existingUser = await User.findOne({ googleId: profile.id });
+        console.log(existingUser);
+
+        if (existingUser) {
+          // Genera el JWT y lo guarda en la sesión
+          const token = JwtService.generateToken({ _id: existingUser._id });
+          done(null, existingUser);
+        }else {
+            // Si no existe, crea un nuevo usuario
+            const newUser = new User({
+              username: profile.displayName || "",
+              email: profile.emails[0].value,
+              password: "", // No se necesita contraseña para los usuarios de Google
+              profilePicture: profile.photos ? profile.photos[0].value : "",
+              phone: "",
+              gender: "na", // Definir si se usa o no
+              birthday: null, // Definir si se usa o no
+              tipo: "comprador", // Tipo de usuario, por ejemplo
+              googleId: profile.id,
+            });
+            console.log(newUser);
+
+            await newUser.save();
+            const token = JwtService.generateToken({ _id: newUser._id });
+            console.log(token);
+            console.log("aqui ta muere");
+            
+            done(null, newUser);
+          }
+        } catch (error) {
+          done(error, null);
+        }
       }
-    }
   )
 );
+
 
 // Configuración de Discord Strategy
 passport.use(
@@ -43,19 +70,37 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Utiliza findOneOrCreate para encontrar o crear el usuario
-        const user = await UserSm.findOneOrCreate({
-          discordId: profile.id,
-          email: profile.email,
-          displayName: profile.username,
-        });
-        return done(null, user);
+        // Busca si el usuario ya existe con discordId
+        let existingUser = await User.findOne({ discordId: profile.id });
+
+        if (existingUser) {
+          // Genera el JWT y lo guarda en la sesión
+          const token = JwtService.generateToken({ _id: existingUser._id });
+          done(null, existingUser);
+        } else {
+          // Si no existe, crea un nuevo usuario
+          const newUser = new User({
+            username: profile.username || "",
+            email: profile.email,
+            profilePicture: profile.avatar ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png` : "",
+            discordId: profile.id,
+            tipo: "comprador",
+          });
+
+          await newUser.save();
+
+          // Genera el JWT y lo guarda en la sesión
+          const token = JwtService.generateToken({ _id: newUser._id });
+          done(null, newUser);  // Retorna el nuevo usuario
+        }
       } catch (error) {
-        return done(error, null);
+        done(error, null);
       }
     }
   )
 );
+
+
 
 // Configuración de Facebook Strategy
 passport.use(
@@ -68,13 +113,28 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Utiliza findOneOrCreate para encontrar o crear el usuario
-        const user = await UserSm.findOneOrCreate({
-          facebookId: profile.id,
+        // Busca si el usuario ya existe con facebookId
+        let existingUser = await User.findOne({ facebookId: profile.id });
+
+        if (existingUser) {
+          return done(null, existingUser);
+        }
+
+        // Si no existe, crea un nuevo usuario
+        const newUser = new User({
+          username: profile.displayName || "",
           email: profile.emails[0].value,
-          displayName: profile.displayName,
+          password: "", // No se necesita contraseña para los usuarios de Facebook
+          profilePicture: profile.photos ? profile.photos[0].value : "",
+          phone: "",
+          gender: "na", // Definir si se usa o no
+          birthday: null, // Definir si se usa o no
+          tipo: "comprador", // Tipo de usuario
+          facebookId: profile.id,
         });
-        return done(null, user);
+
+        await newUser.save();
+        return done(null, newUser);
       } catch (error) {
         return done(error, null);
       }
@@ -82,28 +142,33 @@ passport.use(
   )
 );
 
+
 // Serializar el usuario
 passport.serializeUser((user, done) => {
-  done(null, { id: user.id, displayName: user.displayName });
+  done(null, user.id);
 });
 
-// Deserializar el usuario
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await UserSm.findById(id);
+    const user = await User.findById(id);
     done(null, user);
   } catch (error) {
     done(error, null);
   }
 });
 
-/**
- * Creates a user account.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @returns {Promise<void>} - A promise that resolves when the user account is created.
- */
+// Controlador para login con OAuth (Google)
+const loginWithGoogle = passport.authenticate("google", {
+  scope: ["profile", "email"],
+});
+
+// Controlador para login con OAuth (Discord)
+const loginWithDiscord = passport.authenticate("discord");
+
+// Controlador para login con OAuth (Facebook)
+const loginWithFacebook = passport.authenticate("facebook");
+
+// Función de creación de cuenta con datos del usuario
 const createAccount = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -117,6 +182,7 @@ const createAccount = async (req, res) => {
   const { username, password, email, phone, gender, birthday } = req.body;
 
   try {
+    // Validación de unicidad para email, username y teléfono (solo si están presentes)
     if (username) {
       const existingUsername = await User.findOne({ username });
       if (existingUsername) {
@@ -149,9 +215,11 @@ const createAccount = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Formateamos la fecha de nacimiento
     const [month, day, year] = birthday.split("/");
     const formattedBirthday = new Date(`${year}-${month}-${day}`);
 
+    // Creamos el nuevo usuario
     const user = await User.create({
       username,
       password: hashedPassword,
@@ -175,13 +243,7 @@ const createAccount = async (req, res) => {
   }
 };
 
-/**
- * Logs in a user.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @returns {Promise<void>} - A promise that resolves when the user is logged in.
- */
+// Función de login local (por email o username)
 const logIn = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -202,6 +264,7 @@ const logIn = async (req, res) => {
         { phone: identifier },
       ],
     });
+    // console.log("Usuario encontrado:", user);
 
     if (!user) {
       return res.status(404).json({
@@ -209,7 +272,6 @@ const logIn = async (req, res) => {
         message: "User not found",
       });
     }
-
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -234,43 +296,42 @@ const logIn = async (req, res) => {
       error: error.message,
     });
   }
+};
 
-  const checkIfUserExists = async (req, res, next) => {
-    const { email, username, phone } = req.body;
+// Función para comprobar si el usuario existe (por email, username o teléfono)
+const checkIfUserExists = async (req, res) => {
+  const { email, username, phone } = req.body;
 
-    try {
-      const user = await User.findOne({
-        $or: [{ email: email }, { username: username }, { phone: phone }],
-      });
+  try {
+    const user = await User.findOne({
+      $or: [{ email }, { username }, { phone }],
+    });
 
-      if (user) {
-        return res.status(400).json({
-          status: 400,
-          message: "Username, phone, or email already exists",
-        });
-      }
-
-      res.status(200).json({
-        status: 200,
-        message: "User does not exist",
-      });
-    } catch (error) {
-      res.status(500).json({
-        status: 500,
-        message: "Error checking user existence",
-        error: error.message,
+    if (user) {
+      return res.status(400).json({
+        status: 400,
+        message: "Username, phone, or email already exists",
       });
     }
-  };
+
+    res.status(200).json({
+      status: 200,
+      message: "User does not exist",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: "Error checking user existence",
+      error: error.message,
+    });
+  }
 };
 
 module.exports = {
   createAccount,
   logIn,
   checkIfUserExists,
-  loginWithGoogle: passport.authenticate("google", {
-    scope: ["profile", "email"],
-  }),
-  loginWithDiscord: passport.authenticate("discord"),
-  loginWithFacebook: passport.authenticate("facebook"),
+  loginWithGoogle,
+  loginWithDiscord,
+  loginWithFacebook,
 };
