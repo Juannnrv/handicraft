@@ -13,6 +13,7 @@ import workshops from './views/workshops.vue';
 import workshopDetails from './views/workshopDetails.vue';
 import redeemCoupon from './views/redeemCoupon.vue';
 import workshopQR from './views/workshopQR.vue';
+import chat from './views/chat.vue';
 
 const routes = [
   {
@@ -84,6 +85,11 @@ const routes = [
     path: '/workshopQR',
     name: 'workshopQR',
     component: workshopQR 
+  },
+  { 
+    path: '/chat',
+    name: 'chat',
+    component: chat 
   }
 ];
 
