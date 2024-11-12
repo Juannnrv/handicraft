@@ -2,10 +2,149 @@ const User = require("../model/userModel");
 const Workshop = require("../model/workshopModel");
 const Product = require("../model/productModel");
 const Order = require("../model/orderModel");
+const ProfileImg = require("../middleware/profileImage");
 const { validationResult } = require("express-validator");
-const mongoose = require("mongoose");
 
 class UserController {
+  /**
+   * Creates a user account.
+   *
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Promise<void>} - A promise that resolves when the user account is created.
+   */
+  static async createAccount(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        status: 400,
+        message: "Validation errors",
+        data: errors.array(),
+      });
+    }
+  
+    const { username, password, email, phone, gender, birthday } = req.body;
+  
+    try {
+      if (username) {
+        const existingUsername = await User.findOne({ username });
+        if (existingUsername) {
+          return res.status(400).json({
+            status: 400,
+            message: "Username already in use",
+          });
+        }
+      }
+  
+      if (email) {
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail) {
+          return res.status(400).json({
+            status: 400,
+            message: "Email already in use",
+          });
+        }
+      }
+  
+      if (phone) {
+        const existingPhone = await User.findOne({ phone });
+        if (existingPhone) {
+          return res.status(400).json({
+            status: 400,
+            message: "Phone number already in use",
+          });
+        }
+      }
+  
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+      const [month, day, year] = birthday.split('/');
+      const formattedBirthday = new Date(`${year}-${month}-${day}`);
+  
+      const user = await User.create({
+        username,
+        password: hashedPassword,
+        email,
+        phone,
+        gender,
+        birthday: formattedBirthday,
+      });
+  
+      res.status(201).json({
+        status: 201,
+        message: "User account created successfully",
+        data: user,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: 500,
+        message: "Error creating user account",
+        error: error.message,
+      });
+    }
+  }
+
+  /**
+   * Logs in a user.
+   *
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Promise<void>} - A promise that resolves when the user is logged in.
+   */
+  static async logIn(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        status: 400,
+        message: "Validation errors",
+        data: errors.array(),
+      });
+    }
+  
+    const { identifier, password } = req.body;
+  
+    try {
+      const user = await User.findOne({
+        $or: [
+          { email: identifier },
+          { username: identifier },
+          { phone: identifier },
+        ],
+      });
+  
+      if (!user) {
+        return res.status(404).json({
+          status: 404,
+          message: "User not found",
+        });
+      }
+  
+      const isMatch = await bcrypt.compare(password, user.password);
+  
+      if (!isMatch) {
+        return res.status(400).json({
+          status: 400,
+          message: "Invalid identifier or password, please check and try again",
+        });
+      }
+  
+      const token = JwtService.generateToken({ _id: user._id });
+      req.session.authToken = token;
+  
+      res.status(200).json({
+        status: 200,
+        message: "User logged in successfully",
+        data: { token },
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: 500,
+        message: "Error logging in user",
+        error: error.message,
+      });
+    }
+  }
+
   /**
    * Updates a user account.
    *
@@ -24,23 +163,11 @@ class UserController {
     }
 
     const userId = req.user._id;
-
-    const {
-      profilePicture,
-      username,
-      email,
-      phone,
-      gender,
-      birthday,
-      password,
-    } = req.body;
+    const { username, email, phone, gender, birthday, password } = req.body;
 
     try {
-      const user = await User.findByIdAndUpdate(
-        userId,
-        { profilePicture, username, email, phone, gender, birthday },
-        { new: true }
-      );
+      const updateData = { username, email, phone, gender, birthday };
+      const user = await UserService.updateUser(userId, updateData, req.file?.path);
 
       if (!user) {
         return res.status(404).json({
@@ -69,8 +196,8 @@ class UserController {
    * @param {Object} res - The response object.
    * @returns {Promise<void>} - A promise that resolves when the user is found or an error occurs.
    */
-  static async findUser(req, res) {
-    const userId = req.user._id;
+  static async findUserById(req, res) {
+    const userId = req.user._id
 
     try {
       const user = await User.findById(userId);
@@ -103,7 +230,7 @@ class UserController {
    * @returns {Promise<void>} - A promise that resolves when the favorites are found.
    */
   static async findUserFavorites(req, res) {
-    const userId = req.user._id;
+    const userId = req.user._id
 
     try {
       const user = await User.findById(userId).populate("favorites");
@@ -128,122 +255,105 @@ class UserController {
     }
   }
 
-  /**
-   * Creates a user favorite.
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Promise<void>} - A promise that resolves with the user's favorites data or rejects with an error.
-   */
   static async createUserFavorite(req, res) {
     const userId = req.user._id;
     const { favoriteId } = req.body;
-
+  
     try {
       const user = await User.findById(userId);
-
+  
       if (!user) {
         return res.status(404).json({
           status: 404,
           message: "User not found",
         });
       }
-
+  
       const [productFavorite, workshopFavorite] = await Promise.all([
         Product.findById(favoriteId),
         Workshop.findById(favoriteId),
       ]);
-
+  
       if (!productFavorite && !workshopFavorite) {
         return res.status(404).json({
           status: 404,
           message: "Product or Workshop not found",
         });
       }
-
+  
       if (productFavorite) {
         if (!user.favorites.products) {
           user.favorites.products = [];
         }
-        if (user.favorites.products.includes(favoriteId)) {
-          return res.status(400).json({
-            status: 400,
-            message: "Product already in favorites",
-          });
-        }
-        user.favorites.products.push(favoriteId);
+        user.favorites.products.push({ $oid: favoriteId });
+        await user.save();
+        await user.populate("favorites.products.$oid").execPopulate();
+  
+        return res.status(200).json({
+          status: 200,
+          message: "User product favorite added",
+          data: user.favorites.products,
+        });
       } else if (workshopFavorite) {
         if (!user.favorites.workshops) {
           user.favorites.workshops = [];
         }
-        if (user.favorites.workshops.includes(favoriteId)) {
-          return res.status(400).json({
-            status: 400,
-            message: "Workshop already in favorites",
-          });
-        }
-        user.favorites.workshops.push(favoriteId);
+        user.favorites.workshops.push({ $oid: favoriteId });
+        await user.save();
+        await user.populate("favorites.workshops.$oid").execPopulate();
+  
+        return res.status(200).json({
+          status: 200,
+          message: "User workshop favorite added",
+          data: user.favorites.workshops,
+        });
       }
-
-      await user.save();
-      await user.populate("favorites.products favorites.workshops");
-
-      return res.status(200).json({
-        status: 200,
-        message: "User favorite added",
-        data: user.favorites,
-      });
     } catch (error) {
       res.status(500).json({
         status: 500,
         message: "Error adding user favorite",
-        error: error.message,
+        error: error.message
       });
     }
   }
 
-  /**
-   * Deletes a user's favorite product or workshop.
-   *
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Object} The response object with status, message, and data properties.
-   * @throws {Object} The response object with status, message, and error properties if an error occurs.
-   */
   static async deleteUserFavorite(req, res) {
     const { id } = req.params;
     const userId = req.user._id;
-  
+
     try {
       const user = await User.findById(userId);
-  
+
       if (!user) {
         return res.status(404).json({
           status: 404,
           message: "User not found",
         });
       }
-  
+
       const objectId = new mongoose.Types.ObjectId(id);
-  
-      const favorite = await Product.findById(objectId) || await Workshop.findById(objectId);
-  
+
+      const favorite =
+        (await Product.findById(objectId)) ||
+        (await Workshop.findById(objectId));
+
       if (!favorite) {
         return res.status(404).json({
           status: 404,
           message: "Product or Workshop not found",
         });
       }
-  
+
       user.favorites.products = user.favorites.products.filter(
         (product) => product.toString() !== id
       );
       user.favorites.workshops = user.favorites.workshops.filter(
         (workshop) => workshop.toString() !== id
       );
-  
+
       await user.save();
       await user.populate("favorites.products favorites.workshops");
-  
+
       return res.status(200).json({
         status: 200,
         message: "User favorite deleted",
@@ -253,30 +363,23 @@ class UserController {
       res.status(500).json({
         status: 500,
         message: "Error deleting user favorite",
-        error: error.message,
       });
     }
   }
 
-  /**
-   * Finds the orders made by a user.
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Promise<void>} - A promise that resolves with the user's orders or an error message.
-   */
   static async findUserOrders(req, res) {
     const userId = req.user._id;
-  
+
     try {
       const user = await User.findById(userId);
-  
+
       if (!user) {
         return res.status(404).json({
           status: 404,
           message: "User not found",
         });
       }
-  
+
       if (user.purchases.length === 0) {
         return res.status(200).json({
           status: 200,
@@ -284,34 +387,27 @@ class UserController {
           data: [],
         });
       }
-  
+
       const orders = await Order.find({ _id: { $in: user.purchases } });
-  
+
       res.status(200).json({
         status: 200,
-        message: "User purchases found",
-        data: orders,
+        message: "User orders found",
+        data: user.orders,
       });
     } catch (error) {
       res.status(500).json({
         status: 500,
-        message: "Error finding user purchases",
-        error: error.message,
+        message: "Error finding user orders",
       });
     }
   }
 
-  /**
-   * Retrieves the workshop enrollments of a user.
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Promise<void>} - A promise that resolves with the workshop enrollments of the user or an error message.
-   */
   static async findUserWorkshopEnrollments(req, res) {
-    const userId = req.user._id;
+    const userId = req.user._id
 
     try {
-      const user = await User.findById(userId).populate("workshopsEnrolled");
+      const user = await User.findById(id).populate("workshopsEnrolled");
 
       if (!user) {
         return res.status(404).json({
@@ -337,22 +433,16 @@ class UserController {
       res.status(500).json({
         status: 500,
         message: "Error finding user workshop enrollments",
-        error: error.message
+        error: error.message,
       });
     }
   }
 
-  /**
-   * Retrieves the coupons associated with a user.
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
-   * @returns {Promise<void>} - A promise that resolves when the coupons are retrieved.
-   */
   static async findUserCoupons(req, res) {
-    const userId = req.user._id;
+    const userId = req.user._id
 
     try {
-      const user = await User.findById(userId).populate("coupons");
+      const user = await User.findById(id).populate("coupons");
 
       if (!user) {
         return res.status(404).json({
@@ -378,7 +468,7 @@ class UserController {
       res.status(500).json({
         status: 500,
         message: "Error finding user coupons",
-        error: error.message
+        error: error.message,
       });
     }
   }
