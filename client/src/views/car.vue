@@ -18,6 +18,11 @@
                     <div class="productImgDiv center">
                         <img class="productImg" :src="productImg">
                     </div>
+                    <div class="productCountDiv">
+                        <div class="productCountDivSection"><img class="countImg" :src="minusImg"></div>
+                        <div class="productCountDivSection"><p class="countNumber">1</p></div>
+                        <div class="productCountDivSection"><img class="countImg" :src="plusImg"></div>
+                    </div>
                 </div>
                 <div class="productSectionDiv padding">
                     <img class="trashImg" :src="trashImg">
@@ -30,10 +35,24 @@
             </div>
         </div>
         <div class="homeGridSection">
-
+            <div class="bellotaBold" id="couponDiv">
+                Añadir cupón de descuento
+            </div>
         </div>
-        <div class="homeGridSection">
-            
+        <div class="homeGridSection2">
+            <div class="bellotaBold" id="infoDiv">
+                <p id="subtotalText">Sub total</p>
+                <p id="envioText">Envío</p>
+                <p id="subtotalValue">$20</p>
+                <p id="envioValue">$10</p>
+            </div>
+            <div class="bellotaBold" id="totalDiv">
+                <p id="totalText">Total</p>
+                <p id="totalValue">$30</p>
+            </div>
+            <div class="bellotaBold" id="buyDiv">
+                Realizar compra
+            </div>
         </div>
     </div>
     <Footer :selectedIndex="3" />
@@ -48,6 +67,9 @@ import homeBGImg from '../images/homeBG.svg';
 import productImg from '../images/test/workshop.svg';
 import trashImg from '../images/trash.svg';
 
+import minusImg from '../images/minus.svg';
+import plusImg from '../images/plus.svg';
+
 import Footer from '../components/footer.vue';
 
 export default {
@@ -60,7 +82,9 @@ export default {
             squaresGroupImg,
             homeBGImg,
             productImg,
-            trashImg
+            trashImg,
+            minusImg,
+            plusImg
         };
     },
     components: {
@@ -77,13 +101,13 @@ export default {
 <style scoped>
 
     #homeGrid{
+        overflow-y: scroll;
         display: grid;
         grid-template-rows: 80px 80px 260px 60px calc(100% - 420px);
         width: 100vw;
         height: 100vh;
     }
     .homeGridSection{
-        border: 1px solid green;
         display: flex;
         align-items: center;
         position: relative;
@@ -169,15 +193,42 @@ export default {
         position: relative;
     }
     .productImgDiv{
+        position: absolute;
+        top: 0;
+        margin-top: 10px;
         background-color: var(--color-W);
         border-radius: 8px;
-        box-shadow: 0px 0px 20px 0px var(--color-B-44);
         width: 100px;
         height: 100px;
     }
     .productImg{
         width: 100%;
         height: 100%;
+    }
+    .productCountDiv{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        overflow: hidden;
+        gap: 4px;
+        position: absolute;
+        bottom: 0;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        width: 100px;
+        height: 30px;
+    }
+    .productCountDivSection{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--color-B2);
+    }
+    .countNumber{
+        font-family: 'bellotaBold';
+        color: var(--color-W);
+    }
+    .countImg{
+        width: 10px;
     }
     .productText{
         font-family: 'bellotaRegular';
@@ -188,9 +239,95 @@ export default {
         position: absolute;
         right: 0;
         top: 0;
-        width: 24px;
-        margin-right: 10px;
+        width: 20px;
+        margin-right: 20px;
+        margin-top: 20px;
+    }
+
+    #couponDiv{
+        display: flex;
+        font-size: 18px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 8px;
+        width: calc(100% - 50px);
+        margin-left: 25px;
+        background-color: var(--color-B3);
+        height: 40px;
+    }
+
+    #infoDiv{
+        position: relative;
+        width: calc(100% - 50px);
+        margin-left: 25px;
+        height: 70px;
+        background-color: var(--color-B3);
+        border-radius: 8px;
+    }
+    #subtotalText{
+        position: absolute;
+        top: 0;
+        left: 0;
         margin-top: 10px;
+        margin-left: 10px;
+    }
+    #envioText{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        margin-bottom: 10px;
+        margin-left: 10px;
+    }
+    #subtotalValue{
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+    #envioValue{
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
+
+    #totalDiv{
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: calc(100% - 50px);
+        margin-left: 25px;
+        height: 40px;
+        background-color: var(--color-B3);
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+    #totalText{
+        position: absolute;
+        left: 0;
+        margin-left: 10px;
+    }
+    #totalValue{
+        position: absolute;
+        right: 0;
+        margin-right: 10px;
+    }
+
+    #buyDiv{
+        cursor: pointer;
+        background-color: var(--color-B2);
+        height: 30px;
+        color: var(--color-W);
+        width: 50%;
+        margin-left: 25px;
+        margin-top: 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .center{
