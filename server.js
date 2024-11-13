@@ -10,6 +10,7 @@ const cuponRoutes = require("./server/router/cuponRoutes");
 const workshopRoutes = require("./server/router/workshopRoutes");
 const productRoutes = require("./server/router/productRouter");
 const passport = require("./server/middleware/passportConfig");
+const orderRouter = require("./server/router/orderRouter");
 const verifyJwt = require("./server/middleware/authJwt");
 const { setupSockets } = require('./server/sockets/socketHandler.js');
 const app = express();
@@ -34,6 +35,7 @@ app.use(verifyJwt);
 app.use('/workshop', workshopRoutes);
 app.use('/product', productRoutes);
 app.use('/coupons', cuponRoutes);
+app.use('/orders', orderRouter);
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
