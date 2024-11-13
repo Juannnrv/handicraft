@@ -29,35 +29,37 @@ passport.use(
           // Genera el JWT y lo guarda en la sesión
           const token = JwtService.generateToken({ _id: existingUser._id });
           done(null, existingUser);
-        }else {
-            // Si no existe, crea un nuevo usuario
-            const newUser = new User({
-              username: profile.displayName || "",
-              email: profile.emails[0].value,
-              password: "", // No se necesita contraseña para los usuarios de Google
-              profilePicture: profile.photos ? profile.photos[0].value : "",
-              phone: "",
-              gender: "na", // Definir si se usa o no
-              birthday: null, // Definir si se usa o no
-              tipo: "comprador", // Tipo de usuario, por ejemplo
-              googleId: profile.id,
-            });
-            console.log(newUser);
+        } else {
+          // Si no existe, crea un nuevo usuario
+          const newUser = new User({
+            username: profile.displayName || "",
+            email: profile.emails[0].value,
+            password: "", // No se necesita contraseña para los usuarios de Google
+            profilePicture: profile.photos ? profile.photos[0].value : "",
+            gender: "na", // Definir si se usa o no
+            birthday: null, // Definir si se usa o no
+            tipo: "comprador", // Tipo de usuario, por ejemplo
+            googleId: profile.id,
+            phone: Math.floor(1000000000 + Math.random() * 9000000000).toString()
+          });
 
-            await newUser.save();
-            const token = JwtService.generateToken({ _id: newUser._id });
-            console.log(token);
-            console.log("aqui ta muere");
-            
-            done(null, newUser);
-          }
-        } catch (error) {
-          done(error, null);
+          // Verifica si hay algún error antes de guardar
+          await newUser.save().catch((error) => {
+            console.error("Error saving new user:", error);
+            done(error, null);
+          });
+
+          // Genera el JWT y lo guarda en la sesión
+          const token = JwtService.generateToken({ _id: newUser._id });
+          done(null, newUser); // Retorna el nuevo usuario
         }
+      } catch (error) {
+        console.error("Error during Discord authentication:", error);
+        done(error, null);
       }
+    }
   )
 );
-
 
 // Configuración de Discord Strategy
 passport.use(
@@ -87,7 +89,7 @@ passport.use(
               : "",
             discordId: profile.id,
             tipo: "comprador",
-            phone: "1234567890"
+            phone: Math.floor(1000000000 + Math.random() * 9000000000).toString()
           });
 
           // Verifica si hay algún error antes de guardar
@@ -98,7 +100,7 @@ passport.use(
 
           // Genera el JWT y lo guarda en la sesión
           const token = JwtService.generateToken({ _id: newUser._id });
-          done(null, newUser);  // Retorna el nuevo usuario
+          done(null, newUser); // Retorna el nuevo usuario
         }
       } catch (error) {
         console.error("Error during Discord authentication:", error);
@@ -107,9 +109,6 @@ passport.use(
     }
   )
 );
-
-
-
 
 // Configuración de Facebook Strategy
 passport.use(
@@ -150,7 +149,6 @@ passport.use(
     }
   )
 );
-
 
 // Serializar el usuario
 passport.serializeUser((user, done) => {

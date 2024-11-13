@@ -72,16 +72,6 @@ const userSchema = new mongoose.Schema({
     timestamps: true,
 });
 
-// Generate random phone number
-const generateRandomPhoneNumber = () => Math.floor(1000000000 + Math.random() * 9000000000).toString();
-
-// Middleware to set phone number for Discord users
-userSchema.pre('save', function(next) {
-    if (this.discordId) {
-        this.phone = generateRandomPhoneNumber();
-    }
-    next();
-});
 
 const User = mongoose.model('User', userSchema);
 
