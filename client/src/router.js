@@ -14,6 +14,7 @@ import workshopDetails from './views/workshopDetails.vue';
 import redeemCoupon from './views/redeemCoupon.vue';
 import workshopQR from './views/workshopQR.vue';
 import chat from './views/chat.vue';
+import profile from './views/profile.vue';
 
 const routes = [
   {
@@ -90,6 +91,11 @@ const routes = [
     path: '/chat',
     name: 'chat',
     component: chat 
+  },
+  { 
+    path: '/profile',
+    name: 'profile',
+    component: profile 
   }
 ];
 
