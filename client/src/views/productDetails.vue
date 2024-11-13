@@ -10,8 +10,27 @@
             <img id="squareImg1" :src="squareImg">
             <img id="squareImg2" :src="squareImg">
         </div>
-        <div class="workshopsGridSection">
+        <div id="infoDiv">
+            <img 
+                id="hearthEmptyImg" 
+                :src="isHearthFull ? hearthFullImg : hearthEmptyImg" 
+                @click="toggleHearth" 
+            >
 
+            <p class="detailsText"><span class="bellotaBold">$50</span></p>
+            <p class="detailsText"><span class="bellotaBold">Taller</span></p>
+            <p class="detailsText"><span class="bellotaBold">Dimensiones:</span> 60 x 80 cm</p>
+            <p class="detailsText"><span class="bellotaBold">Descripción:</span> Tapiz tridimensional 
+                con diseños de la tradición textil andina prehispánica. 
+                Elaborado con lana de ovino y tejido en telar a pedal.</p>
+            <div id="alertTextDiv">
+                <img id="checkImg" :src="checkImg">
+                <p class="detailsText">Cuenta con envío hacia tu ubicación</p>
+            </div>
+            <div id="addCartDiv">
+                <img id="shopCarImg" :src="shopCarImg">
+                Añadir a mi carrito de compras
+            </div>
         </div>
     </div>
 
@@ -31,6 +50,10 @@ import arrow2Img from '../images/arrow2.svg';
 import filtersImg from '../images/filters.svg';
 import commentImg from '../images/comment.svg';
 import productBGImg from '../images/test/productBG.svg';
+import hearthEmptyImg from '../images/hearthEmpty.svg';
+import hearthFullImg from '../images/hearthFull.svg';
+import checkImg from '../images/check.svg';
+import shopCarImg from '../images/shopCar.svg';
 
 export default {
     data() {
@@ -45,6 +68,11 @@ export default {
             filtersImg,
             commentImg,
             productBGImg,
+            hearthEmptyImg,
+            hearthFullImg,
+            checkImg,
+            shopCarImg,
+            isHearthFull: false,
             categories: [
                 'Textileria', 'Cerámica', 'Joyería', 'Talla en piedra',
                 'Talla en madera', 'Orfebrería', 'Estampado', 'Pintura tradicional',
@@ -61,14 +89,11 @@ export default {
         Footer,
     },
     methods: {
-        selectCategory(index) {
-            this.selectedCategoryIndex = index;
-        },
-        getCategoryClass(index) {
-            return index === this.selectedCategoryIndex ? 'categoryGridDivB' : 'categoryGridDiv';
-        },
         goToHome() {
             this.$router.push('/home');
+        },
+        toggleHearth() {
+            this.isHearthFull = !this.isHearthFull;
         }
     },
     name: 'TestComponent'
@@ -78,7 +103,6 @@ export default {
 <style scoped>
     #workshopsGrid {
         display: grid;
-        border: 1px solid red;
         grid-template-rows: 300px 40px calc(100% - 340px);
         width: 100vw;
         height: 100vh;
@@ -323,5 +347,54 @@ export default {
         height: 100%;
         right: 0;
         transform: rotate(180deg);
+    }
+
+    #infoDiv{
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+    }
+    .detailsText{
+        font-family: 'bellotaRegular';
+        margin-bottom: 3px;
+    }
+    #hearthEmptyImg{
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50px;
+        margin: 10px;
+    }
+    #alertTextDiv{
+        display: flex;
+        align-items: center;
+        position: relative;
+        padding-left: 30px;
+        margin-top: 30px;
+    }
+    #checkImg{
+        position: absolute;
+        height: 100%;
+        left: 0;
+    }
+
+    #addCartDiv{
+        cursor: pointer;
+        position: relative;
+        font-family: 'bellotaRegular';
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border-radius: 8px;
+        margin-top: 30px;
+        width: 300px;
+        height: 30px;
+        background-color: var(--color-B3);
+    }
+    #shopCarImg{
+        height: 90%;
     }
 </style>
