@@ -22,9 +22,9 @@
                         <img class="productImg" :src="productImg">
                     </div>
                     <div class="productCountDiv">
-                        <div class="productCountDivSection" @click="decrementCount" ><img class="countImg" :src="minusImg"></div>
+                        <div class="productCountDivSection select" @click="decrementCount" ><img class="countImg" :src="minusImg"></div>
                         <div class="productCountDivSection"><p class="countNumber">{{ product.count }}</p></div>
-                        <div class="productCountDivSection" @click="incrementCount" ><img class="countImg" :src="plusImg"></div>
+                        <div class="productCountDivSection select" @click="incrementCount" ><img class="countImg" :src="plusImg"></div>
                     </div>
                 </div>
                 <div class="productSectionDiv padding">
@@ -399,5 +399,8 @@ export default {
     }
     .padding{
         padding: 10px;
+    }
+    .select{
+        cursor: pointer;
     }
 </style>
