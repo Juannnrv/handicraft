@@ -1,38 +1,17 @@
 <template>
     <div id="workshopsGrid">
         <div class="workshopsGridSection">
-            <div id="workshopTitleDiv" class="bellotaRegular">Taller Awaq Ayllus</div>
-            <img id="workshopBGImg" :src="workshopBGImg">
+            <img id="productBGImg" :src="productBGImg">
             <img id="square2Img" :src="square2Img">
             <img id="arrow2Img" :src="arrow2Img" @click="goToHome">
         </div>
         <div class="workshopsGridSection bellotaRegular" id="moreInfoDiv">
-            Conoce la historia detrás de este taller artesanal y conoce como producen sus textiles
+            Tapiz Chumpi Andino III
             <img id="squareImg1" :src="squareImg">
             <img id="squareImg2" :src="squareImg">
         </div>
-        <div class="workshopsGridSection center">
-            <p class="bellotaBold" id="categoryTitle">Artesanías</p>
-            <img id="fSquareImg" :src="fSquareImg">
-            <img id="commentImg" :src="commentImg">
-        </div>
-        <div class="workshopsGridSection"></div>
         <div class="workshopsGridSection">
-            <input id="categoriesInputInput" class="bellotaRegular" placeholder="Buscar producto o palabra clave...">
-                <img id="glassImg" :src="glassImg">
-                <img id="filtersImg" :src="filtersImg">
-        </div>
-        <div class="workshopsGridSection" id="wrokshopsGrid">
-            <div class="wrokshopsGridSection" v-for="(workshop, index) in workshops" :key="index">
-                <div class="wrokshopsGridSectionDiv">
-                    <img class="workshopImg" :src="workshop.img">
-                </div>
-                <div class="wrokshopsGridSectionDivB">
-                    <p class="wrokshopsGridSectionText bellotaBold">{{ workshop.title }}</p>
-                    <p class="wrokshopsGridSectionPrice bellotaBold">{{ workshop.Oprice }}</p>
-                    <p class="wrokshopsGridSectionText2 bellotaRegular">{{ workshop.location }}</p>
-                </div>
-            </div>
+
         </div>
     </div>
 
@@ -51,7 +30,7 @@ import arrowImg from '../images/arrow.svg';
 import arrow2Img from '../images/arrow2.svg';
 import filtersImg from '../images/filters.svg';
 import commentImg from '../images/comment.svg';
-import workshopBGImg from '../images/test/workshopBG.svg';
+import productBGImg from '../images/test/productBG.svg';
 
 export default {
     data() {
@@ -65,7 +44,7 @@ export default {
             arrow2Img,
             filtersImg,
             commentImg,
-            workshopBGImg,
+            productBGImg,
             categories: [
                 'Textileria', 'Cerámica', 'Joyería', 'Talla en piedra',
                 'Talla en madera', 'Orfebrería', 'Estampado', 'Pintura tradicional',
@@ -99,7 +78,8 @@ export default {
 <style scoped>
     #workshopsGrid {
         display: grid;
-        grid-template-rows: 200px 60px 80px 20px 40px calc(100% - 440px);
+        border: 1px solid red;
+        grid-template-rows: 300px 40px calc(100% - 340px);
         width: 100vw;
         height: 100vh;
     }
@@ -286,20 +266,18 @@ export default {
         margin-right: 24px;
         width: 44px;
     }
-    #workshopBGImg{
+    #productBGImg{
         position: absolute;
-        width: 100%;
+        height: 100%;
     }
 
     #moreInfoDiv{
         display: flex;
         align-items: center;
-        justify-content: center;
         text-align: center;
         color: var(--color-W);
         background-color: var(--color-B2);
-        padding-right: 30px;
-        padding-left: 30px;
+        padding-left: 40px;
     }
     #workshopTitleDiv{
         display: flex;

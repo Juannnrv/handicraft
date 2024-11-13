@@ -9,7 +9,7 @@ import categories from './views/categories.vue';
 import car from './views/car.vue';
 import favorites from './views/favorites.vue';
 import workshop from './views/workshop.vue';
-import workshopDetails from './views/workshopDetails.vue';
+import productDetails from './views/productDetails.vue';
 
 const routes = [
   {
@@ -58,9 +58,9 @@ const routes = [
     component: workshop
   },
   {
-    path: '/workshopDetails',
-    name: 'WorkshopDetails',
-    component: workshopDetails
+    path: '/productDetails',
+    name: 'ProductDetails',
+    component: productDetails
   }
 ];
 
