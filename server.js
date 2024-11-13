@@ -11,7 +11,7 @@ const workshopRoutes = require("./server/router/workshopRoutes");
 const productRoutes = require("./server/router/productRouter");
 const passport = require("./server/middleware/passportConfig");
 const verifyJwt = require("./server/middleware/authJwt");
-
+const { setupSockets } = require('./server/sockets/socketHandler.js');
 const app = express();
 app.use(cors({
   origin: "http://localhost:3000", // Frontend

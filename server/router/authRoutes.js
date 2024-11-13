@@ -23,7 +23,7 @@ router.get("/discord", loginWithDiscord);
 router.get("/discord/callback", passport.authenticate("discord", { failureRedirect: "/" }), (req, res) => {
   const token = JwtService.generateToken({ _id: req.user._id });
   req.session.authToken = token;
-  res.redirect("http://localhost:3000/user");
+  res.redirect("http://localhost:3000/home");
 });
 
 router.get("/facebook", loginWithFacebook);
