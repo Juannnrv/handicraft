@@ -82,23 +82,32 @@ passport.use(
           const newUser = new User({
             username: profile.username || "",
             email: profile.email,
-            profilePicture: profile.avatar ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png` : "",
+            profilePicture: profile.avatar
+              ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png`
+              : "",
             discordId: profile.id,
             tipo: "comprador",
+            phone: "1234567890"
           });
 
-          await newUser.save();
+          // Verifica si hay algún error antes de guardar
+          await newUser.save().catch((error) => {
+            console.error("Error saving new user:", error);
+            done(error, null);
+          });
 
           // Genera el JWT y lo guarda en la sesión
           const token = JwtService.generateToken({ _id: newUser._id });
           done(null, newUser);  // Retorna el nuevo usuario
         }
       } catch (error) {
+        console.error("Error during Discord authentication:", error);
         done(error, null);
       }
     }
   )
 );
+
 
 
 
