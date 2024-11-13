@@ -91,6 +91,7 @@ import rotatedSquare from '../images/rotatedSquare.svg'
 import backArrow from '../images/backArrow.svg'
 import squareBG from '../images/squareBG.svg'
 
+// Datos del formulario
 const formData = ref({
   username: '',
   email: '',
@@ -116,6 +117,7 @@ const birthDate = ref({
 })
 
 const formError = ref('') // Para almacenar los errores
+const savedData = ref(null) // Para almacenar el diccionario completo con los datos recibidos
 
 const years = computed(() => {
   const currentYear = new Date().getFullYear()
@@ -126,6 +128,7 @@ const years = computed(() => {
   return years
 })
 
+// Validaciones del formulario
 const validateForm = () => {
   // Limpiar errores
   formError.value = ''
@@ -143,9 +146,13 @@ const validateForm = () => {
     return false
   }
 
-  // Validar que las contraseñas coincidan
+  // Validar que las contraseñas coincidan y tengan al menos 6 caracteres
   if (formData.value.password !== passwordConfirmation.value) {
     formError.value = 'Las contraseñas no coinciden'
+    return false
+  }
+  if (formData.value.password.length < 6) {
+    formError.value = 'La contraseña debe tener al menos 6 caracteres'
     return false
   }
 
@@ -155,54 +162,73 @@ const validateForm = () => {
     return false
   }
 
+  // Asegurar que el género sea uno de los valores esperados
+  if (formData.value.gender !== 'hombre' && formData.value.gender !== 'mujer') {
+    formError.value = 'Por favor selecciona un género válido'
+    return false
+  }
+
   return true
 }
 
+// Función para enviar el formulario de validación
 const handleSubmit = async () => {
   if (!validateForm()) return
 
-  const formattedBirthday = new Date(
-    birthDate.value.year,
-    birthDate.value.month - 1,
-    birthDate.value.day
-  ).toISOString()
+  // Formatear la fecha de nacimiento en formato MM/DD/YYYY
+  const formattedBirthday = `${String(birthDate.value.month).padStart(2, '0')}/${String(birthDate.value.day).padStart(2, '0')}/${birthDate.value.year}`
 
+  // Prepara los datos a enviar con los campos requeridos
   const dataToSubmit = {
-    ...formData.value,
+    username: formData.value.username,
+    email: formData.value.email,
+    phone: formData.value.phone || '', // Si el teléfono es opcional, lo enviamos vacío si no se proporciona
+    gender: formData.value.gender,
     birthday: formattedBirthday
   }
 
   try {
-    console.log('Formulario de registro:', JSON.stringify(dataToSubmit))
-    const response = await fetch('/api/register', {
+    console.log('Formulario de validación:', JSON.stringify(dataToSubmit))
+
+    // Enviar la solicitud POST a la URL correcta para validación
+    const response = await fetch('http://localhost:5000/auth/check', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-      },
+      "Content-Type": "application/json",
+      "x-version": "1.0.0"
+    },
       body: JSON.stringify(dataToSubmit)
     })
 
-    if (!response.ok) {
-      throw new Error('Error en el registro')
-    }
+    if (response.status === 400) {
+      const errorData = await response.json()
+      formError.value = errorData.message || 'Error desconocido'
+    } else if (response.status === 200) {
+      // Si la respuesta es 200, guardamos el diccionario completo para usarlo después
+      const responseData = await response.json()
+      savedData.value = responseData
+      console.log('Datos guardados para confirmación:', savedData.value)
 
-    const data = await response.json()
-    console.log('Registro exitoso:', data)
-    location.href = "confirmRegisterEmail"
-    // Implementar redirección o manejo posterior
+      // Redirigir al siguiente paso
+      location.href = "confirmRegisterEmail" // Redirigir o manejar el registro posterior
+    } else {
+      formError.value = 'Error en el registro. Por favor intente nuevamente.'
+    }
   } catch (error) {
     console.error('Error en el registro:', error)
     alert('Error en el registro. Por favor intente nuevamente.')
   }
 }
-
 </script>
+
+
   
 
   <style scoped>
   .error-message {
   color: red;
   font-size: 14px;
+  margin-top: 5px;
 }
     .square-bg{
         position: absolute;
