@@ -1,6 +1,6 @@
 <template>
     <div id="workshopsGrid">
-        <div class="workshopsGridSection">
+        <div class="workshopsGridSection center">
             <img id="productBGImg" :src="productBGImg">
             <img id="square2Img" :src="square2Img">
             <img id="arrow2Img" :src="arrow2Img" @click="goToHome">
@@ -297,6 +297,7 @@ export default {
     }
     #square2Img{
         position: absolute;
+        left: 0;
         top: 0;
         width: 34px;
         z-index: +1;
@@ -305,6 +306,7 @@ export default {
         cursor: pointer;
         position: absolute;
         top: 0;
+        left: 0;
         margin-top: 25px;
         margin-left: 5px;
         width: 16px;
