@@ -58,8 +58,8 @@ const routes = [
     component: workshop
   },
   {
-    path: '/workshopDetail',
-    name: 'WorkshopDetail',
+    path: '/workshopDetails',
+    name: 'WorkshopDetails',
     component: workshopDetails
   }
 ];
