@@ -2,6 +2,15 @@
     <div v-if="isMenuVisible" ref="menu" class="menuContainer">
         <Menu />
     </div>
+    <div v-if="succes" id="succesDiv" class="bellotaRegular">
+        <img id="giantCheckImg" :src="giantCheckImg">
+        <span class="bellotaBold" style="font-size: 20px;">¡Compra realizada con exito!</span>
+        <img class="squaresGroupImg" :src="squaresGroupImg">
+        Gracias por apoyar a los artesanos peruanos
+        <img class="squaresGroupImg" :src="squaresGroupImg">
+        Sigue buscado artesanias!
+        <div id="backDiv" @click="goToHome" class="bellotaRegular">Regresar al inicio</div>
+    </div>
     <div id="homeGrid">
         <div class="homeGridSectionB">
             <img id="menuImg" :src="menuImg" @click="toggleMenuVisibility">
@@ -54,7 +63,7 @@
                 <p id="totalText">Total</p>
                 <p id="totalValue">${{ total }}</p>
             </div>
-            <div class="bellotaBold" id="buyDiv" v-if="product.count > 0">
+            <div class="bellotaBold" id="buyDiv" v-if="product.count > 0" @click="buy">
                 Realizar compra
             </div>
         </div>
@@ -66,10 +75,11 @@ import squareImg from '../images/square.svg';
 import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
 import ubicationImg from '../images/ubication.svg';
-import squaresGroupImg from '../images/squaresGroup.svg';
+import squaresGroupImg from '../images/squaresGroup3.svg';
 import homeBGImg from '../images/homeBG.svg';
 import productImg from '../images/test/workshop.svg';
 import trashImg from '../images/trash.svg';
+import giantCheckImg from '../images/giantCheck.svg';
 
 import minusImg from '../images/minus.svg';
 import plusImg from '../images/plus.svg';
@@ -90,8 +100,10 @@ export default {
             trashImg,
             minusImg,
             plusImg,
+            giantCheckImg,
             isCouponInputVisible: false,
             isMenuVisible: false,
+            succes: false,
             product: {
                 name: 'Vasija pequeña con diseño de flor',
                 price: 50,
@@ -130,6 +142,12 @@ export default {
         incrementCount() {
             this.product.count++;
         },
+        goToHome() {
+            this.$router.push('/home');
+        },
+        buy() {
+            this.succes = true;
+        }
     },
     computed: {
         subtotal() {
@@ -402,5 +420,43 @@ export default {
     }
     .select{
         cursor: pointer;
+    }
+
+    #succesDiv{
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding-left: 10vw;
+        padding-right: 10vw;
+        width: 100vw;
+        height: 100vh;
+        background-color: var(--color-W);
+        z-index: +1;
+    }
+    #giantCheckImg{
+        width: 220px;
+        margin-bottom: 20px;
+    }
+    .squaresGroupImg{
+        margin-top: 20px;
+        margin-bottom: 20px;
+        width: 220px;
+    }
+
+    #backDiv{
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--color-W);
+        margin-top: 20px;
+        width: 160px;
+        height: 30px;
+        background-color: var(--color-B2);
     }
 </style>
