@@ -22,12 +22,19 @@
         </div>
         
         <div id="grid-container">
-            <div v-for="(category, index) in categories" :key="index" class="grid-item">
-                <div class="categoryImgDiv">
-                    <img class="categoryImg" :src="category.image">
+            <router-link 
+                v-for="(category, index) in categories" 
+                :key="index" 
+                :to="'/categories'"
+                class="grid-item-link"
+            >
+                <div class="grid-item">
+                    <div class="categoryImgDiv">
+                        <img class="categoryImg" :src="category.image">
+                    </div>
+                    <p class="categoryText bellotaRegular">{{ category.name }}</p>
                 </div>
-                <p class="categoryText bellotaRegular">{{ category.name }}</p>
-            </div>
+            </router-link>
         </div>
         
         <div class="homeGridSection">
@@ -216,6 +223,14 @@ export default {
         padding: 20px;
         display: grid;
         min-height: 110px;
+    }
+    .grid-item-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    }
+    .grid-item .categoryText {
+        color: var(--color-B);
     }
 
     .categoryImgDiv{
