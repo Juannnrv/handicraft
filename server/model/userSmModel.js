@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   discordId: { type: String, unique: true, sparse: true },
   facebookId: { type: String, unique: true, sparse: true },
   email: { type: String, unique: true },
+  phone: { type: String, sparse: true },
   displayName: String,
 });
 
