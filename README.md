@@ -100,8 +100,11 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
   ### Create Account
 
   **Method**: `POST`
+
   **URL**: `http://localhost:5000/auth/create`
+
   **Auth required**: `False`
+
   **Limit requests**: 45 every 15 minutes
 
   #### Headers:
@@ -179,8 +182,11 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
   ### Log In
 
   **Method**: `POST`
+
   **URL**: `http://localhost:5000/auth/login`
+
   **Auth required**: `False`
+
   **Limit requests**: 45 every 15 minutes
 
   #### Headers:
@@ -250,7 +256,9 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
   ### Check if User Exists
 
   **Method**: `POST`
+
   **URL**: `http://localhost:5000/auth/check`
+
   **Auth required**: `False`
 
   #### Headers:
@@ -309,7 +317,9 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
   ### OAuth Login with Google
 
   **Method**: `GET`
+
   **URL**: `http://localhost:5000/auth/google`
+
   **Auth required**: `False`
 
   #### Success Response:
@@ -328,7 +338,9 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
   ### OAuth Login with Discord
 
   **Method**: `GET`
+
   **URL**: `http://localhost:5000/auth/discord`
+
   **Auth required**: `False`
 
   #### Success Response:
@@ -347,7 +359,9 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
   ### OAuth Login with Facebook
 
   **Method**: `GET`
+
   **URL**: `http://localhost:5000/auth/facebook`
+
   **Auth required**: `False`
 
   #### Success Response:
@@ -366,8 +380,11 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 ### Create User Favorite
 
 **Method**: `POST`
+
 **URL**: `http://localhost:5000/user/favorites`
+
 **Auth required**: `True`
+
 **Limit requests**: 45 every 15 minutes
 
 #### Headers:
@@ -438,8 +455,11 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 ### Get User Information
 
 **Method**: `GET`
+
 **URL**: `http://localhost:5000/user/`
+
 **Auth required**: `True`
+
 **Limit requests**: 45 every 15 minutes
 
 #### Headers:
@@ -499,8 +519,11 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 ### Update User Information
 
 **Method**: `PUT`
+
 **URL**: `http://localhost:5000/user/`
+
 **Auth required**: `True`
+
 **Limit requests**: 45 every 15 minutes
 
 #### Headers:
@@ -588,8 +611,11 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 ### Get User Favorites
 
 **Method**: `GET`
+
 **URL**: `http://localhost:5000/user/favorites`
+
 **Auth required**: `True`
+
 **Limit requests**: 45 every 15 minutes
 
 #### Headers:
@@ -643,8 +669,11 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 ### Delete User Favorite
 
 **Method**: `DELETE`
+
 **URL**: `http://localhost:5000/user/favorites/:id`
+
 **Auth required**: `True`
+
 **Limit requests**: 45 every 15 minutes
 
 #### Headers:
@@ -698,8 +727,11 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 ### Get User Orders
 
 **Method**: `GET`
+
 **URL**: `http://localhost:5000/user/orders`
+
 **Auth required**: `True`
+
 **Limit requests**: 45 every 15 minutes
 
 #### Headers:
@@ -750,8 +782,11 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 ### Get User Workshop Enrollments
 
 **Method**: `GET`
+
 **URL**: `http://localhost:5000/user/workshops`
+
 **Auth required**: `True`
+
 **Limit requests**: 45 every 15 minutes
 
 #### Headers:
@@ -802,8 +837,11 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 ### Get User Coupons
 
 **Method**: `GET`
+
 **URL**: `http://localhost:5000/user/coupons`
+
 **Auth required**: `True`
+
 **Limit requests**: 45 every 15 minutes
 
 #### Headers:
@@ -845,6 +883,196 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 {
     "status": 500,
     "message": "Error finding user coupons",
+    "error": "Error message"
+}
+```
+
+## Products API Documentation
+
+### List products
+
+**Method**: `GET`
+
+**URL**: `http://localhost:5000/product
+
+**Auth required**: `True`
+
+**Limit requests**: 25 every 15 minutes
+
+#### Query Parameters:
+
+```
+{
+    "page": "integer, optional, default is 1, page number for pagination",
+    "limit": "integer, optional, default is 10, number of products per page",
+    "category": "string, optional, filter products by category",
+    "minPrice": "float, optional, minimum price for the product filter",
+    "maxPrice": "float, optional, maximum price for the product filter"
+}
+```
+
+#### Success Response:
+
+- **Code**: `200 OK`
+
+```
+{
+    "status": 200,
+    "message": "Products retrieved successfully",
+    "data": {
+        "products": [
+            {
+                "id": "60b8d6c6f0e7f62288f1ab7e",
+                "name": "Handmade Wooden Chair",
+                "description": "A beautiful handcrafted chair.",
+                "price": 150.00,
+                "category": "Furniture",
+                "photos": [
+                    "https://example.com/photo1.jpg",
+                    "https://example.com/photo2.jpg"
+                ],
+                "stock": 10,
+                "artisanId": "60b8d6c6f0e7f62288f1ab7f",
+            }
+        ],
+        "total": 50,
+        "page": 1,
+        "pages": 5
+    }
+}
+```
+
+#### Error Responses:
+
+**Code**: `500 Internal Server Error`
+
+```
+{
+    "status": 500,
+    "message": "Error retrieving products",
+    "error": "Error message"
+}
+```
+
+------
+
+### Get Product By ID
+
+**Method**: `GET`
+
+**URL**: `http://localhost:5000/products/{id}`
+
+**Auth required**: `True`
+
+**Limit requests**: 25 every 15 minutes
+
+#### Path Parameters:
+
+```
+{
+    "id": "string, required, unique product identifier"
+}
+```
+
+#### Success Response:
+
+- **Code**: `200 OK`
+
+```
+{
+    "status": 200,
+    "message": "Product retrieved successfully",
+    "data": {
+        "id": "60b8d6c6f0e7f62288f1ab7e",
+        "name": "Handmade Wooden Chair",
+        "description": "A beautiful handcrafted chair.",
+        "price": 150.00,
+        "category": "Furniture",
+        "photos": [
+            "https://example.com/photo1.jpg",
+            "https://example.com/photo2.jpg"
+        ],
+        "stock": 10,
+        "artisanId": "60b8d6c6f0e7f62288f1ab7f"
+    }
+}
+```
+
+#### Error Responses:
+
+**Code**: `404 Not Found`
+
+```
+{
+    "status": 404,
+    "message": "Product not found"
+}
+```
+
+**Code**: `500 Internal Server Error`
+
+```
+{
+    "status": 500,
+    "message": "Error retrieving product",
+    "error": "Error message"
+}
+```
+
+------
+
+### Search Products
+
+**Method**: `GET`
+
+**URL**: `http://localhost:5000/products/search`
+
+**Auth required**: `True`
+
+**Limit requests**: 25 every 15 minutes
+
+#### Query Parameters:
+
+```
+{
+    "query": "string, required, search query for product name or description"
+}
+```
+
+#### Success Response:
+
+- **Code**: `200 OK`
+
+```
+{
+    "status": 200,
+    "message": "Products retrieved successfully",
+    "data": [
+        {
+            "id": "60b8d6c6f0e7f62288f1ab7e",
+            "name": "Handmade Wooden Chair",
+            "description": "A beautiful handcrafted chair.",
+            "price": 150.00,
+            "category": "Furniture",
+            "photos": [
+                "https://example.com/photo1.jpg",
+                "https://example.com/photo2.jpg"
+            ],
+            "stock": 10,
+            "artisanId": "60b8d6c6f0e7f62288f1ab7f"
+        }
+    ]
+}
+```
+
+#### Error Responses:
+
+**Code**: `500 Internal Server Error`
+
+```
+{
+    "status": 500,
+    "message": "Error retrieving products",
     "error": "Error message"
 }
 ```
