@@ -42,13 +42,13 @@
         menuOptions: [
           { imgSrc: favoriteImg, text: 'Lista de favoritos', route: '/favorites' },
           { imgSrc: shopsImg, text: 'Compras', route: '/home' },
-          { imgSrc: workshopsImg, text: 'Talleres', route: '/home' },
-          { imgSrc: couponImg, text: 'Canjear cupón', route: '/home' }
+          { imgSrc: workshopsImg, text: 'Talleres', route: '/workshops' },
+          { imgSrc: couponImg, text: 'Canjear cupón', route: '/redeemCoupon' }
         ],
         menuOptions2: [
-          { imgSrc: settingsImg, text: 'Ajustes', route: '/home' },
-          { imgSrc: commentsImg, text: 'Comentarios', route: '/home' },
-          { imgSrc: clientImg, text: 'Atención al cliente', route: '/home' }
+          { imgSrc: settingsImg, text: 'Ajustes', route: '/settings' },
+          { imgSrc: commentsImg, text: 'Comentarios', route: '/comments' },
+          { imgSrc: clientImg, text: 'Atención al cliente', route: '/customerService' }
         ]
       };
     },

@@ -40,7 +40,7 @@
         <div class="homeGridSection">
             <img id="squaresGroupImg1" :src="squaresGroupImg">
             <img id="squaresGroupImg2" :src="squaresGroupImg">
-            <router-link to="/workshops" class="bellotaRegular" id="monthWorkshops">Talleres del mes</router-link>
+            <router-link to="/workshopsgallery" class="bellotaRegular" id="monthWorkshops">Talleres del mes</router-link>
             <p class="bellotaRegular" id="monthWorkshopsText">¡Aprende como hacerlos en estos talleres educativos!</p>
         </div>
         <div class="homeGridSection">

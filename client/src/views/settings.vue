@@ -1,7 +1,7 @@
 <template>
   <div class="settings-container">
     <img class="square-bg" :src="rotatedSquare" alt="">
-      <a class="a-back" href="registerEmail">
+      <a class="a-back" href="home">
         <img class="back-arrow" :src="backArrow" alt="">
       </a>
     <header class="header bellotaBold">

@@ -2,7 +2,7 @@
     <div class="feedback-container">
         <header class="header">
         <img class="square-bg" :src="rotatedSquare" alt="">
-        <a class="a-back" href="registerEmail">
+        <a class="a-back" href="home">
             <img class="back-arrow" :src="backArrow" alt="">
         </a>
         <img class="title-square" :src="titleSquare" alt="">

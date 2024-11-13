@@ -2,7 +2,7 @@
     <div class="chat-container">
       <header class="chat-header">
         <img class="square-bg" style="filter: invert(100%);" :src="rotatedSquare" alt="">
-        <a class="a-back" href="registerEmail">
+        <a class="a-back" href="customerService">
             <img class="back-arrow" style="filter: invert(100%);" :src="backArrow" alt="">
         </a>
         <div class="header-title bellotaBold">
@@ -42,7 +42,7 @@
   import chatImg from '../images/chat.svg'
   import send from '../images/send.svg'
   
-  const socket = io('http://localhost:3000') // Replace with your server URL
+  const socket = io('http://localhost:3000')
   const messages = ref([])
   const newMessage = ref('')
   const messagesContainer = ref(null)
@@ -85,7 +85,6 @@
   }
   
   const goBack = () => {
-    // Implement your navigation logic here
     console.log('Going back')
   }
   </script>

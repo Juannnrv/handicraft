@@ -15,7 +15,7 @@ import RegistrationPhoneView from './views/registerPhone.vue'
 import ConfirmRegisterPhone from './views/confirmRegisPhone.vue';
 import ConfirmRegisterEmail from './views/confirmRegisEmail.vue';
 import loginForm from './views/loginForm.vue';
-import ajustes from './views/ajustes.vue';
+import settings from './views/settings.vue';
 import customerService from './views/customerService.vue';
 import comments from './views/comments.vue';
 import workshopDetails from './views/workshopDetails.vue';
@@ -104,7 +104,7 @@ const routes = [
   { 
     path: '/settings',
     name: 'settings',
-    component: ajustes 
+    component: settings 
   },
   { 
     path: '/customerService',
@@ -123,7 +123,7 @@ const routes = [
   },
   { 
     path: '/redeemCoupon',
-    name: 'redeemCoupon',
+    name: 'redeemCsoupon',
     component: redeemCoupon 
   },
   { 

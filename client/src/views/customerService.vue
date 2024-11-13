@@ -1,68 +1,57 @@
 <template>
-    <div class="support-container">
-      <img class="square-bg" :src="rotatedSquare" alt="">
-      <a class="a-back" href="registerEmail">
-        <img class="back-arrow" :src="backArrow" alt="">
-      </a>
-      <header class="header">
-        <img class="title-square" :src="titleSquare" alt="">
-        <h1 class="bellotaBold">Atención al cliente</h1>
-      </header>
-  
-      <section class="faq-section bellotaBold">
-        <h2>Preguntas frecuentes</h2>
-        <div class="faq-list bellotaBold">
-          <button class="faq-item bellotaBold">¿Cómo compro en la app?</button>
-          <button class="faq-item bellotaBold">¿Cómo me inscribo en un taller?</button>
-          <button class="faq-item bellotaBold">¿Cómo escaneo el QR interactivo?</button>
-          <button class="faq-item bellotaBold">¿Cómo cambio la moneda en la app?</button>
-          <button class="faq-item bellotaBold">¿Cómo reporto un problema?</button>
-        </div>
-      </section>
-  
-      <section class="personal-support">
-        <p class="support-text bellotaBold">
-          ¿Necesitas atención personalizada? habla con nuestro equipo de soporte
-        </p>
-        
-        <div class="support-actions ">
-          <button class="support-button bellotaBold">
-            <span class="icon">💬</span>
-            Empieza un chat
-          </button>
-          <button class="support-button bellotaBold">
-            <span class="icon">📞</span>
-            Programa una llamada
-          </button>
-        </div>
-      </section>
-    </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue'
-  import titleSquare from '../images/titleSquare.svg'
-  import rotatedSquare from '../images/rotatedSquare.svg'
-    import backArrow from '../images/backArrow.svg'
-  
-     // Add any required functionality here
-  const handleFaqClick = (question) => {
-    // Handle FAQ item click
-    console.log('FAQ clicked:', question)
-  }
-  
-  const startChat = () => {
-    // Handle chat initiation
-    console.log('Starting chat...')
-  }
-  
-  const scheduleCall = () => {
-    // Handle call scheduling
-    console.log('Scheduling call...')
-  }
-  
-  
-  </script>
+  <div class="support-container">
+    <img class="square-bg" :src="rotatedSquare" alt="">
+    <a class="a-back" href="home">
+      <img class="back-arrow" :src="backArrow" alt="">
+    </a>
+    <header class="header">
+      <img class="title-square" :src="titleSquare" alt="">
+      <h1 class="bellotaBold">Atención al cliente</h1>
+    </header>
+
+    <section class="faq-section bellotaBold">
+      <h2>Preguntas frecuentes</h2>
+      <div class="faq-list bellotaBold">
+        <button class="faq-item bellotaBold">¿Cómo compro en la app?</button>
+        <button class="faq-item bellotaBold">¿Cómo me inscribo en un taller?</button>
+        <button class="faq-item bellotaBold">¿Cómo escaneo el QR interactivo?</button>
+        <button class="faq-item bellotaBold">¿Cómo cambio la moneda en la app?</button>
+        <button class="faq-item bellotaBold">¿Cómo reporto un problema?</button>
+      </div>
+    </section>
+
+    <section class="personal-support">
+      <p class="support-text bellotaBold">
+        ¿Necesitas atención personalizada? habla con nuestro equipo de soporte
+      </p>
+      
+      <div class="support-actions">
+        <button @click="openChat" class="support-button bellotaBold">
+          <span class="icon">💬</span>
+          Empieza un chat
+        </button>
+        <button class="support-button bellotaBold">
+          <span class="icon">📞</span>
+          Programa una llamada
+        </button>
+      </div>
+    </section>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import titleSquare from '../images/titleSquare.svg'
+import rotatedSquare from '../images/rotatedSquare.svg'
+import backArrow from '../images/backArrow.svg'
+
+const router = useRouter()
+
+const openChat = () => {
+  router.push('/chat')
+}
+</script>
 
   <style scoped>
   .support-container {
