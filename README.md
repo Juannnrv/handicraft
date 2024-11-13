@@ -385,15 +385,14 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 
 **Auth required**: `True`
 
-**Limit requests**: 45 every 15 minutes
+**Credentials**: `include`
 
 #### Headers:
 
 ```
 {
     "Content-Type": "application/json",
-    "x-version": "1.0.0",
-    
+    "x-version": "1.0.0"
 }
 ```
 
@@ -462,13 +461,14 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 
 **Limit requests**: 45 every 15 minutes
 
+**Credentials**: `include`
+
 #### Headers:
 
 ```
 {
     "Content-Type": "application/json",
-    "x-version": "1.0.0",
-    
+    "x-version": "1.0.0"
 }
 ```
 
@@ -526,13 +526,14 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 
 **Limit requests**: 45 every 15 minutes
 
+**Credentials**: `include`
+
 #### Headers:
 
 ```
 {
     "Content-Type": "application/json",
-    "x-version": "1.0.0",
-    
+    "x-version": "1.0.0"
 }
 ```
 
@@ -618,13 +619,14 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 
 **Limit requests**: 45 every 15 minutes
 
+**Credentials**: `include`
+
 #### Headers:
 
 ```
 {
     "Content-Type": "application/json",
-    "x-version": "1.0.0",
-    
+    "x-version": "1.0.0"
 }
 ```
 
@@ -637,8 +639,8 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
     "status": 200,
     "message": "User favorites found",
     "data": {
-        "products": [ ... ],
-        "workshops": [ ... ]
+        "products": [ products info ],
+        "workshops": [ workshops info ]
     }
 }
 ```
@@ -676,13 +678,14 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 
 **Limit requests**: 45 every 15 minutes
 
+**Credentials**: `include`
+
 #### Headers:
 
 ```
 {
     "Content-Type": "application/json",
-    "x-version": "1.0.0",
-    
+    "x-version": "1.0.0"
 }
 ```
 
@@ -734,13 +737,14 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 
 **Limit requests**: 45 every 15 minutes
 
+**Credentials**: `include`
+
 #### Headers:
 
 ```
 {
     "Content-Type": "application/json",
-    "x-version": "1.0.0",
-    
+    "x-version": "1.0.0"
 }
 ```
 
@@ -779,61 +783,6 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 
 ------
 
-### Get User Workshop Enrollments
-
-**Method**: `GET`
-
-**URL**: `http://localhost:5000/user/workshops`
-
-**Auth required**: `True`
-
-**Limit requests**: 45 every 15 minutes
-
-#### Headers:
-
-```
-{
-    "Content-Type": "application/json",
-    "x-version": "1.0.0",
-    
-}
-```
-
-#### Success Response:
-
-- **Code**: `200 OK`
-
-```
-{
-    "status": 200,
-    "message": "User workshop enrollments found",
-    "data": [ ... ]  // Array of workshop objects
-}
-```
-
-#### Error Responses:
-
-- **Code**: `404 Not Found`
-
-```
-{
-    "status": 404,
-    "message": "User not found"
-}
-```
-
-- **Code**: `500 Internal Server Error`
-
-```
-{
-    "status": 500,
-    "message": "Error finding user workshop enrollments",
-    "error": "Error message"
-}
-```
-
-------
-
 ### Get User Coupons
 
 **Method**: `GET`
@@ -844,13 +793,14 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 
 **Limit requests**: 45 every 15 minutes
 
+**Credentials**: `include`
+
 #### Headers:
 
 ```
 {
     "Content-Type": "application/json",
-    "x-version": "1.0.0",
-    
+    "x-version": "1.0.0"
 }
 ```
 
@@ -893,11 +843,22 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 
 **Method**: `GET`
 
-**URL**: `http://localhost:5000/product
+**URL**: `http://localhost:5000/product`
 
 **Auth required**: `True`
 
 **Limit requests**: 25 every 15 minutes
+
+**Credentials**: `include`
+
+#### Headers:
+
+```
+{
+    "Content-Type": "application/json",
+    "x-version": "1.0.0"
+}
+```
 
 #### Query Parameters:
 
@@ -907,7 +868,8 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
     "limit": "integer, optional, default is 10, number of products per page",
     "category": "string, optional, filter products by category",
     "minPrice": "float, optional, minimum price for the product filter",
-    "maxPrice": "float, optional, maximum price for the product filter"
+    "maxPrice": "float, optional, maximum price for the product filter",
+    "workshopId": "objectId, optional, filter products by associated workshop ID."
 }
 ```
 
@@ -960,11 +922,22 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 
 **Method**: `GET`
 
-**URL**: `http://localhost:5000/products/{id}`
+**URL**: `http://localhost:5000/product/{id}`
 
 **Auth required**: `True`
 
 **Limit requests**: 25 every 15 minutes
+
+**Credentials**: `include`
+
+#### Headers:
+
+```
+{
+    "Content-Type": "application/json",
+    "x-version": "1.0.0"
+}
+```
 
 #### Path Parameters:
 
@@ -1025,11 +998,22 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 
 **Method**: `GET`
 
-**URL**: `http://localhost:5000/products/search`
+**URL**: `http://localhost:5000/product/search`
 
 **Auth required**: `True`
 
 **Limit requests**: 25 every 15 minutes
+
+**Credentials**: `include`
+
+#### Headers:
+
+```
+{
+    "Content-Type": "application/json",
+    "x-version": "1.0.0"
+}
+```
 
 #### Query Parameters:
 
@@ -1073,6 +1057,234 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 {
     "status": 500,
     "message": "Error retrieving products",
+    "error": "Error message"
+}
+```
+
+## Workshops API Documentation
+
+### List workshops
+
+**Method**: `GET`
+
+**URL**: `http://localhost:5000/workshop`
+
+**Auth required**: `True`
+
+**Limit requests**: 25 every 15 minutes
+
+**Credentials**: `include`
+
+#### Headers:
+
+```
+{
+    "Content-Type": "application/json",
+    "x-version": "1.0.0"
+}
+```
+
+#### Query Parameters:
+
+```
+{
+    "page": "integer, optional, default is 1, page number for pagination",
+    "limit": "integer, optional, default is 10, number of workshops per page",
+    "modality": "string, optional, filter workshops by modality (e.g., 'Presencial', 'Virtual')",
+    "location": "string, optional, filter workshops by location"
+}
+```
+
+#### Success Response:
+
+- **Code**: `200 OK`
+
+```
+{
+    "status": 200,
+    "message": "Workshops fetched successfully",
+    "data": {
+        "workshops": [
+            {
+                "id": "60b8d6c6f0e7f62288f1ab7e",
+                "name": "Ceramic Workshop",
+                "description": "A workshop for learning ceramic techniques.",
+                "modality": "Presencial",
+                "startDate": "2024-12-01T10:00:00.000Z",
+                "endDate": "2024-12-05T16:00:00.000Z",
+                "duration": "5 days",
+                "materialsProvided": ["Clay", "Glaze", "Tools"],
+                "materialsRequired": ["Apron", "Notebook"],
+                "documentary": "https://example.com/documentary",
+                "artisanId": "60b8d6c6f0e7f62288f1ab7f"
+            }
+        ],
+        "total": 50,
+        "page": 1,
+        "totalPages": 5
+    }
+}
+```
+
+#### Error Responses:
+
+**Code**: `500 Internal Server Error`
+
+```
+{
+    "status": 500,
+    "message": "Error fetching workshops",
+    "error": "Error message"
+}
+```
+
+------
+
+### Get Workshop By ID
+
+**Method**: `GET`
+
+**URL**: `http://localhost:5000/workshop/{id}`
+
+**Auth required**: `True`
+
+**Limit requests**: 25 every 15 minutes
+
+**Credentials**: `include`
+
+#### Headers:
+
+```
+{
+    "Content-Type": "application/json",
+    "x-version": "1.0.0"
+}
+```
+
+#### Path Parameters:
+
+```
+{
+    "id": "string, required, unique workshop identifier"
+}
+```
+
+#### Success Response:
+
+- **Code**: `200 OK`
+
+```
+{
+    "status": 200,
+    "message": "Workshop details fetched successfully",
+    "data": {
+        "id": "60b8d6c6f0e7f62288f1ab7e",
+        "name": "Ceramic Workshop",
+        "description": "A workshop for learning ceramic techniques.",
+        "modality": "Presencial",
+        "startDate": "2024-12-01T10:00:00.000Z",
+        "endDate": "2024-12-05T16:00:00.000Z",
+        "duration": "5 days",
+        "materialsProvided": ["Clay", "Glaze", "Tools"],
+        "materialsRequired": ["Apron", "Notebook"],
+        "documentary": "https://example.com/documentary",
+        "artisanId": "60b8d6c6f0e7f62288f1ab7f"
+    }
+}
+```
+
+#### Error Responses:
+
+**Code**: `404 Not Found`
+
+```
+{
+    "status": 404,
+    "message": "Workshop not found"
+}
+```
+
+**Code**: `500 Internal Server Error`
+
+```
+{
+    "status": 500,
+    "message": "Error fetching workshop details",
+    "error": "Error message"
+}
+```
+
+------
+
+### Search Workshops
+
+**Method**: `GET`
+
+**URL**: `http://localhost:5000/workshop/search`
+
+**Auth required**: `True`
+
+**Limit requests**: 25 every 15 minutes
+
+**Credentials**: `include`
+
+#### Headers:
+
+```
+{
+    "Content-Type": "application/json",
+    "x-version": "1.0.0"
+}
+```
+
+#### Query Parameters:
+
+```
+{
+    "name": "string, optional, filter workshops by name",
+    "description": "string, optional, filter workshops by description"
+}
+```
+
+#### Success Response:
+
+- **Code**: `200 OK`
+
+```
+{
+    "status": 200,
+    "message": "Workshops fetched successfully",
+    "data": {
+        "workshops": [
+            {
+                "id": "60b8d6c6f0e7f62288f1ab7e",
+                "name": "Ceramic Workshop",
+                "description": "A workshop for learning ceramic techniques.",
+                "modality": "Presencial",
+                "startDate": "2024-12-01T10:00:00.000Z",
+                "endDate": "2024-12-05T16:00:00.000Z",
+                "duration": "5 days",
+                "materialsProvided": ["Clay", "Glaze", "Tools"],
+                "materialsRequired": ["Apron", "Notebook"],
+                "documentary": "https://example.com/documentary",
+                "artisanId": "60b8d6c6f0e7f62288f1ab7f"
+            }
+        ],
+        "total": 50,
+        "page": 1,
+        "totalPages": 5
+    }
+}
+```
+
+#### Error Responses:
+
+**Code**: `500 Internal Server Error`
+
+```
+{
+    "status": 500,
+    "message": "Error fetching workshops",
     "error": "Error message"
 }
 ```
