@@ -91,6 +91,9 @@ import rotatedSquare from '../images/rotatedSquare.svg'
 import backArrow from '../images/backArrow.svg'
 import squareBG from '../images/squareBG.svg'
 
+// Limpiar localStorage (si lo deseas)
+  localStorage.clear()
+
 // Datos del formulario
 const formData = ref({
   username: '',
@@ -178,13 +181,11 @@ const handleSubmit = async () => {
   // Formatear la fecha de nacimiento en formato MM/DD/YYYY
   const formattedBirthday = `${String(birthDate.value.month).padStart(2, '0')}/${String(birthDate.value.day).padStart(2, '0')}/${birthDate.value.year}`
 
-  // Prepara los datos a enviar con los campos requeridos
+  // Prepara los datos a enviar con los campos requeridos para el formulario
   const dataToSubmit = {
     username: formData.value.username,
     email: formData.value.email,
-    phone: formData.value.phone || '', // Si el teléfono es opcional, lo enviamos vacío si no se proporciona
-    gender: formData.value.gender,
-    birthday: formattedBirthday
+    phone: " "
   }
 
   try {
@@ -194,23 +195,35 @@ const handleSubmit = async () => {
     const response = await fetch('http://localhost:5000/auth/check', {
       method: 'POST',
       headers: {
-      "Content-Type": "application/json",
-      "x-version": "1.0.0"
-    },
-      body: JSON.stringify(dataToSubmit)
+        "Content-Type": "application/json",
+        "x-version": "1.0.0"
+      },
+      body: JSON.stringify(dataToSubmit) // Aquí se envía el objeto con email, username y phone (opcionales)
     })
 
     if (response.status === 400) {
       const errorData = await response.json()
       formError.value = errorData.message || 'Error desconocido'
     } else if (response.status === 200) {
-      // Si la respuesta es 200, guardamos el diccionario completo para usarlo después
+      // Si la respuesta es 200, guardamos los datos en localStorage para usarlo después
       const responseData = await response.json()
       savedData.value = responseData
       console.log('Datos guardados para confirmación:', savedData.value)
 
+      // Guardar los datos completos en localStorage en el formato deseado
+      const savedFormData = {
+        username: formData.value.username,
+        password: formData.value.password,
+        email: formData.value.email,
+        phone: formData.value.phone || null, // Si no hay teléfono, enviamos un string vacío
+        gender: formData.value.gender,
+        birthday: formattedBirthday
+      }
+
+      localStorage.setItem('savedData', JSON.stringify(savedFormData)) // Guardamos los datos formateados
+
       // Redirigir al siguiente paso
-      location.href = "confirmRegisterEmail" // Redirigir o manejar el registro posterior
+      location.href = "confirmRegisterEmail" // Redirigir o manejar el siguiente paso
     } else {
       formError.value = 'Error en el registro. Por favor intente nuevamente.'
     }
@@ -221,8 +234,6 @@ const handleSubmit = async () => {
 }
 </script>
 
-
-  
 
   <style scoped>
   .error-message {
