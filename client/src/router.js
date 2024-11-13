@@ -23,6 +23,7 @@ import redeemCoupon from './views/redeemCoupon.vue';
 import workshopQR from './views/workshopQR.vue';
 import chat from './views/chat.vue';
 import workshops2 from './views/workshops2.vue';
+import profile from './views/profile.vue';
 
 const routes = [
   {
@@ -139,6 +140,11 @@ const routes = [
     path: '/workshopsgallery',
     name: 'Workshopsgallery',
     component: workshops2 
+  },
+  { 
+    path: '/profile',
+    name: 'Profile',
+    component: profile 
   }
 ];
 

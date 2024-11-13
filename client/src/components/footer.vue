@@ -36,7 +36,7 @@
           '/discounts',    
           '/home',            
           '/car',          
-          '/home',
+          '/profile',
         ]
       };
     },
