@@ -1,4 +1,58 @@
+@font-face {
+    font-family: 'BellotaRegular';
+    src: url('fonts/Bellota-Regular.ttf');
+}
+@font-face {
+    font-family: 'BellotaLight';
+    src: url('fonts/Bellota-Light.ttf');
+}
+@font-face {
+    font-family: 'BellotaBold';
+    src: url('fonts/Bellota-Bold.ttf');
+}
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
+
+
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body{
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+}
+
+
+
+
+
+:root{
+    --color-W: #ffffff;
+    --color-B: #000000;
+    --color-B-44: #00000044;
+    --color-B2: #3D3D3D;
+    --color-B2-2: #7c7c7c;
+    --color-B3: #D9D9D9;
+}
+
+
+
+
+
+
+.bellotaRegular{
+    font-family: 'BellotaRegular', sans-serif;
+}
+.bellotaLight{
+    font-family: 'BellotaLight', sans-serif;
+}
+.bellotaBold{
+    font-family: 'BellotaBold', sans-serif;
+}
