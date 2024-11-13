@@ -48,7 +48,6 @@
         </div>
     </div>
     <Footer :selectedIndex="2" />
-    <LoadScreem />
 </template>
 <script>
 import squareImg from '../images/square.svg';
@@ -60,7 +59,6 @@ import homeBGImg from '../images/homeBG.svg';
 
 import Footer from '../components/footer.vue';
 import Menu from '../components/menu.vue';
-import LoadScreem from '../components/loadScreem.vue';
 
 import textileImg from '../images/textile.svg';
 import ceramicImg from '../images/ceramic.svg';
@@ -99,8 +97,7 @@ export default {
     },
     components: {
         Footer,
-        Menu,
-        LoadScreem
+        Menu
     },
     methods: {
         redirectToWorkshops() {
