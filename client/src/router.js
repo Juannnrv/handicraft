@@ -18,7 +18,6 @@ import loginForm from './views/loginForm.vue';
 import ajustes from './views/ajustes.vue';
 import customerService from './views/customerService.vue';
 import comments from './views/comments.vue';
-import workshops from './views/workshops.vue';
 import workshopDetails from './views/workshopDetails.vue';
 import redeemCoupon from './views/redeemCoupon.vue';
 import workshopQR from './views/workshopQR.vue';
@@ -114,11 +113,6 @@ const routes = [
     path: '/comments',
     name: 'comments',
     component: comments 
-  },
-  { 
-    path: '/workshops',
-    name: 'workshops',
-    component: workshops 
   },
   { 
     path: '/workshopDetails',
