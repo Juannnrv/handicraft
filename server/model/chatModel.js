@@ -7,8 +7,8 @@ const chatSchema = new mongoose.Schema({
         required: [true, 'Sender ID is required']
     },
     receiverId: {
-        type: String,
-        default: "admin"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     },
     content: {
         type: String,
