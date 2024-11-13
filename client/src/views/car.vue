@@ -22,18 +22,18 @@
                         <img class="productImg" :src="productImg">
                     </div>
                     <div class="productCountDiv">
-                        <div class="productCountDivSection"><img class="countImg" :src="minusImg"></div>
-                        <div class="productCountDivSection"><p class="countNumber">1</p></div>
-                        <div class="productCountDivSection"><img class="countImg" :src="plusImg"></div>
+                        <div class="productCountDivSection" @click="decrementCount" ><img class="countImg" :src="minusImg"></div>
+                        <div class="productCountDivSection"><p class="countNumber">{{ product.count }}</p></div>
+                        <div class="productCountDivSection" @click="incrementCount" ><img class="countImg" :src="plusImg"></div>
                     </div>
                 </div>
                 <div class="productSectionDiv padding">
                     <img class="trashImg" :src="trashImg">
 
-                    <p class="productText">Vasija pequeña con diseño de flor</p>
-                    <p class="productText">$50</p>
-                    <p class="productText">13x10 cm, 2 KG</p>
-                    <p class="productText">Asoc. de artesanos productores de Chazuta</p>
+                    <p class="productText">{{ product.name }}</p>
+                    <p class="productText">${{ product.price }}</p>
+                    <p class="productText">{{ product.dimensions }}</p>
+                    <p class="productText">{{ product.producer }}</p>
                 </div>
             </div>
         </div>
@@ -47,14 +47,14 @@
             <div class="bellotaBold" id="infoDiv">
                 <p id="subtotalText">Sub total</p>
                 <p id="envioText">Envío</p>
-                <p id="subtotalValue">$20</p>
-                <p id="envioValue">$10</p>
+                <p id="subtotalValue">${{ subtotal }}</p>
+                <p id="envioValue">${{ product.count > 0 ? 10 : 0 }}</p>
             </div>
             <div class="bellotaBold" id="totalDiv">
                 <p id="totalText">Total</p>
-                <p id="totalValue">$30</p>
+                <p id="totalValue">${{ total }}</p>
             </div>
-            <div class="bellotaBold" id="buyDiv">
+            <div class="bellotaBold" id="buyDiv" v-if="product.count > 0">
                 Realizar compra
             </div>
         </div>
@@ -91,7 +91,14 @@ export default {
             minusImg,
             plusImg,
             isCouponInputVisible: false,
-            isMenuVisible: false
+            isMenuVisible: false,
+            product: {
+                name: 'Vasija pequeña con diseño de flor',
+                price: 50,
+                dimensions: '13x10 cm, 2 KG',
+                producer: 'Asoc. de artesanos productores de Chazuta',
+                count: 1
+            }
         };
     },
     components: {
@@ -114,6 +121,23 @@ export default {
             if (this.isMenuVisible && this.$refs.menu && !this.$refs.menu.contains(event.target)) {
                 this.isMenuVisible = false;
             }
+        },
+        decrementCount() {
+        if (this.product.count > 0) {
+            this.product.count--;
+        }
+        },
+        incrementCount() {
+            this.product.count++;
+        },
+    },
+    computed: {
+        subtotal() {
+            return this.product.price * this.product.count;
+        },
+        total() {
+            const envio = this.product.count > 0 ? 10 : 0;
+            return this.subtotal + envio;
         }
     },
     mounted() {
