@@ -4,6 +4,11 @@
             <img id="productBGImg" :src="productBGImg">
             <img id="square2Img" :src="square2Img">
             <img id="arrow2Img" :src="arrow2Img" @click="goToHome">
+
+            <div v-if="discount" id="discountDiv">
+                <img id="discountImg" :src="discountImg">
+                <p id="discountNumber" class="bellotaRegular">50%</p>
+            </div>
         </div>
         <div class="workshopsGridSection bellotaRegular" id="moreInfoDiv">
             Tapiz Chumpi Andino III
@@ -17,7 +22,7 @@
                 @click="toggleHearth" 
             >
 
-            <p class="detailsText"><span class="bellotaBold">$50</span></p>
+            <p class="detailsText"><span v-if="discount" class="bellotaRegular" id="Oprice">$100 </span><span class="bellotaBold">$50</span></p>
             <p class="detailsText"><span class="bellotaBold">Taller</span></p>
             <p class="detailsText"><span class="bellotaBold">Dimensiones:</span> 60 x 80 cm</p>
             <p class="detailsText"><span class="bellotaBold">Descripción:</span> Tapiz tridimensional 
@@ -54,6 +59,7 @@ import hearthEmptyImg from '../images/hearthEmpty.svg';
 import hearthFullImg from '../images/hearthFull.svg';
 import checkImg from '../images/check.svg';
 import shopCarImg from '../images/shopCar.svg';
+import discountImg from '../images/discount.svg';
 
 export default {
     data() {
@@ -72,6 +78,8 @@ export default {
             hearthFullImg,
             checkImg,
             shopCarImg,
+            discountImg,
+            discount: false,
             isHearthFull: false,
             categories: [
                 'Textileria', 'Cerámica', 'Joyería', 'Talla en piedra',
@@ -395,6 +403,30 @@ export default {
         background-color: var(--color-B3);
     }
     #shopCarImg{
-        height: 90%;
+        height: 80%;
+    }
+
+    #discountDiv{
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        bottom: 0;
+        left: 0;
+        margin: 10px;
+        width: 80px;
+        height: 80px;
+        z-index: +1;
+    }
+    #discountImg{
+        width: 100%;
+    }
+    #discountNumber{
+        position: absolute;
+        color: var(--color-W);
+        font-size: 16px;
+    }
+    #Oprice{
+        text-decoration: line-through;
     }
 </style>
