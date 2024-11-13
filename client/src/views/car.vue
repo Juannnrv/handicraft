@@ -155,7 +155,7 @@ export default {
     #homeGrid{
         overflow-y: scroll;
         display: grid;
-        grid-template-rows: 80px 80px 260px 60px calc(100% - 420px);
+        grid-template-rows: 80px 80px 260px 60px calc(100% - 400px);
         width: 100vw;
         height: 100vh;
     }
@@ -353,10 +353,10 @@ export default {
         align-items: center;
         width: calc(100% - 50px);
         margin-left: 25px;
+        margin-top: 10px;
         height: 40px;
         background-color: var(--color-B3);
         border-radius: 8px;
-        margin-top: 20px;
     }
     #totalText{
         position: absolute;
@@ -375,7 +375,7 @@ export default {
         height: 30px;
         color: var(--color-W);
         width: 180px;
-        margin-left: 25px;
+        margin-left: calc((100% - 180px) / 2);
         margin-top: 15px;
         border-radius: 8px;
         display: flex;
