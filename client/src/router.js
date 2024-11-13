@@ -22,6 +22,7 @@ import workshopDetails from './views/workshopDetails.vue';
 import redeemCoupon from './views/redeemCoupon.vue';
 import workshopQR from './views/workshopQR.vue';
 import chat from './views/chat.vue';
+import workshops2 from './views/workshops2.vue';
 
 const routes = [
   {
@@ -133,6 +134,11 @@ const routes = [
     path: '/chat',
     name: 'chat',
     component: chat 
+  },
+  { 
+    path: '/workshopsgallery',
+    name: 'Workshopsgallery',
+    component: workshops2 
   }
 ];
 

@@ -32,7 +32,7 @@
       return {
         images: [workshopImg, discountImg, homeImg, carImg, userImg],
         routes: [
-          '/workshops',    
+          '/workshopsgallery',    
           '/discounts',    
           '/home',            
           '/car',          
