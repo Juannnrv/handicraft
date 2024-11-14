@@ -67,7 +67,7 @@ onMounted(() => {
   } else {
     console.error("No hay datos previos disponibles.")
     // Aquí podrías redirigir o mostrar un mensaje si no hay datos previos
-    // location.href = '/registerEmail' // Ejemplo de redirección
+    location.href = '/registerEmail' // Ejemplo de redirección
   }
 })
 

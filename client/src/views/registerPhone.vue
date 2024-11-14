@@ -299,7 +299,7 @@
       localStorage.setItem('savedData', JSON.stringify(savedFormData)) // Guardamos los datos formateados
 
 // Redirigir al siguiente paso
-      location.href = "confirmRegisterEmail" // Redirigir o manejar el siguiente paso
+      location.href = "confirmRegisterPhone" // Redirigir o manejar el siguiente paso
   
     } catch (error) {
       console.error('Error en el registro:', error)

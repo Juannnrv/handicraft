@@ -44,7 +44,7 @@
 
   
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import rotatedSquare from '../images/rotatedSquare.svg'
 import backArrow from '../images/backArrow.svg'
 import squareBG from '../images/squareBG.svg'
@@ -54,12 +54,75 @@ const privacyAccepted = ref(false)
 const termsAccepted = ref(false)
 const promotionsAccepted = ref(false)
 
+const formError = ref('')
+
+// Obtener los datos previamente guardados de localStorage (si existen)
+const savedData = ref(null)
+
+
+onMounted(() => {
+  // Recuperar los datos desde localStorage si están disponibles
+  const storedData = localStorage.getItem('savedData')
+  if (storedData) {
+    savedData.value = JSON.parse(storedData)
+    console.log(savedData.value)
+  } else {
+    console.error("No hay datos previos disponibles.")
+    // Aquí podrías redirigir o mostrar un mensaje si no hay datos previos
+    location.href = '/registerPhone' // Ejemplo de redirección
+  }
+})
+
+
 // Función para manejar el envío del formulario
-const handleSubmit = () => {
+const handleSubmit = async() => {
   if (!privacyAccepted.value || !termsAccepted.value || !promotionsAccepted.value) {
     alert("Por favor, acepta todos los términos y condiciones para continuar.");
     return;
   }
+
+  if (!savedData.value) {
+    formError.value = "No hay datos de registro previos disponibles."
+    return
+  }
+
+  const dataToSubmit = {
+    ...savedData.value  // Los datos guardados del paso anterio
+  }
+
+
+
+  try {
+    console.log("Formulario enviado con los siguientes datos:", JSON.stringify(dataToSubmit))
+    
+    // Enviar la solicitud POST a la API que registra al usuario
+    const response = await fetch('http://localhost:5000/auth/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        "x-version": "1.0.0"
+      },
+      body: JSON.stringify(dataToSubmit),
+      credentials: 'include'  // Asegurar la autenticación del usuario en la solicitud
+    })
+
+    if (response.status === 201) {
+      const responseData = await response.json()
+      console.log('Registro exitoso:', responseData)
+      localStorage.clear()
+      location.href = 'home'  // Redirigir a la página de confirmación
+    } else if (response.status === 400) {
+      const errorData = await response.json()
+      formError.value = errorData.message || 'Error desconocido'
+    } else {
+      formError.value = 'Error en el registro. Por favor intente nuevamente.'
+    }
+  } catch (error) {
+    console.error('Error en el registro:', error)
+    formError.value = 'Error al enviar los datos. Intente nuevamente.'
+  }
+
+
 
   alert("Formulario enviado con éxito");
 }
