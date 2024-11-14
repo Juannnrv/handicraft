@@ -1,7 +1,7 @@
 const Workshop = require("../model/workshopModel");
 const { validationResult } = require("express-validator");
 
-class ProductController {
+class workshopController {
   /**
    * List all workshops/products with pagination and filtering.
    *
@@ -151,8 +151,6 @@ class ProductController {
           });
       }
   }
-  
-
 }
 
-module.exports = ProductController;
+module.exports = workshopController;
