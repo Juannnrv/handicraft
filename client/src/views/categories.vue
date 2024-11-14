@@ -13,7 +13,6 @@
                 :class="getCategoryClass(index)"
                 @click="selectCategory(index)"
             >
-            
                 <p class="bellotaBold">{{ category }}</p>
             </div>
         </div>
@@ -24,19 +23,18 @@
                 <img id="filtersImg" :src="filtersImg">
         </div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
-            <div class="wrokshopsGridSection" v-for="(workshop, index) in workshops" :key="index">
+            <div class="wrokshopsGridSection" v-for="(product, index) in products" :key="index">
                 <div class="wrokshopsGridSectionDiv">
-                    <img class="workshopImg" :src="workshop.img">
+                    <img class="workshopImg" :src="product.img">
                 </div>
                 <div class="wrokshopsGridSectionDivB">
-                    <p class="wrokshopsGridSectionText bellotaBold">{{ workshop.title }}</p>
-                    <p class="wrokshopsGridSectionPrice bellotaBold">{{ workshop.Oprice }}</p>
-                    <p class="wrokshopsGridSectionText2 bellotaRegular">{{ workshop.location }}</p>
+                    <p class="wrokshopsGridSectionText bellotaBold">{{ product.name }}</p>
+                    <p class="wrokshopsGridSectionPrice bellotaBold">{{ product.Oprice }}</p>
+                    <p class="wrokshopsGridSectionText2 bellotaRegular">{{ product.location }}</p>
                 </div>
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -63,10 +61,7 @@ export default {
                 'Talla en madera', 'Orfebrería', 'Estampado', 'Pintura tradicional',
                 'Hojalatería', 'Bordado'
             ],
-            workshops: [
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '25'},
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'}
-            ],
+            products: [],
             selectedCategoryIndex: 0
         };
     },
@@ -76,17 +71,37 @@ export default {
     methods: {
         selectCategory(index) {
             this.selectedCategoryIndex = index;
+            this.fetchProducts(this.categories[index]);
         },
         getCategoryClass(index) {
             return index === this.selectedCategoryIndex ? 'categoryGridDivB' : 'categoryGridDiv';
         },
         goToHome() {
             this.$router.push('/home');
+        },
+        fetchProducts(category) {
+            fetch(`http://localhost:5000/product?category=${category}`, {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json',
+                'x-version': '1.0.0'
+                },
+                credentials: 'include'
+            })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                this.products = data.data.products;
+                console.log(data.data.products)
+            })
         }
     },
-    name: 'TestComponent'
+    name: 'WorkshopsGallery'
 };
 </script>
+
+
 
 <style scoped>
     #workshopsGrid {

@@ -25,7 +25,7 @@
             <router-link 
                 v-for="(category, index) in categories" 
                 :key="index" 
-                :to="'/categories'"
+                :to="`/categories?category=${category.name}`" 
                 class="grid-item-link"
             >
                 <div class="grid-item">
