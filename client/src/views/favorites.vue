@@ -13,25 +13,22 @@
                 :class="getCategoryClass(index)"
                 @click="selectCategory(index)"
             >
-            
                 <p class="bellotaBold">{{ category }}</p>
             </div>
         </div>
         <div class="workshopsGridSection"></div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
-            <div class="wrokshopsGridSection" v-for="(workshop, index) in workshops" :key="index">
+            <div class="wrokshopsGridSection" v-for="(workshop, index) in filteredProducts" :key="workshop._id" @click="goToProduct(workshop._id)">
                 <div class="wrokshopsGridSectionDiv">
-                    <img class="workshopImg" :src="workshop.img">
+                    <img class="workshopImg" :src="workshop.photos[0]" alt="Workshop Image">
                 </div>
                 <div class="wrokshopsGridSectionDivB">
-                    <p class="wrokshopsGridSectionText bellotaBold">{{ workshop.title }}</p>
-                    <p class="wrokshopsGridSectionPrice bellotaBold">{{ workshop.Oprice }}</p>
-                    <p class="wrokshopsGridSectionText2 bellotaRegular">{{ workshop.location }}</p>
+                    <p class="wrokshopsGridSectionText bellotaBold">{{ workshop.name }}</p>
+                    <p class="wrokshopsGridSectionPrice bellotaBold">${{ workshop.price }}</p>
                 </div>
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -54,33 +51,59 @@ export default {
             arrowImg,
             filtersImg,
             categories: [
-                'Textileria', 'Cerámica', 'Joyería', 'Talla en piedra',
+                'Todos', 'Textileria', 'Cerámica', 'Joyería', 'Talla en piedra',
                 'Talla en madera', 'Orfebrería', 'Estampado', 'Pintura tradicional',
                 'Hojalatería', 'Bordado'
             ],
-            workshops: [
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '25'},
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'},
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'},
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'},
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'}
-            ],
-            selectedCategoryIndex: 0
+            products: [],
+            selectedCategoryIndex: 0,
+            filteredProducts: []
         };
     },
     components: {
         Footer,
     },
     methods: {
+        fetchFavorites() {
+            fetch(`http://localhost:5000/user/favorites`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-version': '1.0.0'
+                },
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.products = data.data.products;
+                this.filterProducts();
+            });
+        },
         selectCategory(index) {
             this.selectedCategoryIndex = index;
+            this.filterProducts();
         },
         getCategoryClass(index) {
             return index === this.selectedCategoryIndex ? 'categoryGridDivB' : 'categoryGridDiv';
         },
+        filterProducts() {
+            const selectedCategory = this.categories[this.selectedCategoryIndex];
+
+            if (selectedCategory === 'Todos') {
+                this.filteredProducts = this.products;
+            } else {
+                this.filteredProducts = this.products.filter(product => product.category === selectedCategory);
+            }
+        },
         goToHome() {
             this.$router.push('/home');
+        },
+        goToProduct(productId) {
+            this.$router.push(`/productdetails?id=${productId}`);
         }
+    },
+    mounted() {
+        this.fetchFavorites();
     },
     name: 'TestComponent'
 };
@@ -128,6 +151,7 @@ export default {
         overflow: auto;
     }
     .wrokshopsGridSection {
+        cursor: pointer;
         overflow: hidden;
         border-radius: 10px;
         position: relative;
@@ -144,36 +168,28 @@ export default {
     .wrokshopsGridSectionDivB {
         position: relative;
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        padding: 4px;
         overflow: hidden;
         background-color: var(--color-B);
     }
     .wrokshopsGridSectionText {
-        position: absolute;
         top: 0;
         left: 0;
-        margin-top: 6px;
-        margin-left: 4px;
         color: var(--color-W);
-        font-size: 16px;
+        font-size: 14px;
     }
     .wrokshopsGridSectionText2 {
-        position: absolute;
         bottom: 0;
         left: 0;
-        margin-bottom: 6px;
-        margin-left: 4px;
         color: var(--color-W);
-        font-size: 16px;
+        font-size: 14px;
     }
     .wrokshopsGridSectionPrice{
-        position: absolute;
         left: 0;
-        margin-bottom: 6px;
-        margin-left: 4px;
-        margin-top: 8px;
         color: var(--color-W);
-        font-size: 16px;
+        font-size: 14px;
     }
     .workshopImg {
         height: 100%;
