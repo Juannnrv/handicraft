@@ -9,11 +9,11 @@
       </a>
       <form class="login-form" @submit.prevent="handleSubmit">
         <div class="form-group">
-          <label for="username" class="bellotaBold">Nombre de usuario, celular o correo</label>
+          <label for="identifier" class="bellotaBold">Nombre de usuario, celular o correo</label>
           <input 
             type="text" 
             id="username" 
-            v-model="username"
+            v-model="identifier"
             required
           >
         </div>
@@ -42,19 +42,52 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue'
-  import rotatedSquare from '../images/rotatedSquare.svg'
-import backArrow from '../images/backArrow.svg'
-import squareBG from '../images/squareBG.svg'
-  
-  const username = ref('')
-  const password = ref('')
-  
-  const handleSubmit = () => {
-    // Handle login logic here
-    console.log('Login attempted', { username: username.value, password: password.value })
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'  // Importa el router para redirigir
+
+// Estado para los campos del formulario
+const identifier = ref('')
+const password = ref('')
+
+// Obtén el router para redirigir después de un login exitoso
+const router = useRouter()
+
+// Función que maneja el envío del formulario
+const handleSubmit = async () => {
+  try {
+    // Realiza la solicitud POST para iniciar sesión con fetch
+    const response = await fetch('http://localhost:5000/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-version': '1.0.0'
+      },
+      body: JSON.stringify({
+        identifier: identifier.value,
+        password: password.value
+      })
+    })
+
+    // Verifica que la respuesta tenga un status 200
+    if (response.ok) {
+      // Redirige a /home si la respuesta es exitosa
+      //router.push('/home')
+      alert('bien puta')
+    } else {
+      // Si no es 200, muestra un mensaje de error
+      const errorData = await response.json()
+      console.error('Error:', errorData)
+      alert('Credenciales incorrectas o error en el servidor.')
+    }
+  } catch (error) {
+    // Manejo de errores en caso de que la solicitud falle
+    console.error('Error al iniciar sesión:', error)
+    alert('Hubo un problema con la solicitud. Inténtalo nuevamente.')
   }
-  </script>
+}
+</script>
+
+
   
   <style scoped>
   .login-container {
