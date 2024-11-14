@@ -107,8 +107,21 @@ const handleSubmit = async() => {
     })
 
     if (response.status === 201) {
-      const responseData = await response.json()
-      console.log('Registro exitoso:', responseData)
+
+      const response = await fetch('http://localhost:5000/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-version': '1.0.0'
+      },
+      body: JSON.stringify({
+        identifier: dataToSubmit.username,
+        password: dataToSubmit.password
+      }),
+      credentials: 'include'
+    })
+
+
       localStorage.clear()
       location.href = 'home'  // Redirigir a la página de confirmación
     } else if (response.status === 400) {
