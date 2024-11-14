@@ -76,8 +76,7 @@ const handleSubmit = async () => {
     // Verifica que la respuesta tenga un status 200
     if (response.ok) {
       // Redirige a /home si la respuesta es exitosa
-      //router.push('/home')
-      alert('bien puta')
+      router.push('/home')
     } else {
       // Si no es 200, muestra un mensaje de error
       const errorData = await response.json()
