@@ -13,6 +13,7 @@ const passport = require("./server/middleware/passportConfig");
 const verifyJwt = require("./server/middleware/authJwt");
 const { setupSockets } = require('./server/sockets/socketHandler.js');
 const app = express();
+
 app.use(cors({
   origin: "http://localhost:3000", // Frontend
   credentials: true,
@@ -28,15 +29,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/auth", authRoutes);
-// app.use(verifyJwt);
 app.use('/user', userRouter);
+app.use(verifyJwt);
 app.use('/workshop', workshopRoutes);
 app.use('/product', productRoutes);
 app.use('/coupons', cuponRoutes);
-app.use(errorHandler);
-
-app.use('/user', userRouter);
-
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
