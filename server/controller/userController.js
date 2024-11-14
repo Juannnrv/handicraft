@@ -4,6 +4,7 @@ const Product = require("../model/productModel");
 const Order = require("../model/orderModel");
 const ProfileImg = require("../middleware/profileImage");
 const { validationResult } = require("express-validator");
+const mongoose = require('mongoose');
 
 class UserController {
   /**
@@ -126,12 +127,12 @@ class UserController {
   }
 
   static async createUserFavorite(req, res) {
-    const userId = req.user._id;
-    const { favoriteId } = req.body;
+    const userId = req.user._id;  // El ID del usuario actual
+    const { favoriteId } = req.body;  // El ID del favorito (puede ser producto o taller)
   
     try {
+      // Buscar al usuario por ID
       const user = await User.findById(userId);
-  
       if (!user) {
         return res.status(404).json({
           status: 404,
@@ -139,11 +140,13 @@ class UserController {
         });
       }
   
+      // Buscar si el favorito es un producto o un taller
       const [productFavorite, workshopFavorite] = await Promise.all([
         Product.findById(favoriteId),
         Workshop.findById(favoriteId),
       ]);
   
+      // Verificar que al menos uno exista
       if (!productFavorite && !workshopFavorite) {
         return res.status(404).json({
           status: 404,
@@ -151,26 +154,30 @@ class UserController {
         });
       }
   
+      // Lógica para agregar un producto favorito
       if (productFavorite) {
         if (!user.favorites.products) {
-          user.favorites.products = [];
+          user.favorites.products = [];  // Si no existe la lista de productos favoritos, la creamos
         }
-        user.favorites.products.push({ $oid: favoriteId });
+        user.favorites.products.push(new mongoose.Types.ObjectId(favoriteId));  // Asegúrate de usar un ObjectId válido
         await user.save();
-        await user.populate("favorites.products.$oid").execPopulate();
+        // await user.populate("favorites.products").execPopulate();  // Poblar los productos favoritos
   
         return res.status(200).json({
           status: 200,
           message: "User product favorite added",
           data: user.favorites.products,
         });
-      } else if (workshopFavorite) {
+      }
+  
+      // Lógica para agregar un taller favorito
+      if (workshopFavorite) {
         if (!user.favorites.workshops) {
-          user.favorites.workshops = [];
+          user.favorites.workshops = [];  // Si no existe la lista de talleres favoritos, la creamos
         }
-        user.favorites.workshops.push({ $oid: favoriteId });
+        user.favorites.workshops.push(new mongoose.Types.ObjectId(favoriteId));  // Asegúrate de usar un ObjectId válido
         await user.save();
-        await user.populate("favorites.workshops.$oid").execPopulate();
+        // await user.populate("favorites.workshops").execPopulate();  // Poblar los talleres favoritos
   
         return res.status(200).json({
           status: 200,
@@ -178,11 +185,12 @@ class UserController {
           data: user.favorites.workshops,
         });
       }
+  
     } catch (error) {
       res.status(500).json({
         status: 500,
         message: "Error adding user favorite",
-        error: error.message
+        error: error.message,
       });
     }
   }
