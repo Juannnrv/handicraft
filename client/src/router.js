@@ -145,7 +145,11 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: profile 
-  }
+  },
+  {
+    path: '/',
+    redirect: '/loginform'
+  },
 ];
 
 const router = createRouter({
