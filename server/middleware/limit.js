@@ -90,32 +90,32 @@ exports.limit = (method) => {
   switch (method) {
     case "login":
       windowMs = 3 * 60 * 1000; // 3 minutes
-      max = 3;
+      max = 3000;
       message = "Please wait 3 minutes before trying again.";
       break;
     case "get":
       windowMs = 15 * 60 * 1000; // 15 minutes
-      max = 25;
+      max = 2500;
       message = "Rate limit exceeded. Please try again later.";
       break;
     case "post":
       windowMs = 15 * 60 * 1000; // 15 minutes
-      max = 45;
+      max = 4500;
       message = "Rate limit exceeded. Please try again later.";
       break;
     case "delete":
       windowMs = 10 * 60 * 1000; // 10 minutes
-      max = 10;
+      max = 1000;
       message = "Rate limit exceeded. Please try again later.";
       break;
     case "put":
       windowMs = 15 * 60 * 1000; // 15 minutes
-      max = 45;
+      max = 4500;
       message = "Rate limit exceeded. Please try again later.";
       break;
     default:
       windowMs = 15 * 60 * 1000; // 15 minutes
-      max = 25;
+      max = 2500;
       message = "Rate limit exceeded. Please try again later.";
       break;
   }
