@@ -1,7 +1,7 @@
 <template>
     <div id="workshopsGrid">
         <div class="workshopsGridSection">
-            <div id="workshopTitleDiv" class="bellotaRegular">Taller Awaq Ayllus</div>
+            <div id="workshopTitleDiv" class="bellotaRegular">{{ workshop.name }}</div>
             <img id="workshopBGImg" :src="workshopBGImg">
             <img id="square2Img" :src="square2Img">
             <img id="arrow2Img" :src="arrow2Img" @click="goToWorkshops">
@@ -23,7 +23,7 @@
                 <img id="filtersImg" :src="filtersImg">
         </div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
-            <div class="wrokshopsGridSection" v-for="(workshop, index) in workshops" :key="index">
+            <div class="wrokshopsGridSection" v-for="(workshop, index) in products" :key="index">
                 <div class="wrokshopsGridSectionDiv">
                     <img class="workshopImg" :src="workshop.img">
                 </div>
@@ -66,6 +66,7 @@ export default {
             filtersImg,
             commentImg,
             workshopBGImg,
+            workshop: {},
             categories: [
                 'Textileria', 'Cerámica', 'Joyería', 'Talla en piedra',
                 'Talla en madera', 'Orfebrería', 'Estampado', 'Pintura tradicional',
@@ -80,6 +81,23 @@ export default {
     },
     components: {
         Footer,
+    },
+    created() {
+        const workshopId = this.$route.params.id;
+        
+        fetch(`http://localhost:5000/workshop/${workshopId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-version': '1.0.0'
+            },
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            this.workshop = data;
+        })
     },
     methods: {
         selectCategory(index) {
