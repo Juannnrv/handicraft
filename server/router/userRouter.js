@@ -14,7 +14,6 @@ user.get('/', limit('get'), versioning('1.0.0'), findUserById);
 user.get('/favorites', limit('get'), versioning('1.0.0'), findUserFavorites);
 user.get('/coupons', limit('get'), versioning('1.0.0'), findUserCoupons);
 user.get('/orders', limit('get'), versioning('1.0.0'), findUserOrders);
-user.get('/workshops', limit('get'), versioning('1.0.0'), findUserWorkshopEnrollments);
 user.put('/', upload.single('profilePicture'), limit('put'), versioning('1.0.0'), userValidator.update, updateUser);
 user.delete('/favorites/:id', limit('delete'), versioning('1.0.0'), deleteUserFavorite);
 
