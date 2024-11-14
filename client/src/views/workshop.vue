@@ -2,12 +2,14 @@
     <div id="workshopsGrid">
         <div class="workshopsGridSection">
             <div id="workshopTitleDiv" class="bellotaRegular">{{ workshop.name }}</div>
-            <img id="workshopBGImg" :src="workshopBGImg">
+            <img id="workshopBGImg" :src="workshop.photo">
             <img id="square2Img" :src="square2Img">
             <img id="arrow2Img" :src="arrow2Img" @click="goToWorkshops">
         </div>
         <div class="workshopsGridSection bellotaRegular" id="moreInfoDiv">
-            Conoce la historia detrás de este taller artesanal y conoce como producen sus textiles
+            <a :href="workshop.documentary" target="_blank" id="moreInfoText">
+                Conoce la historia detrás de este taller artesanal y conoce como producen sus textiles
+            </a>
             <img id="squareImg1" :src="squareImg">
             <img id="squareImg2" :src="squareImg">
         </div>
@@ -72,7 +74,7 @@ export default {
                 'Talla en madera', 'Orfebrería', 'Estampado', 'Pintura tradicional',
                 'Hojalatería', 'Bordado'
             ],
-            workshops: [
+            products: [
                 { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '25'},
                 { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'}
             ],
@@ -83,7 +85,7 @@ export default {
         Footer,
     },
     created() {
-        const workshopId = this.$route.params.id;
+        const workshopId = this.$route.query.id;
         
         fetch(`http://localhost:5000/workshop/${workshopId}`, {
             method: 'GET',
@@ -95,8 +97,8 @@ export default {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
-            this.workshop = data;
+            console.log(data.data)
+            this.workshop = data.data;
         })
     },
     methods: {
@@ -310,6 +312,7 @@ export default {
     }
 
     #moreInfoDiv{
+        color: var(--color-B);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -319,7 +322,13 @@ export default {
         padding-right: 30px;
         padding-left: 30px;
     }
+    #moreInfoText{
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+    }
     #workshopTitleDiv{
+        text-align: center;
         display: flex;
         align-items: center;
         justify-content: center;
