@@ -1,95 +1,125 @@
-    <template>
-        
-        <div class="workshop-page">
-        <div class="workshop-content">
-        
-            <div class="workshop-image-container">
-            <img :src="workshop.imageUrl" :alt="workshop.title" class="workshop-image">
-            <img class="square-title" :src="rotatedSquare" alt="">
-            <h1 class="workshop-title bellotaBold">{{ workshop.title }}</h1>
-            <img class="square-bg" style="filter: invert(100%);" :src="rotatedSquare" alt="">
-            <a class="a-back" href="registerEmail">
-                <img class="back-arrow" style="filter: invert(100%);" :src="backArrow" alt="">
-            </a>
-            </div>
-    
-            <div class="workshop-details">
-            <p class="workshop-description bellotaRegular">
-                En este taller dado por los artesanos de 
-                <strong class="bellotaBold">{{ workshop.instructor }}</strong>, 
-                {{ workshop.description }}
-            </p>
-    
-            <div class="audience-section bellotaBold">
-                <h2>{{ workshop.audience.title }}</h2>
-                <p class="note bellotaRegular">{{ workshop.audience.note }}</p>
-            </div>
-    
-            <div class="info-grid bellotaRegular">
-                <div class="info-item">
-                <strong>Duración:</strong> {{ workshop.duration }}
-                </div>
-                <div class="info-item">
-                <strong>Fecha de inicio:</strong> {{ workshop.startDate }}
-                </div>
-                <div class="info-item">
-                <strong>Horario:</strong> {{ workshop.schedule }}
-                </div>
-                <div class="info-item">
-                <strong>Materiales:</strong> {{ workshop.materials }}
-                </div>
-                <div class="info-item">
-                <strong>Modalidad:</strong> {{ workshop.modality }}
-                </div>
-                <div class="info-item">
-                <strong>Lugar:</strong> {{ workshop.location }}
-                </div>
-            </div>
-    
-            <div class="div-button">
-                <button class="signup-button  bellotaBold" @click="handleSignup"><img style="width: 20px;" :src="suscribe" alt="">Inscribirse al taller</button>
-                <span class="note bellotaRegular">*Cupos limitados</span>
-            </div>
-            </div>
+<template>
+    <div class="workshop-page">
+      <div class="workshop-content">
+        <div class="workshop-image-container">
+          <img :src="workshop.photo" :alt="workshop.title" class="workshop-image">
+          <img class="square-title" :src="rotatedSquare" alt="">
+          <h1 class="workshop-title bellotaBold">{{ workshop.name }}</h1>
+          <img class="square-bg" style="filter: invert(100%);" :src="rotatedSquare" alt="">
+          <a class="a-back" href="workshops">
+            <img class="back-arrow" style="filter: invert(100%);" :src="backArrow" alt="">
+          </a>
         </div>
+  
+        <div class="workshop-details">
+          <p class="workshop-description bellotaRegular">
+             
+            <strong class="bellotaBold">{{  }}</strong> 
+            {{ }}
+          </p>
+  
+          <div class="audience-section bellotaBold">
+            <h2>{{ workshop.description }}</h2>
+            <p class="note bellotaRegular">{{ workshop.materialsProvided }}</p>
+          </div>
+  
+          <div class="info-grid bellotaRegular">
+            <div class="info-item">
+              <strong>Duración:</strong> {{ workshop.duration }}
+            </div>
+            <div class="info-item">
+              <strong>Fecha de inicio:</strong> {{ formatDate(workshop.startDate) }}
+            </div>
+            <div class="info-item">
+              <strong>Horario:</strong> {{ workshop.schedule }}
+            </div>
+            <div class="info-item">
+              <strong>Materiales:</strong> {{ workshop.materialsRequired }}
+            </div>
+            <div class="info-item">
+              <strong>Modalidad:</strong> {{ workshop.modality }}
+            </div>
+            <div class="info-item">
+              <strong>Lugar:</strong> {{ workshop.location }}
+            </div>
+          </div>
+  
+          <div class="div-button">
+            <button class="signup-button  bellotaBold" @click="handleSignup">
+              <img style="width: 20px;" :src="suscribe" alt="">Inscribirse al taller
+            </button>
+            <span class="note bellotaRegular">*Cupos limitados</span>
+          </div>
         </div>
-    </template>
-    
-    <script setup>
+      </div>
+    </div>
+  </template>
+  
+  <script setup>
+  import { ref, onMounted } from 'vue'
+  import rotatedSquare from '../images/rotatedSquare.svg'
+  import backArrow from '../images/backArrow.svg'
+  import suscribe from '../images/suscribe.svg'
+  
+  // Variable para guardar los datos del taller
+  const workshop = ref({})
+  
+  // Obtener el ID del taller desde la URL
+  const getWorkshopIdFromUrl = () => {
+    const params = new URLSearchParams(window.location.search)
+    return params.get('id') // Obtiene el parámetro "id" de la URL
+  }
 
-    import rotatedSquare from '../images/rotatedSquare.svg'
-    import backArrow from '../images/backArrow.svg'
-    import suscribe from '../images/suscribe.svg'
-    // Example of workshop data structure that would come from an API
-    const workshop = {
-        id: 1,
-        title: 'Taller de cerámica artesanal',
-        imageUrl: 'https://concepto.de/wp-content/uploads/2018/08/workshop-1-e1676660941240.jpg',
-        instructor: 'Cerámicas Tater Vera',
-        description: 'aprenderán a usar la arcilla para crear cosas para el hogar con diseños típicos ayacuchanos.',
-        audience: {
-        title: 'Para el público en general',
-        note: '*los niños menores de 8 años se recomienda que estén acompañados de un adulto'
+  // Función para formatear la fecha
+const formatDate = (dateString) => {
+  const date = new Date(dateString)  // Convertimos la cadena a un objeto Date
+  
+  // Formateamos la fecha a "8 de julio de 2023"
+  return date.toLocaleDateString('es-PE', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  })
+}
+  
+  const workshopId = getWorkshopIdFromUrl()
+  
+  // Realizar la petición para obtener los datos del taller
+  onMounted(async () => {
+    try {
+     console.log(workshopId)
+      const response = await fetch(`http://localhost:5000/workshop/${workshopId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-version': '1.0.0',
         },
-        duration: '2 meses',
-        startDate: '8 de Julio',
-        schedule: '4 a 6 PM cada sábado',
-        materials: 'Materiales dados en clase',
-        modality: 'Presencial',
-        location: 'En el Ministerio de Cultura, Lima, Perú',
-        availableSpots: true
+        credentials: 'include', // Incluye las credenciales (como el token)
+      })
+  
+      // Verificar si la respuesta es exitosa (status 200)
+      if (response.ok) {
+        const data = await response.json()  // Convertir la respuesta a JSON
+        workshop.value = data.data
+        workshop.value.materialsProvided = workshop.value.materialsProvided.join(', ')
+        workshop.value.materialsRequired = workshop.value.materialsRequired.join(', ')
+        console.log(data.data)  // Asignar los datos del taller
+      } else {
+        console.error('Error al obtener los datos del taller:', response.statusText)
+      }
+    } catch (error) {
+      console.error('Error de red o servidor:', error)
     }
-    
-    const goBack = () => {
-        // Add navigation logic here
-        console.log('Going back')
-    }
-    
-    const handleSignup = () => {
-        // Add signup logic here
-        console.log('Signing up for workshop:', workshop.id)
-    }
-    </script>
+  })
+  
+  // Función para manejar la inscripción (esto es solo un ejemplo)
+  const handleSignup = () => {
+    console.log('Inscribiéndose al taller:', workshopId)
+    // Lógica para inscribirse al taller
+  }
+  </script>
+  
+  
     
     <style scoped>
     .workshop-page {

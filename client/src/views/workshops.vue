@@ -63,7 +63,7 @@ const router = useRouter()
 // Hacer la solicitud HTTP cuando el componente se monte
 onMounted(async () => {
   try {
-    const response = await fetch('http://localhost:5000/user/workshops', {
+    const response = await fetch('http://localhost:5000/user/favorites', {
       method: 'GET',  // Usamos GET para obtener los datos
       headers: {
         'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ onMounted(async () => {
     // Verificamos que la respuesta sea exitosa (status 200)
     if (response.ok) {
       const data = await response.json() // Convertimos la respuesta a JSON
-      workshops.value = data.data
+      workshops.value = data.data.workshops
       console.log(data.data)
     } else if (response.status === 401) {
       // Si la respuesta es 401, redirigimos al login
