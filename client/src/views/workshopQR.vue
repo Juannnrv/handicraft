@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <img class="square-bg" :src="rotatedSquare" alt="">
-        <a class="a-back" href="registerEmail">
+        <a class="a-back" href="workshops">
             <img class="back-arrow" :src="backArrow" alt="">
         </a>
   
