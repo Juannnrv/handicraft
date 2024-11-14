@@ -17,7 +17,12 @@
       <img id="filterImg" :src="filterImg">
     </div>
     <div class="workshopsGridSection" id="wrokshopsGrid">
-      <div v-for="(workshop, index) in workshops" :key="index" class="wrokshopsGridSection">
+      <div
+        v-for="(workshop, index) in workshops"
+        :key="index"
+        class="wrokshopsGridSection"
+        @click="redirectToWorkshop(workshop._id)"
+      >
         <div class="wrokshopsGridSectionDivB">
           <p class="wrokshopsGridSectionText bellotaBold">{{ workshop.name }}</p>
           <p class="wrokshopsGridSectionText2 bellotaRegular">{{ workshop.location }}</p>
@@ -82,6 +87,9 @@ export default {
       .catch(error => {
         console.error("Error al obtener los talleres: ", error);
       });
+    },
+    redirectToWorkshop(id) {
+      this.$router.push(`/workshop?id=${id}`);
     }
   },
   mounted() {
@@ -185,6 +193,7 @@ export default {
         overflow: auto;
     }
     .wrokshopsGridSection{
+    cursor: pointer;
         border-radius: 10px;
         position: relative;
         display: grid;

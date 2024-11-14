@@ -4,7 +4,7 @@
             <div id="workshopTitleDiv" class="bellotaRegular">Taller Awaq Ayllus</div>
             <img id="workshopBGImg" :src="workshopBGImg">
             <img id="square2Img" :src="square2Img">
-            <img id="arrow2Img" :src="arrow2Img" @click="goToHome">
+            <img id="arrow2Img" :src="arrow2Img" @click="goToWorkshops">
         </div>
         <div class="workshopsGridSection bellotaRegular" id="moreInfoDiv">
             Conoce la historia detrás de este taller artesanal y conoce como producen sus textiles
@@ -88,8 +88,8 @@ export default {
         getCategoryClass(index) {
             return index === this.selectedCategoryIndex ? 'categoryGridDivB' : 'categoryGridDiv';
         },
-        goToHome() {
-            this.$router.push('/home');
+        goToWorkshops() {
+            this.$router.push('/workshopsgallery');
         }
     },
     name: 'TestComponent'
