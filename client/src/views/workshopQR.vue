@@ -21,7 +21,7 @@
       </div>
   
       <p class="description bellotaRegular">
-        El Taller de Arte Awaq Ayllus reúne a más de 60 tejedores y tejedoras ayacuchanos que producen tapices murales y delicadas piezas bordadas para diversos usos decorativos y utilitarios.
+        {{ workshopData.description }}  
       </p>
   
       <div class="divider" style="font-size: 1.1em;">
@@ -39,12 +39,12 @@
         <img :src="dividerSquare" alt="">
       </div>
   
-      <h1 class="title bellotaBold">Taller de arte Awaq Ayllus - Documental</h1>
+      <h1 class="title bellotaBold">{{ workshopData.name }}</h1>
   
       <div class="XD">
-      <a :href="videoUrl" class="video-link">
+      <a :href="workshopData.documentary" class="video-link">
         <div class="video-container">
-          <img src="https://concepto.de/wp-content/uploads/2018/08/workshop-1-e1676660941240.jpg" alt="Video thumbnail" class="video-thumbnail">
+          <img :src="workshopData.photo" alt="Video thumbnail" class="video-thumbnail">
           <div class="play-button">
             <div class="play-icon"></div>
           </div>
@@ -57,27 +57,68 @@
         <p class="bellotaRegular">Escanea el código QR con tu celular y disfruta de la experiencia</p>
         
         <div class="qr-code">
-            <QrcodeVue :value="qrCode" :size="150"/>
+            <QrcodeVue :value="workshopData.documentary" :size="150"/>
         </div>
       </div>
     </div>
   </template>
   
   <script setup>
-import { ref } from 'vue'
-import rotatedSquare from '../images/rotatedSquare.svg'
-import backArrow from '../images/backArrow.svg'
-import QrcodeVue from 'qrcode.vue'
-import dividerSquare from '../images/dividerSquare.svg'
+  import { ref, onMounted } from 'vue'
+  import { useRouter } from 'vue-router'  // Para obtener la ruta de la URL
+  import rotatedSquare from '../images/rotatedSquare.svg'
+  import backArrow from '../images/backArrow.svg'
+  import QrcodeVue from 'qrcode.vue'
+  import dividerSquare from '../images/dividerSquare.svg'
   
-  const videoUrl = 'https://www.youtube.com/watch?v=O1wUdB7MQbI'
-  const qrCode = ref('https://www.gob.pe/institucion/mincetur/noticias/304773-te-gustaria-conocer-los-trabajos-y-talleres-de-ilustres-artesanos-del-peru')
+ 
+     // Variables reactivas
+    const videoUrl = null
+    const qrCode = null
   
-  const goBack = () => {
-    // Add navigation logic here
-    console.log('Going back')
+  // Nueva variable para almacenar los datos del taller
+  const workshopData = ref({})  // Aquí guardaremos los detalles del taller
+  
+  // Obtener el ID del taller desde la URL
+  const getWorkshopIdFromUrl = () => {
+    const params = new URLSearchParams(window.location.search)
+    return params.get('id') // Obtiene el parámetro "id" de la URL
   }
+  
+  const workshopId = getWorkshopIdFromUrl()
+  const router = useRouter()
+  
+  // Realizar la solicitud para obtener los datos del taller
+  onMounted(async () => {
+    try {
+      console.log('Taller ID:', workshopId)
+      const response = await fetch(`http://localhost:5000/workshop/${workshopId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-version': '1.0.0',
+        },
+        credentials: 'include', // Incluye las credenciales (como el token)
+      })
+  
+      if (response.ok) {
+        const data = await response.json()
+        workshopData.value = data.data // Suponiendo que la respuesta es en la propiedad `data`
+        console.log('Datos del taller:', workshopData.value)
+        console.log(data.data.documentary)
+           // Variables reactivas
+        videoUrl = data.data.documentary
+        qrCode = data.data.documentary
+      } else {
+        router.push('/login')
+        console.error('Error al obtener el taller:', response.statusText)
+      }
+    } catch (error) {
+      console.error('Error de red o servidor:', error)
+    }
+  })
   </script>
+  
   
   <style scoped>
   .container {
