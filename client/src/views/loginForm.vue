@@ -56,6 +56,10 @@ const router = useRouter()
 const handleSubmit = async () => {
   try {
     // Realiza la solicitud POST para iniciar sesión con fetch
+    console.log(JSON.stringify({
+        identifier: identifier.value,
+        password: password.value
+      }))
     const response = await fetch('http://localhost:5000/auth/login', {
       method: 'POST',
       headers: {
@@ -65,7 +69,8 @@ const handleSubmit = async () => {
       body: JSON.stringify({
         identifier: identifier.value,
         password: password.value
-      })
+      }),
+      credentials: 'include'
     })
 
     // Verifica que la respuesta tenga un status 200
