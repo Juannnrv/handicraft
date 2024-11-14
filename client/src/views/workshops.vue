@@ -1,92 +1,101 @@
 <template>
-    <div class="page-container">
-      <header class="header">
-        <img class="square-bg" :src="rotatedSquare" alt="">
-        <a class="a-back" href="home">
-            <img class="back-arrow" :src="backArrow" alt="">
-        </a>
-        <img class="title-square" :src="titleSquare" alt="">
-        <h1 class="title bellotaBold">
-          Talleres<br>
-          educativos
-        </h1>
-      </header>
-  
-      <div class="search-container">
-        <div class="search-bar">
-          <img style="width: 20px; margin-right: 10PX;" :src="glass" alt="">
-          <input 
-            class="bellotaRegular"
-            type="text" 
-            placeholder="Buscar taller, por categoría o artesanos"
-            v-model="searchQuery"
-          >
-        </div>
+  <div class="page-container">
+    <header class="header">
+      <img class="square-bg" :src="rotatedSquare" alt="">
+      <a class="a-back" href="home">
+        <img class="back-arrow" :src="backArrow" alt="">
+      </a>
+      <img class="title-square" :src="titleSquare" alt="">
+      <h1 class="title bellotaBold">
+        Talleres<br>
+        educativos
+      </h1>
+    </header>
+
+    <div class="search-container">
+      <div class="search-bar">
+        <img style="width: 20px; margin-right: 10PX;" :src="glass" alt="">
+        <input 
+          class="bellotaRegular"
+          type="text" 
+          placeholder="Buscar taller, por categoría o artesanos"
+          v-model="searchQuery"
+        >
       </div>
-  
-      <div class="workshops-container">
-        <div class="workshop-card" v-for="workshop in workshops" :key="workshop.id">
-            <div class="workshop-image-div">
-                <img :src="workshop.image" :alt="workshop.title" class="workshop-image">
-            </div>
-          <div class="workshop-info">
-            <h2 class="workshop-title bellotaBold">{{ workshop.title }}</h2>
-            <p class="workshop-audience bellotaRegular"><u>{{ workshop.audience }}</u></p>
-            <p class="workshop-instructor bellotaBold">{{ workshop.instructor }}</p>
-            <button class="learn-more-button bellotaBold">
-              <u>Entérate más sobre el taller aquí</u>
-            </button>
-          </div>
+    </div>
+
+    <div class="workshops-container">
+      <div class="workshop-card" v-for="workshop in workshops" :key="workshop.id">
+        <div class="workshop-image-div">
+          <img :src="workshop.photo" :alt="workshop.title" class="workshop-image">
+        </div>
+        <div class="workshop-info">
+          <h2 class="workshop-title bellotaBold">{{ workshop.name }}</h2>
+          <p class="workshop-audience bellotaRegular"><u>{{ workshop.modality }}</u></p>
+          <p class="workshop-instructor bellotaBold">{{ workshop.description }}</p>
+          <button 
+            class="learn-more-button bellotaBold"
+            @click="goToWorkshopDetails(workshop._id)"
+          >
+            <u>Entérate más sobre el taller aquí</u>
+          </button>
         </div>
       </div>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue'
-  import titleSquare from '../images/titleSquare.svg'
-  import rotatedSquare from '../images/rotatedSquare.svg'
-    import backArrow from '../images/backArrow.svg'
-    import glass from '../images/glass.svg'
-  
-  const searchQuery = ref('')
-  
-  const workshops = ref([
-    {
-      id: 1,
-      title: 'Taller de bordado ayacuchano',
-      audience: 'Para el público en general',
-      instructor: 'Taller dado por los artesanos de Taller Awaq Ayllus',
-      image: 'https://concepto.de/wp-content/uploads/2018/08/workshop-1-e1676660941240.jpg'
-    },
-    {
-      id: 2,
-      title: 'Taller de cerámica artesanal',
-      audience: 'Para el público en general',
-      instructor: 'Taller dado por los artesanos de Cerámicas Tater Vera',
-      image: 'https://concepto.de/wp-content/uploads/2018/08/workshop-1-e1676660941240.jpg'
-    },
-    {
-      id: 3,
-      title: 'Taller de alfarería infantil',
-      audience: 'Para niños de 4 a 12 años',
-      instructor: 'Taller dado por la artesana María Santos Minchán',
-      image: 'https://concepto.de/wp-content/uploads/2018/08/workshop-1-e1676660941240.jpg'
-    },
-    {
-      id: 4,
-      title: 'Taller de pintura tradicional',
-      audience: 'Para adultos mayores',
-      instructor: 'Taller dado por los artesanos Roldan y Harry Pinedo',
-      image: 'https://concepto.de/wp-content/uploads/2018/08/workshop-1-e1676660941240.jpg'
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'  // Importamos el router
+import titleSquare from '../images/titleSquare.svg'
+import rotatedSquare from '../images/rotatedSquare.svg'
+import backArrow from '../images/backArrow.svg'
+import glass from '../images/glass.svg'
+
+// Variables de estado
+const searchQuery = ref('')
+const workshops = ref([]) // Array vacío donde se guardarán los talleres
+
+// Obtener la instancia del router
+const router = useRouter()
+
+// Hacer la solicitud HTTP cuando el componente se monte
+onMounted(async () => {
+  try {
+    const response = await fetch('http://localhost:5000/user/workshops', {
+      method: 'GET',  // Usamos GET para obtener los datos
+      headers: {
+        'Content-Type': 'application/json',
+        'x-version': '1.0.0'
+      },
+      credentials: 'include'  // Necesitamos incluir el token de autenticación para la solicitud
+    })
+
+    // Verificamos que la respuesta sea exitosa (status 200)
+    if (response.ok) {
+      const data = await response.json() // Convertimos la respuesta a JSON
+      workshops.value = data.data
+      console.log(data.data)
+    } else if (response.status === 401) {
+      // Si la respuesta es 401, redirigimos al login
+      console.log('No autorizado, redirigiendo al login...')
+      router.push('/login')  // Redirige a la página de login usando Vue Router
+    } else {
+      console.error('Error al obtener los talleres:', response.statusText)
     }
-  ])
-  
-  const goBack = () => {
-    // Add navigation logic here
-    console.log('Going back')
+  } catch (error) {
+    console.error('Error de red o servidor:', error)
   }
-  </script>
+})
+
+// Método para redirigir a la página de detalles del taller
+const goToWorkshopDetails = (workshopId) => {
+  // Redirigimos al workshop details con el id del taller como parámetro
+  router.push(`/workshopDetails?id=${workshopId}`)
+}
+</script>
+  
   
   <style scoped>
   .page-container {
