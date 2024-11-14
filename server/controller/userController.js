@@ -268,7 +268,7 @@ class UserController {
     const userId = req.user._id
 
     try {
-      const user = await User.findById(id).populate("workshopsEnrolled");
+      const user = await User.findById(userId).populate("workshopsEnrolled");
 
       if (!user) {
         return res.status(404).json({
