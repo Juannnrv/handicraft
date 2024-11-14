@@ -97,25 +97,26 @@ class workshopController {
    * @returns {Promise<void>} - A promise that resolves when the workshops are listed.
    */
     static async searchWorkshops(req, res) {
-
-      const { page = 1, limit = 10, modality, location } = req.query;
-      console.log(modality)
+      const { page = 1, limit = 10, name, description, searchTerm } = req.query;
+      console.log("Search term:", searchTerm);
   
       try {
           // Construir los filtros basados en los parámetros de la consulta
           const filters = {};
   
-          // Validamos y aplicamos los filtros según los parámetros recibidos
-          if (modality) {
-              filters.modality = modality;
-          } else {
-              console.log("No modality filter provided");
+          // Si se proporciona un término de búsqueda, lo usamos en una consulta de texto
+          if (searchTerm) {
+              // MongoDB text search
+              filters.$text = { $search: searchTerm };
           }
   
-          if (location) {
-              filters.location = location;
-          } else {
-              console.log("No location filter provided");
+          // Si se proporcionan filtros específicos, los aplicamos
+          if (name) {
+              filters.name = { $regex: name, $options: 'i' };  // Búsqueda por nombre con expresión regular (no sensible a mayúsculas/minúsculas)
+          }
+  
+          if (description) {
+              filters.description = { $regex: description, $options: 'i' };  // Búsqueda por descripción con expresión regular (no sensible a mayúsculas/minúsculas)
           }
   
           console.log("Search filters:", filters);  // Logueamos los filtros para asegurarnos que se están construyendo correctamente
@@ -145,7 +146,6 @@ class workshopController {
   
           res.status(500).json({
               status: 500,
-              otro:"esto realmente funciona?",
               message: "Error fetching workshops",
               error: error.message,  // Mostramos el mensaje de error específico
           });
