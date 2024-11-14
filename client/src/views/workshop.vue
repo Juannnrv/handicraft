@@ -173,38 +173,30 @@ export default {
         overflow: hidden;
     }
     .wrokshopsGridSectionDivB {
+        padding: 4px;
         position: relative;
         display: flex;
-        align-items: center;
+        justify-content: center;
+        flex-direction: column;
         overflow: hidden;
         background-color: var(--color-B);
     }
     .wrokshopsGridSectionText {
-        position: absolute;
         top: 0;
         left: 0;
-        margin-top: 6px;
-        margin-left: 4px;
         color: var(--color-W);
-        font-size: 16px;
+        font-size: 14px;
     }
     .wrokshopsGridSectionText2 {
-        position: absolute;
         bottom: 0;
         left: 0;
-        margin-bottom: 6px;
-        margin-left: 4px;
         color: var(--color-W);
-        font-size: 16px;
+        font-size: 14px;
     }
     .wrokshopsGridSectionPrice{
-        position: absolute;
         left: 0;
-        margin-bottom: 6px;
-        margin-left: 4px;
-        margin-top: 8px;
         color: var(--color-W);
-        font-size: 16px;
+        font-size: 14px;
     }
     .workshopImg {
         height: 100%;
