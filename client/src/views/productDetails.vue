@@ -97,7 +97,40 @@
         this.$router.push('/home');
       },
       toggleHearth() {
+        let productId = this.$route.query.id;
+
+        if (this.isHearthFull) {
+          fetch(`http://localhost:5000/user/favorites/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-version': '1.0.0'
+          },
+          credentials: 'include'
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+          })
+        } else {
+          fetch(`http://localhost:5000/user/favorites`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-version': '1.0.0'
+            },
+            body: JSON.stringify({
+              "favoriteId": productId
+            }),
+            credentials: 'include'
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+          })
+        }
         this.isHearthFull = !this.isHearthFull;
+
       },
       fetchProductDetails(productId) {
         fetch(`http://localhost:5000/product/${productId}`, {
