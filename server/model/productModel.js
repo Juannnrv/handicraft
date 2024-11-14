@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
         required: [true, 'Product description is required']
     },
     price: {
-        type: mongoose.Schema.Types.Decimal128,
+        type: Number,
         required: [true, 'Product price is required']
     },
     category: {
@@ -30,6 +30,14 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: [true, 'Artisan ID is required']
+    },
+    discount:{
+        type: Boolean,
+        default: false
+    },
+    percentage:{
+        type: Number,
+        default: 0
     }
 }, {
     collection: 'product'
