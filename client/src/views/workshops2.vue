@@ -1,86 +1,99 @@
 <template>
-    <div v-if="isMenuVisible" ref="menu" class="menuContainer">
-        <Menu />
-    </div>
-    <div id="workshopsGrid">
-      <div class="workshopsGridSectionB">
-        <img id="menuImg" :src="menuImg" @click="toggleMenuVisibility">
-        <div id="homeInputDiv">
-          <input class="bellotaRegular" type="text" id="homeInput" placeholder="Buscar producto o tienda...">
-          <img id="glassImg" :src="glassImg">
-        </div>
-      </div>
-      <div class="workshopsGridSection">
-        <p class="bellotaBold" id="workshopTitle">Talleres y tiendas artesanales</p>
-        <p class="bellotaRegular" id="workshopText">Tiendas de artesanías de todas partes del Perú</p>
-        <img id="squareImg" :src="squareImg">
-        <img id="filterImg" :src="filterImg">
-      </div>
-      <div class="workshopsGridSection" id="wrokshopsGrid">
-        <div v-for="(workshop, index) in workshops" :key="index" class="wrokshopsGridSection">
-          <div class="wrokshopsGridSectionDivB">
-            <p class="wrokshopsGridSectionText bellotaBold">{{ workshop.name }}</p>
-            <p class="wrokshopsGridSectionText2 bellotaRegular">{{ workshop.location }}</p>
-          </div>
-          <div class="wrokshopsGridSectionDiv">
-            <img class="workshopImg" :src="workshopImg">
-          </div>
-        </div>
+  <div v-if="isMenuVisible" ref="menu" class="menuContainer">
+    <Menu />
+  </div>
+  <div id="workshopsGrid">
+    <div class="workshopsGridSectionB">
+      <img id="menuImg" :src="menuImg" @click="toggleMenuVisibility">
+      <div id="homeInputDiv">
+        <input class="bellotaRegular" type="text" id="homeInput" placeholder="Buscar producto o tienda...">
+        <img id="glassImg" :src="glassImg">
       </div>
     </div>
-    <Footer :selectedIndex="0" />
-  </template>
-  
-  <script>
-  import Footer from '../components/footer.vue';
-  import Menu from '../components/menu.vue';
+    <div class="workshopsGridSection">
+      <p class="bellotaBold" id="workshopTitle">Talleres y tiendas artesanales</p>
+      <p class="bellotaRegular" id="workshopText">Tiendas de artesanías de todas partes del Perú</p>
+      <img id="squareImg" :src="squareImg">
+      <img id="filterImg" :src="filterImg">
+    </div>
+    <div class="workshopsGridSection" id="wrokshopsGrid">
+      <div v-for="(workshop, index) in workshops" :key="index" class="wrokshopsGridSection">
+        <div class="wrokshopsGridSectionDivB">
+          <p class="wrokshopsGridSectionText bellotaBold">{{ workshop.name }}</p>
+          <p class="wrokshopsGridSectionText2 bellotaRegular">{{ workshop.location }}</p>
+        </div>
+        <div class="wrokshopsGridSectionDiv">
+          <img class="workshopImg" :src="workshop.photo">
+        </div>
+      </div>
+    </div>
+  </div>
+  <Footer :selectedIndex="0" />
+</template>
 
-  import menuImg from '../images/menu.svg';
-  import glassImg from '../images/glass.svg';
-  import squareImg from '../images/square.svg';
-  import filterImg from '../images/filters.svg';
-  import workshopImg from '../images/test/workshop.svg';
-  
-  export default {
-    data() {
-      return {
-        menuImg,
-        glassImg,
-        squareImg,
-        filterImg,
-        workshopImg,
-        workshops: [
-          { name: "Arte Abedail Aller", location: "Cusco" },
-          { name: "Taller de Cerámica", location: "Lima" },
-          { name: "Arte Textil Andino", location: "Arequipa" },
-          { name: "Arte Textil Andino", location: "Arequipa" }
-        ],
-        isMenuVisible: false
+<script>
+import Footer from '../components/footer.vue';
+import Menu from '../components/menu.vue';
+
+import menuImg from '../images/menu.svg';
+import glassImg from '../images/glass.svg';
+import squareImg from '../images/square.svg';
+import filterImg from '../images/filters.svg';
+import workshopImg from '../images/test/workshop.svg';
+
+export default {
+  data() {
+    return {
+      menuImg,
+      glassImg,
+      squareImg,
+      filterImg,
+      workshopImg,
+      workshops: [],
+      isMenuVisible: false
+    }
+  },
+  components: {
+    Footer,
+    Menu
+  },
+  methods: {
+    toggleMenuVisibility() {
+      this.isMenuVisible = !this.isMenuVisible;
+    },
+    handleClickOutside(event) {
+      if (this.isMenuVisible && this.$refs.menu && !this.$refs.menu.contains(event.target)) {
+        this.isMenuVisible = false;
       }
     },
-    components: {
-      Footer,
-      Menu
-    },
-    methods: {
-        toggleMenuVisibility() {
-            this.isMenuVisible = !this.isMenuVisible;
+    fetchWorkshops() {
+      fetch('http://localhost:5000/workshop', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-version': '1.0.0'
         },
-        handleClickOutside(event) {
-            if (this.isMenuVisible && this.$refs.menu && !this.$refs.menu.contains(event.target)) {
-                this.isMenuVisible = false;
-            }
-        }
-    },
-    mounted() {
-        document.addEventListener('mousedown', this.handleClickOutside);
-    },
-    beforeDestroy() {
-        document.removeEventListener('mousedown', this.handleClickOutside);
-    },
-    name: 'TestComponent'
-  }
-  </script>
+        credentials: 'include'
+      })
+      .then(response => response.json())
+      .then(data => {
+        this.workshops = data.data.products || [];
+      })
+      .catch(error => {
+        console.error("Error al obtener los talleres: ", error);
+      });
+    }
+  },
+  mounted() {
+    document.addEventListener('mousedown', this.handleClickOutside);
+    this.fetchWorkshops();
+  },
+  beforeDestroy() {
+    document.removeEventListener('mousedown', this.handleClickOutside);
+  },
+  name: 'TestComponent'
+}
+</script>
 <style scoped>
 
     #workshopsGrid{
@@ -188,27 +201,26 @@
     .wrokshopsGridSectionDivB{
         position: relative;
         display: flex;
+        flex-direction: column;
         overflow: hidden;
         background-color: var(--color-B);
     }
 
     .wrokshopsGridSectionText{
-        position: absolute;
         top: 0;
         left: 0;
         margin-top: 6px;
         margin-left: 4px;
         color: var(--color-W);
-        font-size: 16px;
+        font-size: 14px;
     }
     .wrokshopsGridSectionText2{
-        position: absolute;
         bottom: 0;
         left: 0;
         margin-bottom: 6px;
         margin-left: 4px;
         color: var(--color-W);
-        font-size: 16px;
+        font-size: 14px;
     }
     .workshopImg{
         height: 100%;
