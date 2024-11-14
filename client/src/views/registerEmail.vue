@@ -215,7 +215,6 @@ const handleSubmit = async () => {
         username: formData.value.username,
         password: formData.value.password,
         email: formData.value.email,
-        phone: formData.value.phone || null, // Si no hay teléfono, enviamos un string vacío
         gender: formData.value.gender,
         birthday: formattedBirthday
       }
