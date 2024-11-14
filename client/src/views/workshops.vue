@@ -20,12 +20,13 @@
           type="text" 
           placeholder="Buscar taller, por categoría o artesanos"
           v-model="searchQuery"
+          @keyup.enter="searchWorkshops" 
         >
       </div>
     </div>
 
     <div class="workshops-container">
-      <div class="workshop-card" v-for="workshop in workshops" :key="workshop.id">
+      <div class="workshop-card" v-for="workshop in filteredWorkshops" :key="workshop.id">
         <div class="workshop-image-div">
           <img :src="workshop.photo" :alt="workshop.title" class="workshop-image">
         </div>
@@ -55,7 +56,10 @@ import glass from '../images/glass.svg'
 
 // Variables de estado
 const searchQuery = ref('')
-const workshops = ref([]) // Array vacío donde se guardarán los talleres
+const workshops = ref([])  // Talleres completos (todos los talleres)
+const filteredWorkshops = ref([])  // Talleres filtrados (según la búsqueda)
+
+const allWorkshops = ref([])  // Guardamos los talleres originales para no perderlos al filtrar
 
 // Obtener la instancia del router
 const router = useRouter()
@@ -75,7 +79,9 @@ onMounted(async () => {
     // Verificamos que la respuesta sea exitosa (status 200)
     if (response.ok) {
       const data = await response.json() // Convertimos la respuesta a JSON
-      workshops.value = data.data.workshops
+      allWorkshops.value = data.data.workshops  // Guardamos los talleres originales
+      workshops.value = [...allWorkshops.value]  // Inicializamos workshops con los talleres completos
+      filteredWorkshops.value = [...workshops.value]  // Inicializamos filteredWorkshops con todos los talleres
       console.log(data.data)
     } else if (response.status === 401) {
       // Si la respuesta es 401, redirigimos al login
@@ -89,10 +95,25 @@ onMounted(async () => {
   }
 })
 
+// Método para realizar la búsqueda de talleres
+const searchWorkshops = () => {
+  if (searchQuery.value.trim() === '') {
+    // Si no hay texto en el campo de búsqueda, mostrar todos los talleres
+    filteredWorkshops.value = [...workshops.value]
+  } else {
+    // Filtramos los talleres según el término de búsqueda
+    filteredWorkshops.value = workshops.value.filter(workshop =>
+      workshop.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      workshop.modality.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      workshop.description.toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+  }
+}
+
 // Método para redirigir a la página de detalles del taller
 const goToWorkshopDetails = (workshopId) => {
   // Redirigimos al workshop details con el id del taller como parámetro
-  router.push(`/workshopDetails?id=${workshopId}`)
+  router.push(`/workshopQR?id=${workshopId}`)
 }
 </script>
   
