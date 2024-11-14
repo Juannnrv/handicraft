@@ -1,13 +1,15 @@
 <template>
     <div id="workshopsGrid">
         <div class="workshopsGridSection">
-            <div id="workshopTitleDiv" class="bellotaRegular">Taller Awaq Ayllus</div>
-            <img id="workshopBGImg" :src="workshopBGImg">
+            <div id="workshopTitleDiv" class="bellotaRegular">{{ workshop.name }}</div>
+            <img id="workshopBGImg" :src="workshop.photo">
             <img id="square2Img" :src="square2Img">
             <img id="arrow2Img" :src="arrow2Img" @click="goToWorkshops">
         </div>
         <div class="workshopsGridSection bellotaRegular" id="moreInfoDiv">
-            Conoce la historia detrás de este taller artesanal y conoce como producen sus textiles
+            <a :href="workshop.documentary" target="_blank" id="moreInfoText">
+                Conoce la historia detrás de este taller artesanal y conoce como producen sus textiles
+            </a>
             <img id="squareImg1" :src="squareImg">
             <img id="squareImg2" :src="squareImg">
         </div>
@@ -23,7 +25,7 @@
                 <img id="filtersImg" :src="filtersImg">
         </div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
-            <div class="wrokshopsGridSection" v-for="(workshop, index) in workshops" :key="index">
+            <div class="wrokshopsGridSection" v-for="(workshop, index) in products" :key="index">
                 <div class="wrokshopsGridSectionDiv">
                     <img class="workshopImg" :src="workshop.img">
                 </div>
@@ -66,12 +68,13 @@ export default {
             filtersImg,
             commentImg,
             workshopBGImg,
+            workshop: {},
             categories: [
                 'Textileria', 'Cerámica', 'Joyería', 'Talla en piedra',
                 'Talla en madera', 'Orfebrería', 'Estampado', 'Pintura tradicional',
                 'Hojalatería', 'Bordado'
             ],
-            workshops: [
+            products: [
                 { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '25'},
                 { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'}
             ],
@@ -80,6 +83,23 @@ export default {
     },
     components: {
         Footer,
+    },
+    created() {
+        const workshopId = this.$route.query.id;
+        
+        fetch(`http://localhost:5000/workshop/${workshopId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-version': '1.0.0'
+            },
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.data)
+            this.workshop = data.data;
+        })
     },
     methods: {
         selectCategory(index) {
@@ -292,6 +312,7 @@ export default {
     }
 
     #moreInfoDiv{
+        color: var(--color-B);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -301,7 +322,13 @@ export default {
         padding-right: 30px;
         padding-left: 30px;
     }
+    #moreInfoText{
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+    }
     #workshopTitleDiv{
+        text-align: center;
         display: flex;
         align-items: center;
         justify-content: center;
