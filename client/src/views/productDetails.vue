@@ -1,112 +1,129 @@
 <template>
     <div id="workshopsGrid">
-        <div class="workshopsGridSection center">
-            <img id="productBGImg" :src="productBGImg">
-            <img id="square2Img" :src="square2Img">
-            <img id="arrow2Img" :src="arrow2Img" @click="goToHome">
-
-            <div v-if="discount" id="discountDiv">
-                <img id="discountImg" :src="discountImg">
-                <p id="discountNumber" class="bellotaRegular">50%</p>
-            </div>
+      <div class="workshopsGridSection center">
+        <img id="productBGImg" :src="productBGImg">
+        <img id="square2Img" :src="square2Img">
+        <img id="arrow2Img" :src="arrow2Img" @click="goToHome">
+  
+        <div v-if="discount" id="discountDiv">
+          <img id="discountImg" :src="discountImg">
+          <p id="discountNumber" class="bellotaRegular">{{ discountPercent }}%</p>
         </div>
-        <div class="workshopsGridSection bellotaRegular" id="moreInfoDiv">
-            Tapiz Chumpi Andino III
-            <img id="squareImg1" :src="squareImg">
-            <img id="squareImg2" :src="squareImg">
+      </div>
+      <div class="workshopsGridSection bellotaRegular" id="moreInfoDiv">
+        {{ product.name }}
+        <img id="squareImg1" :src="squareImg">
+        <img id="squareImg2" :src="squareImg">
+      </div>
+      <div id="infoDiv">
+        <img 
+          id="hearthEmptyImg" 
+          :src="isHearthFull ? hearthFullImg : hearthEmptyImg" 
+          @click="toggleHearth" 
+        >
+  
+        <p class="detailsText">
+          <span v-if="discount" class="bellotaRegular" id="Oprice">${{  }}</span>
+          <span class="bellotaBold">${{ product.price }}</span>
+        </p>
+        <p class="detailsText"><span class="bellotaBold">Taller</span></p>
+        <p class="detailsText"><span class="bellotaBold">Dimensiones:</span> {{ product.dimensions }}</p>
+        <p class="detailsText"><span class="bellotaBold">Descripción:</span> {{ product.description }}</p>
+        
+        <div id="alertTextDiv">
+          <img id="checkImg" :src="checkImg">
+          <p class="detailsText">Cuenta con envío hacia tu ubicación</p>
         </div>
-        <div id="infoDiv">
-            <img 
-                id="hearthEmptyImg" 
-                :src="isHearthFull ? hearthFullImg : hearthEmptyImg" 
-                @click="toggleHearth" 
-            >
-
-            <p class="detailsText"><span v-if="discount" class="bellotaRegular" id="Oprice">$100 </span><span class="bellotaBold">$50</span></p>
-            <p class="detailsText"><span class="bellotaBold">Taller</span></p>
-            <p class="detailsText"><span class="bellotaBold">Dimensiones:</span> 60 x 80 cm</p>
-            <p class="detailsText"><span class="bellotaBold">Descripción:</span> Tapiz tridimensional 
-                con diseños de la tradición textil andina prehispánica. 
-                Elaborado con lana de ovino y tejido en telar a pedal.</p>
-            <div id="alertTextDiv">
-                <img id="checkImg" :src="checkImg">
-                <p class="detailsText">Cuenta con envío hacia tu ubicación</p>
-            </div>
-            <div id="addCartDiv">
-                <img id="shopCarImg" :src="shopCarImg">
-                Añadir a mi carrito de compras
-            </div>
+        <div id="addCartDiv">
+          <img id="shopCarImg" :src="shopCarImg">
+          Añadir a mi carrito de compras
         </div>
+      </div>
     </div>
-
-</template>
-
-<script>
-import Footer from '../components/footer.vue';
-
-import menuImg from '../images/menu.svg';
-import glassImg from '../images/glass.svg';
-import squareImg from '../images/square.svg';
-import workshopImg from '../images/test/workshop.svg';
-import fSquareImg from '../images/fullSquare.svg';
-import square2Img from '../images/square2.svg';
-import arrowImg from '../images/arrow.svg';
-import arrow2Img from '../images/arrow2.svg';
-import filtersImg from '../images/filters.svg';
-import commentImg from '../images/comment.svg';
-import productBGImg from '../images/test/productBG.svg';
-import hearthEmptyImg from '../images/hearthEmpty.svg';
-import hearthFullImg from '../images/hearthFull.svg';
-import checkImg from '../images/check.svg';
-import shopCarImg from '../images/shopCar.svg';
-import discountImg from '../images/discount.svg';
-
-export default {
+  </template>
+  
+  <script>
+  import Footer from '../components/footer.vue';
+  import menuImg from '../images/menu.svg';
+  import squareImg from '../images/square.svg';
+  import workshopImg from '../images/test/workshop.svg';
+  import fSquareImg from '../images/fullSquare.svg';
+  import square2Img from '../images/square2.svg';
+  import arrowImg from '../images/arrow.svg';
+  import arrow2Img from '../images/arrow2.svg';
+  import hearthEmptyImg from '../images/hearthEmpty.svg';
+  import hearthFullImg from '../images/hearthFull.svg';
+  import checkImg from '../images/check.svg';
+  import shopCarImg from '../images/shopCar.svg';
+  import discountImg from '../images/discount.svg';
+  import productBGImg from '../images/test/productBG.svg';
+  
+  export default {
     data() {
-        return {
-            menuImg,
-            glassImg,
-            squareImg,
-            fSquareImg,
-            square2Img,
-            arrowImg,
-            arrow2Img,
-            filtersImg,
-            commentImg,
-            productBGImg,
-            hearthEmptyImg,
-            hearthFullImg,
-            checkImg,
-            shopCarImg,
-            discountImg,
-            discount: false,
-            isHearthFull: false,
-            categories: [
-                'Textileria', 'Cerámica', 'Joyería', 'Talla en piedra',
-                'Talla en madera', 'Orfebrería', 'Estampado', 'Pintura tradicional',
-                'Hojalatería', 'Bordado'
-            ],
-            workshops: [
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '25'},
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', percent: '50'}
-            ],
-            selectedCategoryIndex: 0
-        };
+      return {
+        menuImg,
+        squareImg,
+        fSquareImg,
+        square2Img,
+        arrowImg,
+        arrow2Img,
+        hearthEmptyImg,
+        hearthFullImg,
+        checkImg,
+        shopCarImg,
+        discountImg,
+        productBGImg,
+        discount: false,
+        isHearthFull: false,
+        product: {},
+        originalPrice: null,
+        discountedPrice: null,
+        discountPercent: 0
+      };
     },
     components: {
-        Footer,
+      Footer,
+    },
+    mounted() {
+      const productId = this.$route.query.id;
+  
+      this.fetchProductDetails(productId);
     },
     methods: {
-        goToHome() {
-            this.$router.push('/home');
-        },
-        toggleHearth() {
-            this.isHearthFull = !this.isHearthFull;
-        }
+      goToHome() {
+        this.$router.push('/home');
+      },
+      toggleHearth() {
+        this.isHearthFull = !this.isHearthFull;
+      },
+      fetchProductDetails(productId) {
+        fetch(`http://localhost:5000/product/${productId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-version': '1.0.0'
+          },
+          credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.data)
+          const productData = data.data;
+  
+          this.product = productData;
+          this.originalPrice = productData.price.original || 0;
+          this.discountedPrice = productData.price.discounted || 0;
+          this.discountPercent = productData.discount ? productData.discount.percent : 0;
+          this.discount = this.discountPercent > 0;
+        })
+        .catch(error => {
+          console.error('Error fetching product details:', error);
+        });
+      }
     },
-    name: 'TestComponent'
-};
-</script>
+    name: 'ProductDetails'
+  };
+  </script>
 
 <style scoped>
     #workshopsGrid {

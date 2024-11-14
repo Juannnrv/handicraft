@@ -25,12 +25,13 @@
         <div class="workshopsGridSection" id="wrokshopsGrid">
             <div class="wrokshopsGridSection" v-for="(product, index) in products" :key="index">
                 <div class="wrokshopsGridSectionDiv">
-                    <img class="workshopImg" :src="product.img">
+                    <router-link :to="`/productdetails?id=${product._id}`">
+                        <img class="workshopImg" :src="product.photos[0]">
+                    </router-link>
                 </div>
                 <div class="wrokshopsGridSectionDivB">
                     <p class="wrokshopsGridSectionText bellotaBold">{{ product.name }}</p>
-                    <p class="wrokshopsGridSectionPrice bellotaBold">{{ product.Oprice }}</p>
-                    <p class="wrokshopsGridSectionText2 bellotaRegular">{{ product.location }}</p>
+                    <p class="wrokshopsGridSectionPrice bellotaBold">${{ product.price }}</p>
                 </div>
             </div>
         </div>
@@ -68,6 +69,16 @@ export default {
     components: {
         Footer,
     },
+    mounted() {
+        const categoryFromUri = this.$route.query.category;
+
+        if (categoryFromUri && this.categories.includes(categoryFromUri)) {
+            this.selectedCategoryIndex = this.categories.indexOf(categoryFromUri);
+            this.fetchProducts(categoryFromUri);
+        } else {
+            this.fetchProducts(this.categories[this.selectedCategoryIndex]);
+        }
+    },
     methods: {
         selectCategory(index) {
             this.selectedCategoryIndex = index;
@@ -83,24 +94,24 @@ export default {
             fetch(`http://localhost:5000/product?category=${category}`, {
                 method: 'GET',
                 headers: {
-                'Content-Type': 'application/json',
-                'x-version': '1.0.0'
+                    'Content-Type': 'application/json',
+                    'x-version': '1.0.0'
                 },
                 credentials: 'include'
             })
-            .then(response => {
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 this.products = data.data.products;
-                console.log(data.data.products)
+                console.log(data.data.products);
             })
+            .catch(error => {
+                console.error("Error al obtener los productos: ", error);
+            });
         }
     },
     name: 'WorkshopsGallery'
 };
 </script>
-
 
 
 <style scoped>
@@ -153,6 +164,7 @@ export default {
         height: 180px;
     }
     .wrokshopsGridSectionDiv {
+        padding: 10px;
         position: relative;
         display: flex;
         justify-content: center;
@@ -161,34 +173,26 @@ export default {
     .wrokshopsGridSectionDivB {
         position: relative;
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        padding: 10px;
         overflow: hidden;
         background-color: var(--color-B);
     }
     .wrokshopsGridSectionText {
-        position: absolute;
         top: 0;
         left: 0;
-        margin-top: 6px;
-        margin-left: 4px;
         color: var(--color-W);
         font-size: 16px;
     }
     .wrokshopsGridSectionText2 {
-        position: absolute;
         bottom: 0;
         left: 0;
-        margin-bottom: 6px;
-        margin-left: 4px;
         color: var(--color-W);
         font-size: 16px;
     }
     .wrokshopsGridSectionPrice{
-        position: absolute;
         left: 0;
-        margin-bottom: 6px;
-        margin-left: 4px;
-        margin-top: 8px;
         color: var(--color-W);
         font-size: 16px;
     }
