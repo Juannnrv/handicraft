@@ -10,49 +10,53 @@ class ProductController {
    */
   static async listProducts(req, res) {
     try {
-      const { page = 1, limit = 10, category, minPrice, maxPrice } = req.query;
+        const { page = 1, limit = 10, category, minPrice, maxPrice, workshopId } = req.query;
 
-      let filter = {};
-      if (category) {
-        filter.category = category;
-      }
-      if (minPrice || maxPrice) {
-        filter.price = {};
-        if (minPrice) {
-          filter.price.$gte = parseFloat(minPrice);
+        let filter = {};
+        if (category) {
+            filter.category = category;
         }
-        if (maxPrice) {
-          filter.price.$lte = parseFloat(maxPrice);
+        if (minPrice || maxPrice) {
+            filter.price = {};
+            if (minPrice) {
+                filter.price.$gte = parseFloat(minPrice);
+            }
+            if (maxPrice) {
+                filter.price.$lte = parseFloat(maxPrice);
+            }
         }
-      }
+        if (workshopId) {
+            filter.workshopId = workshopId;
+        }
 
-      const skip = (page - 1) * limit;
+        const skip = (page - 1) * limit;
 
-      const products = await Product.find(filter)
-        .skip(skip)
-        .limit(parseInt(limit))
-        .exec();
+        const products = await Product.find(filter)
+            .skip(skip)
+            .limit(parseInt(limit))
+            .exec();
 
-      const total = await Product.countDocuments(filter);
+        const total = await Product.countDocuments(filter);
 
-      res.status(200).json({
-        status: 200,
-        message: "Products retrieved successfully",
-        data: {
-          products,
-          total,
-          page: parseInt(page),
-          pages: Math.ceil(total / limit),
-        },
-      });
+        res.status(200).json({
+            status: 200,
+            message: "Products retrieved successfully",
+            data: {
+                products,
+                total,
+                page: parseInt(page),
+                pages: Math.ceil(total / limit),
+            },
+        });
     } catch (error) {
-      res.status(500).json({
-        status: 500,
-        message: "Error retrieving products",
-        error: error.message,
-      });
+        res.status(500).json({
+            status: 500,
+            message: "Error retrieving products",
+            error: error.message,
+        });
     }
-  }
+}
+
 
   /**
    * Retrieves a product by its ID.
