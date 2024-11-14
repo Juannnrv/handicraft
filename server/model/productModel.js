@@ -17,6 +17,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Product category is required']
     },
+    dimensions: {
+        type: String,
+        required: [true, 'Product dimensions is required']
+    },
     photos: [{
         type: String, // URLs for product images
         required: [true, 'At least one product photo is required']
