@@ -160,6 +160,11 @@
   import backArrow from '../images/backArrow.svg'
   import squareBG from '../images/squareBG.svg'
   
+
+  // Limpiar localStorage (si lo deseas)
+  localStorage.clear()
+
+
   const formData = ref({
     username: '',
     email: '',
@@ -195,6 +200,7 @@
   
   // Para manejar los errores
   const formError = ref('')
+  const savedData = ref(null)
   
   // Formato de número de teléfono
   const formatPhoneNumber = () => {
@@ -229,42 +235,72 @@
     return true
   }
   
-  const handleSubmit = async () => {
-    if (!validateForm()) return
-  
-    // Formato de fecha de nacimiento
-    const formattedBirthday = new Date(
-      birthDate.value.year,
-      birthDate.value.month - 1,
-      birthDate.value.day
-    ).toISOString()
-  
+  // Verificar si el nombre de usuario o teléfono ya existen
+  const checkUserExists = async () => {
     const dataToSubmit = {
-      ...formData.value,
-      birthday: formattedBirthday,
-      phone: formData.value.countryCode + formData.value.phone
+      username: formData.value.username,
+      phone: `${formData.value.countryCode} ${formData.value.phone}`,
+      email: formData.value.email, // si también estás validando el email
     }
   
     try {
-      // Ejemplo de API
-      delete dataToSubmit.countryCode;
-      console.log(JSON.stringify(dataToSubmit))
-      const response = await fetch('/api/register', {
+      const response = await fetch('http://localhost:5000/auth/check', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-version': '1.0.0'
         },
-        body: JSON.stringify(dataToSubmit)
+        body: JSON.stringify(dataToSubmit) // Enviamos el objeto con username, phone, y email
       })
   
-      if (!response.ok) {
-        throw new Error('Error en el registro')
+      const responseData = await response.json()
+  
+      if (response.status === 400) {
+        // Si la API responde con error, mostramos el mensaje de error
+        formError.value = responseData.message || 'Error desconocido'
+        return false
       }
-      
-      const data = await response.json()
-      console.log('Registration successful:', data)
-      location.href = "confirmRegisterPhone"
-      // Manejo de éxito (e.g., redirección)
+  
+      if (response.status === 200) {
+        // Si la respuesta es 200, guardamos los datos en localStorage para usarlos después
+        savedData.value = responseData
+        console.log('Datos guardados para confirmación:', savedData.value)
+        return true
+      }
+    } catch (error) {
+      console.error('Error en la verificación de usuario:', error)
+      formError.value = 'Error al verificar el usuario. Intenta nuevamente.'
+      return false
+    }
+  }
+  
+  // Función para manejar el envío del formulario
+  const handleSubmit = async () => {
+    if (!validateForm()) return
+  
+    // Verificar si el teléfono o el nombre de usuario ya están en uso
+    const userExists = await checkUserExists()
+    if (!userExists) return // Si ya existe, no continuamos
+  
+    // Formato de fecha de nacimiento
+    const formattedBirthday = `${String(birthDate.value.month).padStart(2, '0')}/${String(birthDate.value.day).padStart(2, '0')}/${birthDate.value.year}`
+  
+    const savedFormData = {
+        username: formData.value.username,
+        password: formData.value.password,
+        phone: `${formData.value.countryCode} ${formData.value.phone}`,
+        gender: formData.value.gender,
+        birthday: formattedBirthday
+      }
+  
+    try {
+      console.log(JSON.stringify(savedFormData))
+
+      localStorage.setItem('savedData', JSON.stringify(savedFormData)) // Guardamos los datos formateados
+
+// Redirigir al siguiente paso
+      location.href = "confirmRegisterEmail" // Redirigir o manejar el siguiente paso
+  
     } catch (error) {
       console.error('Error en el registro:', error)
       alert('Error en el registro. Por favor intente nuevamente.')
@@ -272,12 +308,13 @@
   }
   </script>
   
+  
 
   <style scoped>
   .error-message {
   color: red;
   font-size: 14px;
-  margin-top: 20px;
+  margin-top: 5px;
 }
     .square-bg{
         position: absolute;
