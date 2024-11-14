@@ -175,7 +175,13 @@ const loginWithDiscord = passport.authenticate("discord");
 // Controlador para login con OAuth (Facebook)
 const loginWithFacebook = passport.authenticate("facebook");
 
-// Función de creación de cuenta con datos del usuario
+/**
+ * Creates a user account.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves when the user account is created.
+ */
 const createAccount = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -188,50 +194,29 @@ const createAccount = async (req, res) => {
 
   const { username, password, email, phone, gender, birthday } = req.body;
 
+  if (!email && !phone) {
+    return res.status(400).json({
+      status: 400,
+      message: "Either email or phone must be provided",
+    });
+  }
+
   try {
-    // Validación de unicidad para email, username y teléfono (solo si están presentes)
-    if (username) {
-      const existingUsername = await User.findOne({ username });
-      if (existingUsername) {
-        return res.status(400).json({
-          status: 400,
-          message: "Username already in use",
-        });
-      }
-    }
 
-    if (email) {
-      const existingEmail = await User.findOne({ email });
-      if (existingEmail) {
-        return res.status(400).json({
-          status: 400,
-          message: "Email already in use",
-        });
-      }
-    }
+    const userEmail = email || `${username}@example.com`;
 
-    if (phone) {
-      const existingPhone = await User.findOne({ phone });
-      if (existingPhone) {
-        return res.status(400).json({
-          status: 400,
-          message: "Phone number already in use",
-        });
-      }
-    }
+    const userPhone = phone || `+00 ${Math.floor(1000000000 + Math.random() * 9000000000)}`;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Formateamos la fecha de nacimiento
     const [month, day, year] = birthday.split("/");
     const formattedBirthday = new Date(`${year}-${month}-${day}`);
 
-    // Creamos el nuevo usuario
     const user = await User.create({
       username,
       password: hashedPassword,
-      email,
-      phone,
+      email: userEmail,
+      phone: userPhone,
       gender,
       birthday: formattedBirthday,
     });
