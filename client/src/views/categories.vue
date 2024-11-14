@@ -102,7 +102,6 @@ export default {
             .then(response => response.json())
             .then(data => {
                 this.products = data.data.products;
-                console.log(data.data.products);
             })
             .catch(error => {
                 console.error("Error al obtener los productos: ", error);

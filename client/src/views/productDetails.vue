@@ -23,10 +23,10 @@
         >
   
         <p class="detailsText">
-          <span v-if="discount" class="bellotaRegular" id="Oprice">${{  }}</span>
-          <span class="bellotaBold">${{ product.price }}</span>
+          <span v-if="discount" class="bellotaRegular" id="Oprice">{{ Oprice }}</span>
+          <span class="bellotaBold">{{ Fprice }}</span>
         </p>
-        <p class="detailsText"><span class="bellotaBold">Taller</span></p>
+        <p class="detailsText"><span class="bellotaBold">{{ workshop.name}}</span></p>
         <p class="detailsText"><span class="bellotaBold">Dimensiones:</span> {{ product.dimensions }}</p>
         <p class="detailsText"><span class="bellotaBold">Descripción:</span> {{ product.description }}</p>
         
@@ -76,9 +76,12 @@
         discount: false,
         isHearthFull: false,
         product: {},
+        workshop: {},
         originalPrice: null,
         discountedPrice: null,
-        discountPercent: 0
+        discountPercent: 0,
+        Oprice: null,
+        Fprice: null
       };
     },
     components: {
@@ -107,18 +110,43 @@
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data.data)
           const productData = data.data;
   
+          if (productData.discount === true){
+            this.discount = true
+            this.discountPercent = productData.percentage;
+            this.Oprice = `$${productData.price}`
+            this.Fprice = `$${(productData.price * (1 - productData.percentage / 100)).toFixed(2)}`
+          } else {
+            this.Fprice = `$${productData.price}`
+          }
+
+          this.workshop = productData.workshopId;
           this.product = productData;
           this.originalPrice = productData.price.original || 0;
           this.discountedPrice = productData.price.discounted || 0;
-          this.discountPercent = productData.discount ? productData.discount.percent : 0;
-          this.discount = this.discountPercent > 0;
+
         })
         .catch(error => {
           console.error('Error fetching product details:', error);
         });
+        fetch(`http://localhost:5000/user/favorites`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-version': '1.0.0'
+          },
+          credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+          const favoritesList = data.data.products;
+            for (let i = 0; i < favoritesList.length; i++){
+              if (favoritesList[i]._id === productId){
+                this.isHearthFull = true;
+              }
+            }
+        })
       }
     },
     name: 'ProductDetails'
@@ -445,5 +473,6 @@
     }
     #Oprice{
         text-decoration: line-through;
+        margin-right: 4px;
     }
 </style>
