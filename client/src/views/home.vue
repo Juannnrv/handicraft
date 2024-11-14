@@ -44,11 +44,10 @@
             <p class="bellotaRegular" id="monthWorkshopsText">¡Aprende como hacerlos en estos talleres educativos!</p>
         </div>
         <div class="homeGridSection">
-            <img @click="redirectToWorkshops" id="homeBGImg" :src="homeBGImg">
+            <img id="homeBGImg" :src="homeBGImg">
         </div>
     </div>
     <Footer :selectedIndex="2" />
-    <LoadScreem />
 </template>
 <script>
 import squareImg from '../images/square.svg';
@@ -99,12 +98,11 @@ export default {
     },
     components: {
         Footer,
-        Menu,
-        LoadScreem
+        Menu
     },
     methods: {
         redirectToWorkshops() {
-            this.$router.push('/workshops');
+            this.$router.push('/workshopsgallery');
         },
         toggleMenuVisibility() {
             this.isMenuVisible = !this.isMenuVisible;
