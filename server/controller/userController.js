@@ -303,7 +303,7 @@ class UserController {
     const userId = req.user._id
 
     try {
-      const user = await User.findById(id).populate("coupons");
+      const user = await User.findById(userId).populate("coupons");
 
       if (!user) {
         return res.status(404).json({
