@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
 
-// User Schema
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -13,26 +11,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"],
       unique: true,
-      sparse: true,
+      required: [true, "Email is required"],
+    },
+    phone: {
+      type: String,
+      match: [/^\+\d{2}\s?\d{10}$/, "Phone number must include country code and be in the format +XX XXXXXXXXXX"],
+      unique: true,
+      required: [true, "Phone is required"],
     },
     password: {
       type: String,
+      required: [true, "Password is required"],
     },
     profilePicture: {
       type: String,
       default:
         "https://i.pinimg.com/474x/4c/92/2b/4c922b0a793123bcb292e005b7981df6.jpg",
-    },
-    phone: {
-      type: String,
-      match: [/^\d{10}$/, "Phone number must be 10 digits"],
-      unique: true,
-      sparse: true,
-    },
-    userType: {
-      type: String,
-      enum: ["comprador", "artesano"],
-      default: "comprador",
     },
     gender: {
       type: String,
@@ -62,36 +56,32 @@ const userSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Order",
-        default: null,
       },
     ],
     workshopsEnrolled: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Workshop",
-        default: null,
       },
     ],
     coupons: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Coupon",
-        default: null,
       },
     ],
   },
   {
     collection: "user",
-    timestamps: true,
   }
 );
 
 userSchema.path("email").validate(function (value) {
-  return this.email || this.phone;
+  return value || this.phone;
 }, "Either email or phone must be provided.");
 
 userSchema.path("phone").validate(function (value) {
-  return this.email || this.phone;
+  return value || this.email;
 }, "Either email or phone must be provided.");
 
 const User = mongoose.model("User", userSchema);
