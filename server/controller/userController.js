@@ -91,10 +91,18 @@ class UserController {
    * @returns {Promise<void>} - A promise that resolves when the favorites are found.
    */
   static async findUserFavorites(req, res) {
-    const userId = req.user._id
+    const userId = req.user._id;
 
     try {
-      const user = await User.findById(userId).populate("favorites");
+      const user = await User.findById(userId)
+        .populate({
+          path: 'favorites.products',
+          model: 'Product'
+        })
+        .populate({
+          path: 'favorites.workshops',
+          model: 'Workshop'
+        });
 
       if (!user) {
         return res.status(404).json({
@@ -112,6 +120,7 @@ class UserController {
       res.status(500).json({
         status: 500,
         message: "Error finding user favorites",
+        error: error.message,
       });
     }
   }
@@ -260,41 +269,6 @@ class UserController {
       res.status(500).json({
         status: 500,
         message: "Error finding user orders",
-      });
-    }
-  }
-
-  static async findUserWorkshopEnrollments(req, res) {
-    const userId = req.user._id
-
-    try {
-      const user = await User.findById(userId).populate("workshopsEnrolled");
-
-      if (!user) {
-        return res.status(404).json({
-          status: 404,
-          message: "User not found",
-        });
-      }
-
-      if (user.workshopsEnrolled.length === 0) {
-        return res.status(200).json({
-          status: 200,
-          message: "User has not enrolled in any workshops",
-          data: [],
-        });
-      }
-
-      res.status(200).json({
-        status: 200,
-        message: "User workshop enrollments found",
-        data: user.workshopsEnrolled,
-      });
-    } catch (error) {
-      res.status(500).json({
-        status: 500,
-        message: "Error finding user workshop enrollments",
-        error: error.message,
       });
     }
   }
