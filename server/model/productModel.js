@@ -26,10 +26,10 @@ const productSchema = new mongoose.Schema({
         required: [true, 'Product stock quantity is required'],
         min: [0, 'Stock cannot be less than 0']
     },
-    artisanId: {
+    workshopId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: [true, 'Artisan ID is required']
+        ref: 'Workshop',
+        default: null
     },
     discount:{
         type: Boolean,

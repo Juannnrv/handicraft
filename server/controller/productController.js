@@ -65,8 +65,9 @@ class ProductController {
     const { id } = req.params;
 
     try {
-      const product = await Product.findById(id).exec();
-
+      const product = await Product.findById(id)
+        .populate('workshopId')  // Populamos el campo workshopId
+        .exec(); 
       if (!product) {
         return res.status(404).json({
           status: 404,
