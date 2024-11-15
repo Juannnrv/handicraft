@@ -8,7 +8,7 @@
         <img class="squaresGroupImg" :src="squaresGroupImg">
         Gracias por apoyar a los artesanos peruanos
         <img class="squaresGroupImg" :src="squaresGroupImg">
-        Sigue buscado artesanias!
+        Sigue buscando artesanías!
         <div id="backDiv" @click="goToHome" class="bellotaRegular">Regresar al inicio</div>
     </div>
     <div id="homeGrid">
@@ -25,31 +25,34 @@
             <p class="bellotaRegular" id="carText">Revisa aquí los productos que añadiste a tu carrito</p>
         </div>
         <div class="homeGridSection" id="productsGrid">
-            <div class="productSection">
+            <div v-for="(product, index) in products" :key="index" class="productSection">
                 <div class="productSectionDiv center">
                     <div class="productImgDiv center">
-                        <img class="productImg" :src="productImg">
+                        <img class="productImg" :src="product.productData.photos[0]">
                     </div>
                     <div class="productCountDiv">
-                        <div class="productCountDivSection select" @click="decrementCount" ><img class="countImg" :src="minusImg"></div>
-                        <div class="productCountDivSection"><p class="countNumber">{{ product.count }}</p></div>
-                        <div class="productCountDivSection select" @click="incrementCount" ><img class="countImg" :src="plusImg"></div>
+                        <div class="productCountDivSection select" @click="decrementCount(index)">
+                            <img class="countImg" :src="minusImg">
+                        </div>
+                        <div class="productCountDivSection"><p class="countNumber">{{ product.quantity }}</p></div>
+                        <div class="productCountDivSection select" @click="incrementCount(index)">
+                            <img class="countImg" :src="plusImg">
+                        </div>
                     </div>
                 </div>
                 <div class="productSectionDiv padding">
-                    <img class="trashImg" :src="trashImg">
-
+                    <img class="trashImg" :src="trashImg" @click="removeProduct(index)">
                     <p class="productText">{{ product.name }}</p>
-                    <p class="productText">${{ product.price }}</p>
-                    <p class="productText">{{ product.dimensions }}</p>
-                    <p class="productText">{{ product.producer }}</p>
+                    <p class="productText">{{ product.price }}</p>
+                    <p class="productText">{{ product.productData.dimensions }}</p>
+                    <p class="productText">{{ product.productData.description }}</p>
                 </div>
             </div>
         </div>
         <div class="homeGridSection">
             <div class="bellotaBold" id="couponDiv" @click="showCouponInput">
                 <p v-if="!isCouponInputVisible">Añadir cupón de descuento</p>
-                <input class="bellotaRegular" placeholder="Ingrese codigo del cupon..." v-if="isCouponInputVisible" id="couponInput" type="text">
+                <input class="bellotaRegular" placeholder="Ingrese código del cupón..." v-if="isCouponInputVisible" id="couponInput" type="text">
             </div>
         </div>
         <div class="homeGridSection2">
@@ -57,19 +60,20 @@
                 <p id="subtotalText">Sub total</p>
                 <p id="envioText">Envío</p>
                 <p id="subtotalValue">${{ subtotal }}</p>
-                <p id="envioValue">${{ product.count > 0 ? 10 : 0 }}</p>
+                <p id="envioValue">${{ envioCost }}</p>
             </div>
             <div class="bellotaBold" id="totalDiv">
                 <p id="totalText">Total</p>
                 <p id="totalValue">${{ total }}</p>
             </div>
-            <div class="bellotaBold" id="buyDiv" v-if="product.count > 0" @click="buy">
+            <div class="bellotaBold" id="buyDiv" v-if="products.length > 0" @click="buy">
                 Realizar compra
             </div>
         </div>
     </div>
     <Footer :selectedIndex="3" />
 </template>
+
 <script>
 import squareImg from '../images/square.svg';
 import menuImg from '../images/menu.svg';
@@ -104,13 +108,7 @@ export default {
             isCouponInputVisible: false,
             isMenuVisible: false,
             succes: false,
-            product: {
-                name: 'Vasija pequeña con diseño de flor',
-                price: 50,
-                dimensions: '13x10 cm, 2 KG',
-                producer: 'Asoc. de artesanos productores de Chazuta',
-                count: 1
-            }
+            products: this.getProductsFromLocalStorage(),
         };
     },
     components: {
@@ -134,28 +132,86 @@ export default {
                 this.isMenuVisible = false;
             }
         },
-        decrementCount() {
-        if (this.product.count > 0) {
-            this.product.count--;
-        }
+        decrementCount(index) {
+            if (this.products[index].quantity > 1) {
+                this.products[index].quantity--;
+                this.updateLocalStorage();
+            }
         },
-        incrementCount() {
-            this.product.count++;
+        incrementCount(index) {
+            this.products[index].quantity++;
+            this.updateLocalStorage();
+        },
+        removeProduct(index) {
+            this.products.splice(index, 1);
+            this.updateLocalStorage();
         },
         goToHome() {
             this.$router.push('/home');
         },
         buy() {
-            this.succes = true;
-        }
+    // Crear el array de objetos con la estructura requerida
+    const orderDetails = this.products.map(product => ({
+        productId: product.productData._id, // Suponiendo que cada producto tiene un _id único
+        quantity: product.quantity,
+        price: parseFloat(product.price.replace('$', '').trim()) // Asegúrate de convertir el precio a número
+    }));
+
+    // Obtener la fecha de hoy en formato DD/MM/YYYY
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0'); // Asegura que el día tenga 2 dígitos
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexed, por eso sumamos 1
+    const year = today.getFullYear();
+    const formattedDate = `${day}/${month}/${year}`;
+
+    const order = {
+        products: orderDetails,
+        total: this.total, // Utiliza el total calculado en la propiedad computada
+        date: formattedDate, // La fecha en formato DD/MM/YYYY
+        coupons: [] // Si tienes un cupón, puedes añadirlo aquí más adelante
+    };
+
+    // Mostrar el array de objetos en consola
+    console.log(order);
+
+
+     fetch(`http://localhost:5000/order/create`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-version': '1.0.0'
+          },
+          body: JSON.stringify(order),
+          credentials: 'include'
+        })
+
+        
+    // Vaciar el carrito después de la compra
+    localStorage.removeItem('cart');
+    this.succes = true;
+}
+
+,
+        getProductsFromLocalStorage() {
+            const storedProducts = localStorage.getItem('cart');
+            return storedProducts ? JSON.parse(storedProducts) : [];
+        },
+        updateLocalStorage() {
+            localStorage.setItem('cart', JSON.stringify(this.products));
+        },
     },
     computed: {
         subtotal() {
-            return this.product.price * this.product.count;
+            return this.products.reduce((total, product) => {
+                const price = parseFloat(product.price.replace('$', '').trim()); // Convertir el precio a número
+                return total + price * product.quantity; // Ahora puedes multiplicar correctamente
+            }, 0);
+        },
+        envioCost() {
+            return this.products.length > 0 ? 10 : 0;
         },
         total() {
-            const envio = this.product.count > 0 ? 10 : 0;
-            return this.subtotal + envio;
+            return this.subtotal + this.envioCost;
         }
     },
     mounted() {
@@ -166,8 +222,9 @@ export default {
     },
     name: 'TestComponent'
 }
-
 </script>
+
+
 <style scoped>
 
     #homeGrid{

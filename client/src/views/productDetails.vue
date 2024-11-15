@@ -34,7 +34,7 @@
           <img id="checkImg" :src="checkImg">
           <p class="detailsText">Cuenta con envío hacia tu ubicación</p>
         </div>
-        <div id="addCartDiv">
+        <div id="addCartDiv" @click="addToCart">
           <img id="shopCarImg" :src="shopCarImg">
           Añadir a mi carrito de compras
         </div>
@@ -42,149 +42,175 @@
     </div>
   </template>
   
-  <script>
-  import Footer from '../components/footer.vue';
-  import menuImg from '../images/menu.svg';
-  import squareImg from '../images/square.svg';
-  import workshopImg from '../images/test/workshop.svg';
-  import fSquareImg from '../images/fullSquare.svg';
-  import square2Img from '../images/square2.svg';
-  import arrowImg from '../images/arrow.svg';
-  import arrow2Img from '../images/arrow2.svg';
-  import hearthEmptyImg from '../images/hearthEmpty.svg';
-  import hearthFullImg from '../images/hearthFull.svg';
-  import checkImg from '../images/check.svg';
-  import shopCarImg from '../images/shopCar.svg';
-  import discountImg from '../images/discount.svg';
-  import productBGImg from '../images/test/productBG.svg';
-  
-  export default {
-    data() {
-      return {
-        menuImg,
-        squareImg,
-        fSquareImg,
-        square2Img,
-        arrowImg,
-        arrow2Img,
-        hearthEmptyImg,
-        hearthFullImg,
-        checkImg,
-        shopCarImg,
-        discountImg,
-        productBGImg,
-        discount: false,
-        isHearthFull: false,
-        product: {},
-        workshop: {},
-        originalPrice: null,
-        discountedPrice: null,
-        discountPercent: 0,
-        Oprice: null,
-        Fprice: null
-      };
-    },
-    components: {
-      Footer,
-    },
-    mounted() {
-      const productId = this.$route.query.id;
-  
-      this.fetchProductDetails(productId);
-    },
-    methods: {
-      goToHome() {
-        this.$router.push('/home');
-      },
-      toggleHearth() {
-        let productId = this.$route.query.id;
+ <script>
+import Footer from '../components/footer.vue';
+import menuImg from '../images/menu.svg';
+import squareImg from '../images/square.svg';
+import workshopImg from '../images/test/workshop.svg';
+import fSquareImg from '../images/fullSquare.svg';
+import square2Img from '../images/square2.svg';
+import arrowImg from '../images/arrow.svg';
+import arrow2Img from '../images/arrow2.svg';
+import hearthEmptyImg from '../images/hearthEmpty.svg';
+import hearthFullImg from '../images/hearthFull.svg';
+import checkImg from '../images/check.svg';
+import shopCarImg from '../images/shopCar.svg';
+import discountImg from '../images/discount.svg';
+import productBGImg from '../images/test/productBG.svg';
 
-        if (this.isHearthFull) {
-          fetch(`http://localhost:5000/user/favorites/${productId}`, {
+export default {
+  data() {
+    return {
+      menuImg,
+      squareImg,
+      fSquareImg,
+      square2Img,
+      arrowImg,
+      arrow2Img,
+      hearthEmptyImg,
+      hearthFullImg,
+      checkImg,
+      shopCarImg,
+      discountImg,
+      productBGImg,
+      discount: false,
+      isHearthFull: false,
+      product: {},
+      workshop: {},
+      originalPrice: null,
+      discountedPrice: null,
+      discountPercent: 0,
+      Oprice: null,
+      Fprice: null
+    };
+  },
+  components: {
+    Footer,
+  },
+  mounted() {
+    const productId = this.$route.query.id;
+    this.fetchProductDetails(productId);
+  },
+  methods: {
+    goToHome() {
+      this.$router.push('/home');
+    },
+    toggleHearth() {
+      let productId = this.$route.query.id;
+
+      if (this.isHearthFull) {
+        fetch(`http://localhost:5000/user/favorites/${productId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
             'x-version': '1.0.0'
           },
           credentials: 'include'
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data)
-          })
-        } else {
-          fetch(`http://localhost:5000/user/favorites`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-version': '1.0.0'
-            },
-            body: JSON.stringify({
-              "favoriteId": productId
-            }),
-            credentials: 'include'
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data)
-          })
-        }
-        this.isHearthFull = !this.isHearthFull;
-
-      },
-      fetchProductDetails(productId) {
-        fetch(`http://localhost:5000/product/${productId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-version': '1.0.0'
-          },
-          credentials: 'include'
         })
         .then(response => response.json())
         .then(data => {
-          const productData = data.data;
-  
-          if (productData.discount === true){
-            this.discount = true
-            this.discountPercent = productData.percentage;
-            this.Oprice = `$${productData.price}`
-            this.Fprice = `$${(productData.price * (1 - productData.percentage / 100)).toFixed(2)}`
-          } else {
-            this.Fprice = `$${productData.price}`
-          }
-
-          this.workshop = productData.workshopId;
-          this.product = productData;
-          this.originalPrice = productData.price.original || 0;
-          this.discountedPrice = productData.price.discounted || 0;
-
-        })
-        .catch(error => {
-          console.error('Error fetching product details:', error);
+          console.log(data);
         });
+      } else {
         fetch(`http://localhost:5000/user/favorites`, {
-          method: 'GET',
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'x-version': '1.0.0'
           },
+          body: JSON.stringify({
+            "favoriteId": productId
+          }),
           credentials: 'include'
         })
         .then(response => response.json())
         .then(data => {
-          const favoritesList = data.data.products;
-            for (let i = 0; i < favoritesList.length; i++){
-              if (favoritesList[i]._id === productId){
-                this.isHearthFull = true;
-              }
-            }
-        })
+          console.log(data);
+        });
       }
+      this.isHearthFull = !this.isHearthFull;
     },
-    name: 'ProductDetails'
-  };
-  </script>
+    fetchProductDetails(productId) {
+      fetch(`http://localhost:5000/product/${productId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-version': '1.0.0'
+        },
+        credentials: 'include'
+      })
+      .then(response => response.json())
+      .then(data => {
+        const productData = data.data;
+
+        if (productData.discount === true) {
+          this.discount = true;
+          this.discountPercent = productData.percentage;
+          this.Oprice = `$${productData.price}`;
+          this.Fprice = `$${(productData.price * (1 - productData.percentage / 100)).toFixed(2)}`;
+        } else {
+          this.Fprice = `$${productData.price}`;
+        }
+
+        this.workshop = productData.workshopId;
+        this.product = productData;
+        this.originalPrice = productData.price.original || 0;
+        this.discountedPrice = productData.price.discounted || 0;
+      })
+      .catch(error => {
+        console.error('Error fetching product details:', error);
+      });
+
+      fetch(`http://localhost:5000/user/favorites`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-version': '1.0.0'
+        },
+        credentials: 'include'
+      })
+      .then(response => response.json())
+      .then(data => {
+        const favoritesList = data.data.products;
+        for (let i = 0; i < favoritesList.length; i++) {
+          if (favoritesList[i]._id === productId) {
+            this.isHearthFull = true;
+          }
+        }
+      });
+    },
+    addToCart() {
+      // Verificar si ya existe un carrito en el localStorage
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+      // Verificar si el producto ya está en el carrito
+      const productInCart = cart.find(item => item.id === this.product._id);
+
+      if (!productInCart) {
+        // Si no está en el carrito, agregarlo
+        cart.push({
+          id: this.product._id,
+          name: this.product.name,
+          price: this.Fprice,
+          image: this.product.image,  // Asumiendo que hay una propiedad 'image'
+          quantity: 1,
+          productData: this.product  // Guardamos todo el producto
+        });
+      } else {
+        // Si el producto ya está, incrementar la cantidad
+        productInCart.quantity += 1;
+      }
+
+      // Guardar el carrito actualizado en localStorage
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert("Producto añadido al carrito");
+    }
+  },
+  name: 'ProductDetails'
+};
+</script>
+
+  
 
 <style scoped>
     #workshopsGrid {
