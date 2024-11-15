@@ -75,8 +75,8 @@ Create an `.env` file in the root of the project and add the necessary environme
     MONGO_HOST=edwingod.pykmytn.mongodb.net
     JWT_SECRET=37ef15b4927b9b7aeeccccf335079d9aa0aa0367c3c74ed0f2de6561cd94d687
 
-    GOOGLE_CLIENT_ID=516537379956-0qepjc7l5vuinnuhcgshvbdldgtsuuof.apps.googleusercontent.com
-    GOOGLE_CLIENT_SECRET=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
+    GOOGLE_CLIENT_ID=930742944452-421ob0sbhso1s3nc6ms8n7lk7adkq77h.apps.googleusercontent.com
+    GOOGLE_CLIENT_SECRET=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
 
     DISCORD_CLIENT_ID=1300935621199663124
     DISCORD_CLIENT_SECRET=oJT2CEQZg2oZja-E_KrBhNm2Vr3sVVsQ
