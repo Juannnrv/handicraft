@@ -148,7 +148,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/loginform'
+    redirect: '/signup'
   },
 ];
 
