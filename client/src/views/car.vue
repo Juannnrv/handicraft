@@ -149,7 +149,7 @@ export default {
         goToHome() {
             this.$router.push('/home');
         },
-        buy() {
+        async buy() {
     // Crear el array de objetos con la estructura requerida
     const orderDetails = this.products.map(product => ({
         productId: product.productData._id, // Suponiendo que cada producto tiene un _id único
@@ -174,22 +174,36 @@ export default {
     // Mostrar el array de objetos en consola
     console.log(order);
 
+    try {
+        // Realizar la solicitud POST a la API para crear la orden
+        const response = await fetch('http://localhost:5000/orders/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-version': '1.0.0'
+            },
+            body: JSON.stringify(order),
+            credentials: 'include' // Esto asegura que se envíen las cookies de sesión si las hay
+        });
 
-     fetch(`http://localhost:5000/order/create`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-version': '1.0.0'
-          },
-          body: JSON.stringify(order),
-          credentials: 'include'
-        })
+        if (!response.ok) {
+            throw new Error('Error al crear la orden');
+        }
 
-        
-    // Vaciar el carrito después de la compra
-    localStorage.removeItem('cart');
-    this.succes = true;
+        const data = await response.json(); // Esperar la respuesta JSON
+        // Aquí puedes manejar la respuesta exitosa
+        console.log('Respuesta de la API:', data); // Imprime la respuesta completa
+        console.log('Orden creada con éxito:', data);
+
+        // Vaciar el carrito después de la compra
+        localStorage.removeItem('cart');
+        this.succes = true;
+    } catch (error) {
+        // Aquí puedes manejar los errores
+        console.error('Error en la solicitud:', error);
+    }
 }
+
 
 ,
         getProductsFromLocalStorage() {
