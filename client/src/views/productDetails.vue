@@ -1,7 +1,11 @@
 <template>
     <div id="workshopsGrid">
       <div class="workshopsGridSection center">
-        <img id="productBGImg" :src="productBGImg">
+        <img 
+  id="productBGImg" 
+  :src="product.photos && product.photos.length > 0 ? product.photos[0] : null"
+/>
+
         <img id="square2Img" :src="square2Img">
         <img id="arrow2Img" :src="arrow2Img" @click="goToHome">
   
@@ -60,30 +64,33 @@ import productBGImg from '../images/test/productBG.svg';
 
 export default {
   data() {
-    return {
-      menuImg,
-      squareImg,
-      fSquareImg,
-      square2Img,
-      arrowImg,
-      arrow2Img,
-      hearthEmptyImg,
-      hearthFullImg,
-      checkImg,
-      shopCarImg,
-      discountImg,
-      productBGImg,
-      discount: false,
-      isHearthFull: false,
-      product: {},
-      workshop: {},
-      originalPrice: null,
-      discountedPrice: null,
-      discountPercent: 0,
-      Oprice: null,
-      Fprice: null
-    };
-  },
+  return {
+    menuImg,
+    squareImg,
+    fSquareImg,
+    square2Img,
+    arrowImg,
+    arrow2Img,
+    hearthEmptyImg,
+    hearthFullImg,
+    checkImg,
+    shopCarImg,
+    discountImg,
+    productBGImg,
+    discount: false,
+    isHearthFull: false,
+    product: {
+      photos: []  // Asegúrate de que photos esté siempre definido como un array vacío si no hay fotos
+    },
+    workshop: {},
+    originalPrice: null,
+    discountedPrice: null,
+    discountPercent: 0,
+    Oprice: null,
+    Fprice: null
+  };
+}
+,
   components: {
     Footer,
   },
