@@ -5,6 +5,7 @@ const Order = require("../model/orderModel");
 const ProfileImg = require("../middleware/profileImage");
 const { validationResult } = require("express-validator");
 const mongoose = require('mongoose');
+const UserService = require('../middleware/profileImage');
 
 class UserController {
   /**
@@ -29,7 +30,7 @@ class UserController {
 
     try {
       const updateData = { username, email, phone, gender, birthday };
-      const user = await UserService.updateUser(userId, updateData, req.file?.path);
+      const user = await ProfileImg.updateUser(userId, updateData, req.file?.path);
 
       if (!user) {
         return res.status(404).json({
@@ -47,6 +48,7 @@ class UserController {
       res.status(500).json({
         status: 500,
         message: "Error updating user account",
+        error: error.message
       });
     }
   }
