@@ -1288,3 +1288,176 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
     "error": "Error message"
 }
 ```
+
+## Orders API documentation
+
+### Create an Order
+
+**Method:** POST
+
+**URL:** `http://localhost:5000/order/create`
+
+**Auth required:** Yes
+
+**Rate Limit:** 45 requests every 15 minutes
+
+**Credentials:** include
+
+**Headers:**
+
+```
+{
+    "Content-Type": "application/json",
+    "x-version": "1.0.0"
+}
+```
+
+**Request Body:**
+
+```
+{
+    "products": [
+        {
+            "productId": "ObjectId",  // Product ID
+            "quantity": Number,       // Quantity ordered
+            "price": Number           // Price of the product
+        }
+    ],
+    "total": Number,                   // Order total
+    "date": "DD/MM/YYYY",              // Order date in DD/MM/YYYY format
+    "coupons": ["ObjectId", ...]       // Optional array of applied coupon IDs
+}
+```
+
+**Success Response:**
+
+- **Code:** 201 Created
+
+- Body:
+
+  ```
+  {
+      "status": 201,
+      "message": "Order created successfully",
+      "data": {
+          "userId": "ObjectId",
+          "products": [
+              {
+                  "productId": "ObjectId",
+                  "quantity": Number,
+                  "price": Number
+              }
+          ],
+          "total": Number,
+          "date": "ISODate",
+          "status": "pending", // Order status
+          "coupons": ["ObjectId", ...]
+      }
+  }
+  ```
+
+**Error Responses:**
+
+- Code:
+
+   400 Bad Request
+
+  ```
+  {
+      "status": 400,
+      "message": "Validation errors",
+      "errors": [
+          { "field": "field_name", "error": "error_message" }
+      ]
+  }
+  ```
+
+- Code:
+
+   500 Internal Server Error
+
+  ```
+  {
+      "status": 500,
+      "message": "Error creating user order",
+      "error": "Error message"
+  }
+  ```
+
+------
+
+### Get User Orders
+
+**Method:** GET
+
+**URL:** `http://localhost:5000/order/`
+
+**Auth required:** Yes
+
+**Rate Limit:** 45 requests every 15 minutes
+
+**Credentials:** include
+
+**Headers:**
+
+```
+{
+    "Content-Type": "application/json",
+    "x-version": "1.0.0"
+}
+```
+
+**Success Response:**
+
+- **Code:** 200 OK
+
+- Body:
+
+  ```
+  {
+      "status": 200,
+      "message": "Orders retrieved successfully",
+      "data": [
+          {
+              "userId": "ObjectId",
+              "products": [
+                  {
+                      "productId": "ObjectId",
+                      "quantity": Number,
+                      "price": Number
+                  }
+              ],
+              "total": Number,
+              "date": "ISODate",
+              "status": "pending",
+              "coupons": ["ObjectId", ...]
+          },
+          // Additional orders if they exist
+      ]
+  }
+  ```
+
+**Error Responses:**
+
+- Code:
+
+   404 Not Found
+
+  ```
+  {
+      "status": 404,
+      "message": "User not found"
+  }
+  ```
+
+- Code:
+
+   500 Internal Server Error
+
+  ```
+  {
+      "status": 500,
+      "message": "Error retrieving orders",
+      "error": "Error message"
+  }
+  ```
