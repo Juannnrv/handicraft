@@ -21,6 +21,7 @@ passport.use(
       try {
         // Busca si el usuario ya existe con googleId
         console.log("llega aca2");
+        const userPhone = `+00 ${Math.floor(1000000000 + Math.random() * 9000000000)}`;
 
         let existingUser = await User.findOne({ googleId: profile.id });
         console.log(existingUser);
@@ -40,7 +41,7 @@ passport.use(
             birthday: null, // Definir si se usa o no
             tipo: "comprador", // Tipo de usuario, por ejemplo
             googleId: profile.id,
-            phone: Math.floor(1000000000 + Math.random() * 9000000000).toString()
+            phone: userPhone
           });
 
           // Verifica si hay algún error antes de guardar
@@ -74,6 +75,7 @@ passport.use(
       try {
         // Busca si el usuario ya existe con discordId
         let existingUser = await User.findOne({ discordId: profile.id });
+        const userPhone = `+00 ${Math.floor(1000000000 + Math.random() * 9000000000)}`;
 
         if (existingUser) {
           // Genera el JWT y lo guarda en la sesión
@@ -84,12 +86,13 @@ passport.use(
           const newUser = new User({
             username: profile.username || "",
             email: profile.email,
+            phone: userPhone,
             profilePicture: profile.avatar
               ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png`
               : "",
             discordId: profile.id,
             tipo: "comprador",
-            phone: Math.floor(1000000000 + Math.random() * 9000000000).toString()
+            gender: "na"
           });
 
           // Verifica si hay algún error antes de guardar

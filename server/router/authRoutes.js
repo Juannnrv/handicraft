@@ -13,7 +13,7 @@ router.get("/google", loginWithGoogle);
 router.get("/google/callback", passport.authenticate("google", { failureRedirect: "/" }), (req, res) => {
     const token = JwtService.generateToken({ _id: req.user._id });
     req.session.authToken = token;
-    res.redirect("http://localhost:3000/user");
+    res.redirect("http://localhost:3000/home");
     console.log("llego");
     
   }
