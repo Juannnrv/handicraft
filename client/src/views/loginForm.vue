@@ -44,6 +44,9 @@
   <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'  // Importa el router para redirigir
+import rotatedSquare from '../images/rotatedSquare.svg'
+import backArrow from '../images/backArrow.svg'
+import squareBG from '../images/squareBG.svg'
 
 // Estado para los campos del formulario
 const identifier = ref('')

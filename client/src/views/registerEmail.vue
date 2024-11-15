@@ -2,7 +2,7 @@
   <div class="registration-container">
     <img class="squareBG" :src="squareBG" alt="">
     <img class="square-bg" :src="rotatedSquare" alt="">
-    <a class="a-back" href="">
+    <a class="a-back" href="signup">
       <img class="back-arrow" :src="backArrow" alt="">
     </a>
 
