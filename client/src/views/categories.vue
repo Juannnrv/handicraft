@@ -18,12 +18,17 @@
         </div>
         <div class="workshopsGridSection"></div>
         <div class="workshopsGridSection">
-            <input id="categoriesInputInput" class="bellotaRegular" placeholder="Buscar producto o palabra clave...">
-                <img id="glassImg" :src="glassImg">
-                <img id="filtersImg" :src="filtersImg">
+            <input
+                id="categoriesInputInput"
+                class="bellotaRegular"
+                placeholder="Buscar producto o palabra clave..."
+                v-model="searchQuery"
+            >
+            <img id="glassImg" :src="glassImg">
+            <img id="filtersImg" :src="filtersImg">
         </div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
-            <div class="wrokshopsGridSection" v-for="(product, index) in products" :key="index">
+            <div class="wrokshopsGridSection" v-for="(product, index) in filteredProducts" :key="index">
                 <div class="wrokshopsGridSectionDiv">
                     <router-link :to="`/productdetails?id=${product._id}`">
                         <img class="workshopImg" :src="product.photos[0]">
@@ -58,16 +63,15 @@ export default {
             arrowImg,
             filtersImg,
             categories: [
+                'Todos',
                 'Textileria', 'Cerámica', 'Joyería', 'Talla en piedra',
                 'Talla en madera', 'Orfebrería', 'Estampado', 'Pintura tradicional',
                 'Hojalatería', 'Bordado'
             ],
             products: [],
-            selectedCategoryIndex: 0
+            selectedCategoryIndex: 0,
+            searchQuery: ''
         };
-    },
-    components: {
-        Footer,
     },
     mounted() {
         const categoryFromUri = this.$route.query.category;
@@ -91,7 +95,12 @@ export default {
             this.$router.push('/home');
         },
         fetchProducts(category) {
-            fetch(`http://localhost:5000/product?category=${category}`, {
+            const url =
+                category === 'Todos'
+                    ? 'http://localhost:5000/product'
+                    : `http://localhost:5000/product?category=${category}`;
+
+            fetch(url, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -99,13 +108,32 @@ export default {
                 },
                 credentials: 'include'
             })
-            .then(response => response.json())
-            .then(data => {
-                this.products = data.data.products;
-            })
-            .catch(error => {
-                console.error("Error al obtener los productos: ", error);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    this.products = data.data.products;
+                })
+                .catch(error => {
+                    console.error("Error al obtener los productos: ", error);
+                });
+        }
+    },
+    computed: {
+        filteredProducts() {
+            if (!this.products || !this.products.length) {
+                return [];
+            }
+
+            const searchQuery = this.searchQuery?.toLowerCase() || '';
+            const filteredBySearch = this.products.filter(product =>
+                product.name.toLowerCase().includes(searchQuery)
+            );
+
+            if (this.categories[this.selectedCategoryIndex] === 'Todos') {
+                return filteredBySearch;
+            }
+            
+            const category = this.categories[this.selectedCategoryIndex];
+            return filteredBySearch.filter(product => product.category === category);
         }
     },
     name: 'WorkshopsGallery'
