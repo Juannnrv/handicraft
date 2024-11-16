@@ -20,12 +20,22 @@
         </div>
         <div class="workshopsGridSection"></div>
         <div class="workshopsGridSection">
-            <input id="categoriesInputInput" class="bellotaRegular" placeholder="Buscar producto o palabra clave...">
-                <img id="glassImg" :src="glassImg">
-                <img id="filtersImg" :src="filtersImg">
+            <input 
+                id="categoriesInputInput" 
+                class="bellotaRegular" 
+                placeholder="Buscar producto o palabra clave..."
+                v-model="searchTerm"
+            >
+            <img id="glassImg" :src="glassImg">
+            <img id="filtersImg" :src="filtersImg">
         </div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
-            <div class="wrokshopsGridSection" v-for="(product, index) in products" :key="index" @click="goToProduct(product._id)">
+            <div 
+                class="wrokshopsGridSection" 
+                v-for="(product, index) in filteredProducts" 
+                :key="index" 
+                @click="goToProduct(product._id)"
+            >
                 <div class="wrokshopsGridSectionDiv">
                     <img class="workshopImg" :src="product.photos[0]">
                 </div>
@@ -73,7 +83,8 @@ export default {
                 'Hojalatería', 'Bordado'
             ],
             products: [],
-            selectedCategoryIndex: 0
+            selectedCategoryIndex: 0,
+            searchTerm: ''  // Para almacenar el término de búsqueda
         };
     },
     components: {
@@ -93,11 +104,26 @@ export default {
         .then(response => response.json())
         .then(data => {
             this.workshop = data.data;
-            
             this.fetchProductsByWorkshop(data.data._id);
         });
     },
+    computed: {
+        // Computed property para filtrar productos según el término de búsqueda
+        filteredProducts() {
+            const searchTermNormalized = this.normalizeString(this.searchTerm);
+            return this.products.filter(product => {
+                return this.normalizeString(product.name).includes(searchTermNormalized);
+            });
+        }
+    },
     methods: {
+        normalizeString(str) {
+            // Convertir a minúsculas y quitar tildes
+            return str
+                .toLowerCase()  // Convierte todo a minúsculas
+                .normalize("NFD")  // Normaliza el texto para separar caracteres acentuados
+                .replace(/[\u0300-\u036f]/g, "");  // Elimina los acentos
+        },
         selectCategory(index) {
             this.selectedCategoryIndex = index;
         },
