@@ -6,7 +6,13 @@
     <div class="workshopsGridSectionB">
       <img id="menuImg" :src="menuImg" @click="toggleMenuVisibility">
       <div id="homeInputDiv">
-        <input class="bellotaRegular" type="text" id="homeInput" placeholder="Buscar producto o tienda...">
+        <input
+          class="bellotaRegular"
+          type="text"
+          id="homeInput"
+          placeholder="Buscar producto o tienda..."
+          v-model="searchQuery"
+        >
         <img id="glassImg" :src="glassImg">
       </div>
     </div>
@@ -18,7 +24,7 @@
     </div>
     <div class="workshopsGridSection" id="wrokshopsGrid">
       <div
-        v-for="(workshop, index) in workshops"
+        v-for="(workshop, index) in filteredWorkshops"
         :key="index"
         class="wrokshopsGridSection"
         @click="redirectToWorkshop(workshop._id)"
@@ -47,6 +53,10 @@ import filterImg from '../images/filters.svg';
 import workshopImg from '../images/test/workshop.svg';
 
 export default {
+  components: {
+    Footer,
+    Menu
+  },
   data() {
     return {
       menuImg,
@@ -55,12 +65,21 @@ export default {
       filterImg,
       workshopImg,
       workshops: [],
+      searchQuery: '',
       isMenuVisible: false
-    }
+    };
   },
-  components: {
-    Footer,
-    Menu
+  computed: {
+    filteredWorkshops() {
+      const normalize = str =>
+        str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+      const query = normalize(this.searchQuery);
+
+      return this.workshops.filter(workshop =>
+        normalize(workshop.name).includes(query)
+      );
+    }
   },
   methods: {
     toggleMenuVisibility() {
@@ -85,7 +104,7 @@ export default {
         this.workshops = data.data.products || [];
       })
       .catch(error => {
-        console.error("Error al obtener los talleres: ", error);
+        console.error('Error al obtener los talleres: ', error);
       });
     },
     redirectToWorkshop(id) {
