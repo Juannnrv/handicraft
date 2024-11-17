@@ -43,91 +43,144 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import rotatedSquare from '../images/rotatedSquare.svg'
-import backArrow from '../images/backArrow.svg'
-import squareBG from '../images/squareBG.svg'
+import { ref, onMounted } from 'vue';
+import Swal from 'sweetalert2'; // Importamos SweetAlert2
+import rotatedSquare from '../images/rotatedSquare.svg';
+import backArrow from '../images/backArrow.svg';
+import squareBG from '../images/squareBG.svg';
 
 // Variables para los checkboxes
-const privacyAccepted = ref(false)
-const termsAccepted = ref(false)
-const promotionsAccepted = ref(false)
+const privacyAccepted = ref(false);
+const termsAccepted = ref(false);
+const promotionsAccepted = ref(false);
 
-const formError = ref('')
+const formError = ref('');
 
 // Obtener los datos previamente guardados de localStorage (si existen)
-const savedData = ref(null)
+const savedData = ref(null);
 
 onMounted(() => {
   // Recuperar los datos desde localStorage si están disponibles
-  const storedData = localStorage.getItem('savedData')
+  const storedData = localStorage.getItem('savedData');
   if (storedData) {
-    savedData.value = JSON.parse(storedData)
-    console.log(savedData.value)
+    savedData.value = JSON.parse(storedData);
+    console.log(savedData.value);
   } else {
-    console.error("No hay datos previos disponibles.")
-    // Aquí podrías redirigir o mostrar un mensaje si no hay datos previos
-    location.href = '/registerEmail' // Ejemplo de redirección
+    console.error('No hay datos previos disponibles.');
+    Swal.fire({
+      title: 'Error',
+      text: 'No hay datos previos disponibles. Redirigiendo...',
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+    }).then(() => {
+      location.href = '/registerEmail'; // Redirigir después de mostrar el error
+    });
   }
-})
+});
 
 // Función para manejar el envío del formulario
 const handleSubmit = async () => {
   // Verificar que todas las casillas estén marcadas
   if (!privacyAccepted.value || !termsAccepted.value || !promotionsAccepted.value) {
-    alert("Por favor, acepta todos los términos y condiciones para continuar.")
-    return
+    Swal.fire({
+      title: 'Faltan aceptaciones',
+      text: 'Por favor, acepta todos los términos y condiciones para continuar.',
+      icon: 'warning',
+      confirmButtonText: 'Aceptar',
+    });
+    return;
   }
 
   // Verificar que los datos guardados estén disponibles
   if (!savedData.value) {
-    formError.value = "No hay datos de registro previos disponibles."
-    return
+    formError.value = 'No hay datos de registro previos disponibles.';
+    Swal.fire({
+      title: 'Error',
+      text: 'No hay datos de registro previos disponibles. Redirigiendo...',
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+    }).then(() => {
+      location.href = '/registerEmail'; // Redirigir después de mostrar el error
+    });
+    return;
   }
 
   const dataToSubmit = {
-    ...savedData.value  // Los datos guardados del paso anterio
-  }
+    ...savedData.value, // Los datos guardados del paso anterior
+  };
 
   try {
-    console.log("Formulario enviado con los siguientes datos:", JSON.stringify(dataToSubmit))
-    
+    console.log('Formulario enviado con los siguientes datos:', JSON.stringify(dataToSubmit));
+
     // Enviar la solicitud POST a la API que registra al usuario
     const response = await fetch('http://localhost:5000/auth/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        "x-version": "1.0.0"
+        'x-version': '1.0.0',
       },
-      body: JSON.stringify(dataToSubmit)
-    })
+      body: JSON.stringify(dataToSubmit),
+    });
 
     if (response.status === 201) {
-      const response = await fetch('http://localhost:5000/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-version': '1.0.0'
-      },
-      body: JSON.stringify({
-        identifier: dataToSubmit.username,
-        password: dataToSubmit.password
-      }),
-      credentials: 'include'
-    })
-      localStorage.clear()
-      location.href = 'home'  // Redirigir a la página de confirmación
+      // Inicio de sesión automático tras registro exitoso
+      const loginResponse = await fetch('http://localhost:5000/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-version': '1.0.0',
+        },
+        body: JSON.stringify({
+          identifier: dataToSubmit.username,
+          password: dataToSubmit.password,
+        }),
+        credentials: 'include',
+      });
+
+      if (loginResponse.ok) {
+        Swal.fire({
+          title: '¡Registro exitoso!',
+          text: 'Te has registrado correctamente. Redirigiendo...',
+          icon: 'success',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        }).then(() => {
+          localStorage.clear();
+          location.href = 'home'; // Redirigir a la página principal
+        });
+      } else {
+        throw new Error('Error al iniciar sesión automáticamente.');
+      }
     } else if (response.status === 400) {
-      const errorData = await response.json()
-      formError.value = errorData.message || 'Error desconocido'
+      const errorData = await response.json();
+      formError.value = errorData.message || 'Error desconocido';
+      Swal.fire({
+        title: 'Error en el registro',
+        text: formError.value,
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      });
     } else {
-      formError.value = 'Error en el registro. Por favor intente nuevamente.'
+      formError.value = 'Error en el registro. Por favor intente nuevamente.';
+      Swal.fire({
+        title: 'Error',
+        text: formError.value,
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      });
     }
   } catch (error) {
-    console.error('Error en el registro:', error)
-    formError.value = 'Error al enviar los datos. Intente nuevamente.'
+    console.error('Error en el registro:', error);
+    formError.value = 'Error al enviar los datos. Intente nuevamente.';
+    Swal.fire({
+      title: 'Error de conexión',
+      text: formError.value,
+      icon: 'error',
+      confirmButtonText: 'Aceptar',
+    });
   }
-}
+};
 </script>
 
 
