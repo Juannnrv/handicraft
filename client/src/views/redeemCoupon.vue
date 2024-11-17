@@ -17,14 +17,14 @@
         <div class="input-group">
           <img :src="coupon" style="width: 30px; margin: 0px 3px 0px 10px;" alt="">
           <input 
-            type="text" 
-            v-model="couponCode"
-            placeholder="Ingresa tu cupón"
-            class="coupon-input bellotaRegular"
-          >
-          <button @click="validateCoupon" class="validate-button bellotaLight">
-            Validar
-          </button>
+              type="text" 
+              v-model="couponCode"
+              placeholder="Ingresa tu cupón"
+              class="coupon-input bellotaRegular"
+            />
+            <button @click="validateCoupon" class="validate-button bellotaLight">
+              Validar
+            </button>
         </div>
       </div>
   
@@ -36,8 +36,8 @@
           <div v-for="coupon in coupons" :key="coupon.id" class="coupon-card">
             <img :src="coupon.image" :alt="coupon.title" class="coupon-image">
             <div class="coupon-details">
-              <p class="discount-text bellotaRegular">{{ coupon.discount }} de descuento en <span class="bellotaBold">{{ coupon.description }}</span></p>
-              <p class="expiry-date bellotaBold">Fecha de vencimiento: {{ coupon.expiryDate }}</p>
+              <p class="discount-text bellotaRegular">{{ coupon.discount }} de descuento en <span class="bellotaBold">{{ coupon.type }}</span></p>
+              <p class="expiry-date bellotaBold">Fecha de vencimiento: {{ coupon.expirationDate = new Date(coupon.expirationDate).toISOString().split('T')[0].replace(/-/g, '/') }}</p>
               <button @click="useCoupon(coupon)" class="use-button bellotaRegular">
                 Usar cupón
               </button>
@@ -49,53 +49,200 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue'
-  import titleSquare from '../images/titleSquare.svg'
-  import rotatedSquare from '../images/rotatedSquare.svg'
-import backArrow from '../images/backArrow.svg'
-import coupon from '../images/coupon.svg'
+  import { ref, onMounted } from 'vue';
+  import { useRouter } from 'vue-router';
+  import Swal from 'sweetalert2'; // Importamos SweetAlert2
+  import 'sweetalert2/dist/sweetalert2.min.css'; // Estilo de SweetAlert2
+  import titleSquare from '../images/titleSquare.svg';
+  import rotatedSquare from '../images/rotatedSquare.svg';
+  import backArrow from '../images/backArrow.svg';
+  import coupon from '../images/coupon.svg';
   
-  const couponCode = ref('')
+  const couponCode = ref(''); // Código ingresado por el usuario
+  const coupons = ref([]); // Lista de cupones obtenidos
+  const router = useRouter(); // Instancia del enrutador de Vue Router
   
-  const coupons = ref([
-    {
-      id: 1,
-      image: 'https://images.gameinfo.io/pokemon/256/p94f466.webp',
-      discount: '50%',
-      description: 'cartucheras del Taller Awaq Ayllus',
-      expiryDate: '4/9/23'
-    },
-    {
-      id: 2,
-      image: 'https://www.vinoskichak.com/cdn/shop/articles/vaso-vino-uvas-barriles-madera-frescos_1268-27965.jpg',
-      discount: '30%',
-      description: 'productos artesanales',
-      expiryDate: '5/9/23'
-    },
-    {
-      id: 3,
-      image: 'https://www.abc.com.py/resizer/v2/https%3A%2F%2Farc-anglerfish-arc2-prod-abccolor.s3.amazonaws.com%2Fpublic%2FZFSIRJUWORBYFNCS44PO3BM3CE.jpg?auth=5aabd593e267bdc08bdcfe2bc5f29649697263713d819743b0ee21711d612f8a&width=770&smart=true',
-      discount: '30%',
-      description: 'productos artesanales',
-      expiryDate: '5/9/23'
+  // Función para obtener los cupones desde el backend
+  const fetchCoupons = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/coupons/general', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-version': '1.0.0',
+        },
+        credentials: 'include', // Asegura que se envíen las cookies
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        result.data.forEach(coupon => {
+          coupon.image = 'https://www.svgrepo.com/show/99650/voucher.svg';
+        });
+        coupons.value = result.data; // Actualizamos los cupones con la data de la respuesta
+      } else if (response.status === 401) {
+        // Redirige al usuario a /login si recibe un código 401
+        router.push('/login');
+      } else {
+        console.error('Error al obtener cupones:', response.status);
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
     }
-  ])
+  };
   
-  const validateCoupon = () => {
-    // Add validation logic here
-    console.log('Validating coupon:', couponCode.value)
-  }
+  // Validar el código del cupón ingresado
+  const validateCoupon = async () => {
+    if (!couponCode.value.trim()) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campo vacío',
+        text: 'Por favor, ingrese un código de cupón.',
+      });
+      return;
+    }
   
+    try {
+      const response = await fetch(`http://localhost:5000/coupons/search?code=${couponCode.value}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-version': '1.0.0',
+        },
+        credentials: 'include',
+      });
+  
+      const res = await response.json();
+  
+      if (response.ok && res.data.length > 0) {
+        const coupon = res.data[0];
+  
+        // Si el tipo de cupón es "workshop", validar que solo se aplique a productos con los ids correctos
+        if (coupon.type === 'workshop') {
+          const cart = JSON.parse(localStorage.getItem('cart')) || [];
+          let couponApplied = false;
+  
+          cart.forEach(product => {
+            if (!product.usedCoupons) product.usedCoupons = [];
+            // Validar si el producto tiene el id adecuado para aplicar el cupón de tipo "workshop"
+
+            if (!product.usedCoupons.includes(coupon._id) && product.productData.workshopId._id == coupon.workshopId) {
+              const priceNumber = parseFloat(product.price.replace('$', ''));
+              const discountedPrice = (priceNumber * (1 - coupon.discount / 100)).toFixed(2);
+              product.price = `$${discountedPrice}`;
+              product.usedCoupons.push(coupon._id);
+              couponApplied = true;
+            }
+          });
+  
+          if (couponApplied) {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            Swal.fire({
+              icon: 'success',
+              title: 'Cupón aplicado',
+              text: `El cupón de tipo "workshop" fue aplicado exitosamente a los productos elegibles.`,
+            });
+          } else {
+            Swal.fire({
+              icon: 'info',
+              title: 'Sin cambios',
+              text: 'El cupón no se aplicó porque no es válido para los productos en el carrito.',
+            });
+          }
+        } else {
+          // Si el cupón no es de tipo "workshop", aplicar normalmente a todos los productos
+          const cart = JSON.parse(localStorage.getItem('cart')) || [];
+          let couponApplied = false;
+  
+          cart.forEach(product => {
+            if (!product.usedCoupons) product.usedCoupons = [];
+            if (!product.usedCoupons.includes(coupon._id)) {
+              const priceNumber = parseFloat(product.price.replace('$', ''));
+              const discountedPrice = (priceNumber * (1 - coupon.discount / 100)).toFixed(2);
+              product.price = `$${discountedPrice}`;
+              product.usedCoupons.push(coupon._id);
+              couponApplied = true;
+            }
+          });
+  
+          if (couponApplied) {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            Swal.fire({
+              icon: 'success',
+              title: 'Cupón aplicado',
+              text: `El cupón fue aplicado exitosamente a los productos elegibles.`,
+            });
+          } else {
+            Swal.fire({
+              icon: 'info',
+              title: 'Sin cambios',
+              text: 'El cupón ya fue utilizado o no es aplicable a ningún producto.',
+            });
+          }
+        }
+      } else if (response.status === 401) {
+        router.push('/login');
+      } else if (response.status === 404) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Cupón no válido',
+          text: 'Cupón no encontrado o inválido.',
+        });
+      } else {
+        console.error('Error al validar cupón:', response.status);
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Ocurrió un error al validar el cupón.',
+      });
+    }
+  };
+  
+  // Usar un cupón específico desde la lista
   const useCoupon = (coupon) => {
-    // Add coupon usage logic here
-    console.log('Using coupon:', coupon)
-  }
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let couponApplied = false;
   
-  const goBack = () => {
-    // Add navigation logic here
-    console.log('Going back')
-  }
+    cart.forEach(product => {
+      if (!product.usedCoupons) product.usedCoupons = [];
+      if (!product.usedCoupons.includes(coupon._id)) {
+        const priceNumber = parseFloat(product.price.replace('$', ''));
+        const discountedPrice = (priceNumber * (1 - coupon.discount / 100)).toFixed(2);
+        product.price = `$${discountedPrice}`;
+        product.usedCoupons.push(coupon._id);
+        couponApplied = true;
+      }
+    });
+  
+    if (couponApplied) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+      Swal.fire({
+        icon: 'success',
+        title: 'Cupón aplicado',
+        text: 'El cupón fue aplicado exitosamente a los productos elegibles.',
+      });
+    } else {
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin cambios',
+        text: 'El cupón ya fue utilizado o no es aplicable a ningún producto.',
+      });
+    }
+  };
+  
+  // Obtener los cupones cuando se monta el componente
+  onMounted(() => {
+    fetchCoupons();
+  });
   </script>
+  
+  
+  
+  
+
   
   <style scoped>
   .coupon-container {
