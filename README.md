@@ -865,7 +865,7 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
 ```
 {
     "page": "integer, optional, default is 1, page number for pagination",
-    "limit": "integer, optional, default is 10, number of products per page",
+    "limit": "integer, optional, default is 100, number of products per page",
     "category": "string, optional, filter products by category",
     "minPrice": "float, optional, minimum price for the product filter",
     "maxPrice": "float, optional, maximum price for the product filter",
@@ -1458,6 +1458,156 @@ This will start Vite for the frontend and the backend server (`server.js`) with 
   {
       "status": 500,
       "message": "Error retrieving orders",
+      "error": "Error message"
+  }
+  ```
+
+## Coupons API documentation
+
+### Get Coupons by Code
+
+**Method:** GET
+
+**URL:** `http://localhost:5000/coupons/search`
+
+**Auth required:** Yes
+
+**Rate Limit:** 45 requests every 15 minutes
+
+**Credentials:** include
+
+**Headers:**
+
+```
+{
+    "Content-Type": "application/json",
+    "x-version": "1.0.0"
+}
+```
+
+**Query Parameters:**
+
+```
+code (String, required): The coupon code to search for.
+```
+
+**Success Response:**
+
+- **Code:** 200 OK
+
+- Body:
+
+  ```
+  {
+      "status": 200,
+      "message": "Coupons found",
+      "data": [
+          {
+              "code": "string",              // Unique coupon code
+              "discount": Number,            // Discount percentage
+              "type": "general",             // Coupon type (e.g., general, user, workshop, product)
+              "valid": true,                 // Validity status
+              "expirationDate": "ISODate",   // Expiration date
+              "userId": "ObjectId",          // Associated user (if applicable)
+              "workshopId": "ObjectId"       // Associated workshop (if applicable)
+          },
+      ]
+  }
+  ```
+
+**Error Responses:**
+
+- Code:
+
+   404 Not Found
+
+  ```
+  {
+      "status": 404,
+      "message": "No coupons available for the provided code"
+  }
+  ```
+
+- Code:
+
+   500 Internal Server Error
+
+  ```
+  {
+      "status": 500,
+      "message": "Error retrieving coupons",
+      "error": "Error message"
+  }
+  ```
+
+------
+
+### Get General Coupons
+
+**Method:** GET
+
+**URL:** `http://localhost:5000/coupons/general`
+
+**Auth required:** Yes
+
+**Rate Limit:** 45 requests every 15 minutes
+
+**Credentials:** include
+
+**Headers:**
+
+```
+{
+    "Content-Type": "application/json",
+    "x-version": "1.0.0"
+}
+```
+
+**Success Response:**
+
+- **Code:** 200 OK
+
+- Body:
+
+  ```
+  {
+      "status": 200,
+      "message": "General coupons found",
+      "data": [
+          {
+              "code": "string",              // Unique coupon code
+              "discount": Number,            // Discount percentage
+              "type": "general",             // Coupon type
+              "valid": true,                 // Validity status
+              "expirationDate": "ISODate",   // Expiration date
+              "userId": null,                // Not applicable for general coupons
+              "workshopId": null             // Not applicable for general coupons
+          },
+      ]
+  }
+  ```
+
+**Error Responses:**
+
+- Code:
+
+   404 Not Found
+
+  ```
+  {
+      "status": 404,
+      "message": "No general coupons available"
+  }
+  ```
+
+- Code:
+
+   500 Internal Server Error
+
+  ```
+  {
+      "status": 500,
+      "message": "Error retrieving general coupons",
       "error": "Error message"
   }
   ```
