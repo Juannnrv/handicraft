@@ -21,8 +21,6 @@ export default {
       
       localStorage.setItem('car', JSON.stringify(car));
       console.log('Objeto guardado en localStorage');
-    } else {
-      console.log('El objeto ya existe en localStorage');
     }
   }
 }
