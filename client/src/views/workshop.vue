@@ -7,7 +7,7 @@
             <img id="arrow2Img" :src="arrow2Img" @click="goToWorkshops">
         </div>
         <div class="workshopsGridSection bellotaRegular" id="moreInfoDiv">
-            <a :href="'/workshopdetails?id=' + workshop._id" target="_blank" id="moreInfoText">
+            <a :href="'/workshopdetails?id=' + workshop._id" id="moreInfoText">
                 Conoce la historia detrás de este taller artesanal y conoce como producen sus textiles
             </a>
             <img id="squareImg1" :src="squareImg">
