@@ -1,52 +1,49 @@
 <template>
-    <div id="workshopsGrid">
-      <div class="workshopsGridSection center">
-        <img 
-  id="productBGImg" 
-  :src="product.photos && product.photos.length > 0 ? product.photos[0] : null"
-/>
-
-        <img id="square2Img" :src="square2Img">
-        <img id="arrow2Img" :src="arrow2Img" @click="goToHome">
-  
-        <div v-if="discount" id="discountDiv">
-          <img id="discountImg" :src="discountImg">
-          <p id="discountNumber" class="bellotaRegular">{{ discountPercent }}%</p>
-        </div>
-      </div>
-      <div class="workshopsGridSection bellotaRegular" id="moreInfoDiv">
-        {{ product.name }}
-        <img id="squareImg1" :src="squareImg">
-        <img id="squareImg2" :src="squareImg">
-      </div>
-      <div id="infoDiv">
-        <img 
-          id="hearthEmptyImg" 
-          :src="isHearthFull ? hearthFullImg : hearthEmptyImg" 
-          @click="toggleHearth" 
-        >
-  
-        <p class="detailsText">
-          <span v-if="discount" class="bellotaRegular" id="Oprice">{{ Oprice }}</span>
-          <span class="bellotaBold">{{ Fprice }}</span>
-        </p>
-        <p class="detailsText"><span class="bellotaBold">{{ workshop.name}}</span></p>
-        <p class="detailsText"><span class="bellotaBold">Dimensiones:</span> {{ product.dimensions }}</p>
-        <p class="detailsText"><span class="bellotaBold">Descripción:</span> {{ product.description }}</p>
-        
-        <div id="alertTextDiv">
-          <img id="checkImg" :src="checkImg">
-          <p class="detailsText">Cuenta con envío hacia tu ubicación</p>
-        </div>
-        <div id="addCartDiv" @click="addToCart">
-          <img id="shopCarImg" :src="shopCarImg">
-          Añadir a mi carrito de compras
-        </div>
+  <div id="workshopsGrid">
+    <div class="workshopsGridSection center">
+      <img 
+        id="productBGImg" 
+        :src="product.photos && product.photos.length > 0 ? product.photos[0] : null"
+      />
+      <img id="square2Img" :src="square2Img">
+      <img id="arrow2Img" :src="arrow2Img" @click="goToHome">
+      <div v-if="discount" id="discountDiv">
+        <img id="discountImg" :src="discountImg">
+        <p id="discountNumber" class="bellotaRegular">{{ discountPercent }}%</p>
       </div>
     </div>
-  </template>
-  
- <script>
+    <div class="workshopsGridSection bellotaRegular" id="moreInfoDiv">
+      {{ product.name }}
+      <img id="squareImg1" :src="squareImg">
+      <img id="squareImg2" :src="squareImg">
+    </div>
+    <div id="infoDiv">
+      <img 
+        id="hearthEmptyImg" 
+        :src="isHearthFull ? hearthFullImg : hearthEmptyImg" 
+        @click="toggleHearth" 
+      >
+      <p class="detailsText">
+        <span v-if="discount" class="bellotaRegular" id="Oprice">{{ Oprice }}</span>
+        <span class="bellotaBold">{{ Fprice }}</span>
+      </p>
+      <p class="detailsText"><span class="bellotaBold">{{ workshop.name}}</span></p>
+      <p class="detailsText"><span class="bellotaBold">Dimensiones:</span> {{ product.dimensions }}</p>
+      <p class="detailsText"><span class="bellotaBold">Descripción:</span> {{ product.description }}</p>
+      <div id="alertTextDiv">
+        <img id="checkImg" :src="checkImg">
+        <p class="detailsText">Cuenta con envío hacia tu ubicación</p>
+      </div>
+      <div id="addCartDiv" @click="addToCart">
+        <img id="shopCarImg" :src="shopCarImg">
+        Añadir a mi carrito de compras
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import Swal from 'sweetalert2'; // Importamos SweetAlert2
 import Footer from '../components/footer.vue';
 import menuImg from '../images/menu.svg';
 import squareImg from '../images/square.svg';
@@ -64,33 +61,32 @@ import productBGImg from '../images/test/productBG.svg';
 
 export default {
   data() {
-  return {
-    menuImg,
-    squareImg,
-    fSquareImg,
-    square2Img,
-    arrowImg,
-    arrow2Img,
-    hearthEmptyImg,
-    hearthFullImg,
-    checkImg,
-    shopCarImg,
-    discountImg,
-    productBGImg,
-    discount: false,
-    isHearthFull: false,
-    product: {
-      photos: []  // Asegúrate de que photos esté siempre definido como un array vacío si no hay fotos
-    },
-    workshop: {},
-    originalPrice: null,
-    discountedPrice: null,
-    discountPercent: 0,
-    Oprice: null,
-    Fprice: null
-  };
-}
-,
+    return {
+      menuImg,
+      squareImg,
+      fSquareImg,
+      square2Img,
+      arrowImg,
+      arrow2Img,
+      hearthEmptyImg,
+      hearthFullImg,
+      checkImg,
+      shopCarImg,
+      discountImg,
+      productBGImg,
+      discount: false,
+      isHearthFull: false,
+      product: {
+        photos: []
+      },
+      workshop: {},
+      originalPrice: null,
+      discountedPrice: null,
+      discountPercent: 0,
+      Oprice: null,
+      Fprice: null
+    };
+  },
   components: {
     Footer,
   },
@@ -104,7 +100,6 @@ export default {
     },
     toggleHearth() {
       let productId = this.$route.query.id;
-
       if (this.isHearthFull) {
         fetch(`http://localhost:5000/user/favorites/${productId}`, {
           method: 'DELETE',
@@ -115,9 +110,7 @@ export default {
           credentials: 'include'
         })
         .then(response => response.json())
-        .then(data => {
-          console.log(data);
-        });
+        .then(data => console.log(data));
       } else {
         fetch(`http://localhost:5000/user/favorites`, {
           method: 'POST',
@@ -125,15 +118,11 @@ export default {
             'Content-Type': 'application/json',
             'x-version': '1.0.0'
           },
-          body: JSON.stringify({
-            "favoriteId": productId
-          }),
+          body: JSON.stringify({ "favoriteId": productId }),
           credentials: 'include'
         })
         .then(response => response.json())
-        .then(data => {
-          console.log(data);
-        });
+        .then(data => console.log(data));
       }
       this.isHearthFull = !this.isHearthFull;
     },
@@ -149,8 +138,7 @@ export default {
       .then(response => response.json())
       .then(data => {
         const productData = data.data;
-
-        if (productData.discount === true) {
+        if (productData.discount) {
           this.discount = true;
           this.discountPercent = productData.percentage;
           this.Oprice = `$${productData.price}`;
@@ -158,15 +146,12 @@ export default {
         } else {
           this.Fprice = `$${productData.price}`;
         }
-
         this.workshop = productData.workshopId;
         this.product = productData;
         this.originalPrice = productData.price.original || 0;
         this.discountedPrice = productData.price.discounted || 0;
       })
-      .catch(error => {
-        console.error('Error fetching product details:', error);
-      });
+      .catch(error => console.error('Error fetching product details:', error));
 
       fetch(`http://localhost:5000/user/favorites`, {
         method: 'GET',
@@ -187,30 +172,33 @@ export default {
       });
     },
     addToCart() {
-      // Verificar si ya existe un carrito en el localStorage
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-      // Verificar si el producto ya está en el carrito
       const productInCart = cart.find(item => item.id === this.product._id);
 
       if (!productInCart) {
-        // Si no está en el carrito, agregarlo
         cart.push({
           id: this.product._id,
           name: this.product.name,
           price: this.Fprice,
-          image: this.product.image,  // Asumiendo que hay una propiedad 'image'
+          image: this.product.image,
           quantity: 1,
-          productData: this.product  // Guardamos todo el producto
+          productData: this.product
         });
       } else {
-        // Si el producto ya está, incrementar la cantidad
         productInCart.quantity += 1;
       }
 
-      // Guardar el carrito actualizado en localStorage
       localStorage.setItem('cart', JSON.stringify(cart));
-      alert("Producto añadido al carrito");
+
+      // SweetAlert2: Mostrar una alerta estilizada
+      Swal.fire({
+        title: '¡Añadido al carrito!',
+        text: `${this.product.name} se ha agregado correctamente.`,
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        timer: 2000,
+        timerProgressBar: true,
+      });
     }
   },
   name: 'ProductDetails'
