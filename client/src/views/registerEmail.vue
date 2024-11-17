@@ -86,6 +86,8 @@
 </template>
   
 <script setup>
+import Swal from 'sweetalert2';
+
 import { ref, computed } from 'vue'
 import rotatedSquare from '../images/rotatedSquare.svg'
 import backArrow from '../images/backArrow.svg'
@@ -228,7 +230,7 @@ const handleSubmit = async () => {
     }
   } catch (error) {
     console.error('Error en el registro:', error)
-    alert('Error en el registro. Por favor intente nuevamente.')
+    Swal.fire('Error', 'Error en el registro. Por favor intente nuevamente.', 'error');
   }
 }
 </script>
