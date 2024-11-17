@@ -75,6 +75,11 @@ export default {
     },
     mounted() {
         const categoryFromUri = this.$route.query.category;
+        const searchFromUri = this.$route.query.search;
+
+        if (searchFromUri) {
+            this.searchQuery = searchFromUri;
+        }
 
         if (categoryFromUri && this.categories.includes(categoryFromUri)) {
             this.selectedCategoryIndex = this.categories.indexOf(categoryFromUri);
@@ -139,8 +144,6 @@ export default {
     name: 'WorkshopsGallery'
 };
 </script>
-
-
 <style scoped>
     #workshopsGrid {
         display: grid;

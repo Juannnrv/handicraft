@@ -6,7 +6,15 @@
         <div class="homeGridSectionB">
             <img id="menuImg" :src="menuImg" @click="toggleMenuVisibility">
             <div id="homeInputDiv">
-                <input class="bellotaRegular" type="text" id="homeInput" placeholder="Buscar producto o tienda...">
+                <!-- Se agrega el evento @keyup.enter para redirigir al presionar Enter -->
+                <input 
+                    class="bellotaRegular" 
+                    type="text" 
+                    id="homeInput" 
+                    placeholder="Buscar producto o tienda..." 
+                    v-model="searchQuery" 
+                    @keyup.enter="searchAndRedirect"
+                >
                 <img id="glassImg" :src="glassImg">
             </div>
         </div>
@@ -49,6 +57,7 @@
     </div>
     <Footer :selectedIndex="2" />
 </template>
+
 <script>
 import squareImg from '../images/square.svg';
 import menuImg from '../images/menu.svg';
@@ -93,7 +102,8 @@ export default {
                 { name: 'Estampado', image: printImg },
                 { name: 'Pintura tradicional', image: picturesImg }
             ],
-            isMenuVisible: false
+            isMenuVisible: false,
+            searchQuery: '' // variable para almacenar el texto del input
         };
     },
     components: {
@@ -110,6 +120,12 @@ export default {
         handleClickOutside(event) {
             if (this.isMenuVisible && this.$refs.menu && !this.$refs.menu.contains(event.target)) {
                 this.isMenuVisible = false;
+            }
+        },
+        searchAndRedirect() {
+            if (this.searchQuery.trim() !== '') {
+                // Redirigir a /categories?search=<texto-del-input>
+                this.$router.push(`/categories?search=${this.searchQuery}`);
             }
         }
     },
