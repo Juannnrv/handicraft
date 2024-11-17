@@ -38,6 +38,39 @@ class CouponController {
       res.status(500).json({ message: 'Error al obtener los cupones' });
     }
   }
+
+  static async getGeneralCoupons(req, res) {
+    try {
+      const currentDate = new Date();
+
+      // Construir el filtro para cupones generales
+      const filter = {
+        type: "general", // Tipo de cupón general
+        valid: true, // Solo cupones válidos
+        expirationDate: { $gte: currentDate }, // Fecha de expiración válida
+      };
+
+      // Obtener cupones según el filtro
+      const generalCoupons = await Coupon.find(filter);
+      console.log(filter);
+      console.log(generalCoupons);
+
+      // Verificar si no se encontraron cupones
+      if (generalCoupons.length === 0) {
+        return res.status(404).json({ message: "No hay cupones generales disponibles" });
+      }
+
+      // Responder con los cupones generales encontrados
+      res.status(200).json({
+        status: 200,
+        message: "General coupons found",
+        data: generalCoupons,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Error al obtener los cupones generales" });
+    }
+  }
 }
 
 module.exports = CouponController;
