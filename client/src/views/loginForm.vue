@@ -43,26 +43,18 @@
   
   <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'  // Importa el router para redirigir
+import { useRouter } from 'vue-router'
+import Swal from 'sweetalert2'
 import rotatedSquare from '../images/rotatedSquare.svg'
 import backArrow from '../images/backArrow.svg'
 import squareBG from '../images/squareBG.svg'
 
-// Estado para los campos del formulario
 const identifier = ref('')
 const password = ref('')
-
-// Obtén el router para redirigir después de un login exitoso
 const router = useRouter()
 
-// Función que maneja el envío del formulario
 const handleSubmit = async () => {
   try {
-    // Realiza la solicitud POST para iniciar sesión con fetch
-    console.log(JSON.stringify({
-        identifier: identifier.value,
-        password: password.value
-      }))
     const response = await fetch('http://localhost:5000/auth/login', {
       method: 'POST',
       headers: {
@@ -76,23 +68,43 @@ const handleSubmit = async () => {
       credentials: 'include'
     })
 
-    // Verifica que la respuesta tenga un status 200
     if (response.ok) {
-      // Redirige a /home si la respuesta es exitosa
-      router.push('/home')
+      // Alerta de éxito
+      Swal.fire({
+        icon: 'success',
+        title: 'Inicio de sesión exitoso',
+        text: '¡Bienvenido de nuevo!',
+        confirmButtonColor: '#3085d6',
+        timer: 2000
+      })
+
+      // Redirigir al home
+      setTimeout(() => {
+        router.push('/home')
+      }, 2000)
     } else {
-      // Si no es 200, muestra un mensaje de error
       const errorData = await response.json()
-      console.error('Error:', errorData)
-      alert('Credenciales incorrectas o error en el servidor.')
+      // Alerta de error
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de inicio de sesión',
+        text: errorData.message || 'Credenciales incorrectas. Por favor, intenta nuevamente.',
+        confirmButtonColor: '#d33'
+      })
     }
   } catch (error) {
-    // Manejo de errores en caso de que la solicitud falle
     console.error('Error al iniciar sesión:', error)
-    alert('Hubo un problema con la solicitud. Inténtalo nuevamente.')
+    // Alerta de fallo en la solicitud
+    Swal.fire({
+      icon: 'error',
+      title: 'Error de conexión',
+      text: 'Hubo un problema con el servidor. Intenta nuevamente más tarde.',
+      confirmButtonColor: '#d33'
+    })
   }
 }
 </script>
+
 
 
   
