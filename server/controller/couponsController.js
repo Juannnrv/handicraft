@@ -1,12 +1,11 @@
 const Coupon = require('../model/couponModel.js'); 
 
 class CouponController {
-  // Método estático para obtener cupones
   static async getCoupons(req, res) {
     try {
       const currentDate = new Date();
       const userId = req.user._id;
-
+  
       // Obtener parámetros de la consulta
       const { code } = req.query;
   
@@ -19,12 +18,16 @@ class CouponController {
   
       // Obtener cupones según el filtro
       const coupons = await Coupon.find(filter);
-      console.log(filter);
-      console.log(coupons);
   
       // Verificar si no se encontraron cupones
       if (coupons.length === 0) {
         return res.status(404).json({ message: 'No hay cupones disponibles para el código proporcionado' });
+      }
+  
+      // Validar si el cupón es de tipo "user" y si el userId coincide
+      const userCoupon = coupons.find(coupon => coupon.type === 'user' && coupon.userId.toString() !== userId.toString());
+      if (userCoupon) {
+        return res.status(403).json({ message: 'No tienes permiso para usar este cupón' });
       }
   
       // Responder con los cupones encontrados
