@@ -121,7 +121,7 @@ export default {
             })
                 .then(response => response.json())
                 .then(data => {
-                    this.products = data.data.products;
+                    this.products = data.data.products.filter(product => product.discount === true);
                 })
                 .catch(error => {
                     console.error('Error al obtener los productos: ', error);
