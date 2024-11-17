@@ -40,7 +40,7 @@ export default {
       username: "Cargando...", // Nombre de usuario inicial
       menuOptions: [
         { imgSrc: favoriteImg, text: 'Lista de favoritos', route: '/favorites' },
-        { imgSrc: shopsImg, text: 'Compras', route: '/home' },
+        { imgSrc: shopsImg, text: 'Compras', route: '/car' },
         { imgSrc: workshopsImg, text: 'Talleres', route: '/workshops' },
         { imgSrc: couponImg, text: 'Canjear cupón', route: '/redeemCoupon' }
       ],
