@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Chat = require('../model/chatModel'); // Importar el modelo de chat
+const readline = require('readline'); // Importar readline para leer desde la consola
 
 function setupSockets(server) {
   const io = require('socket.io')(server, {
@@ -11,7 +12,7 @@ function setupSockets(server) {
 
   io.on('connection', (socket) => {
     console.log('Nuevo cliente conectado');
-    
+
     // Cuando el usuario se conecta, se une a su sala específica
     socket.on('joinRoom', ({ userId }) => {
       const room = `user_${userId}`;
@@ -25,8 +26,8 @@ function setupSockets(server) {
 
       // Guardar el mensaje del usuario en la base de datos
       const userMessage = new Chat({
-        senderId: userId, // Guardamos el ObjectId del usuario
-        receiverId: 'admin', // El receptor es siempre 'admin'
+        senderId: new mongoose.Types.ObjectId(userId), // Convertimos el userId a ObjectId
+        receiverId: new mongoose.Types.ObjectId('673346ac726d5fd18ecac2a7'), // Convertimos el admin ID a ObjectId
         content,
       });
       await userMessage.save();
@@ -37,28 +38,49 @@ function setupSockets(server) {
         content: userMessage.content,
       });
 
-      // Crear la respuesta automática del admin usando un ObjectId ficticio
-      const adminObjectId = new mongoose.Types.ObjectId(); // Crear un ObjectId ficticio
-      const adminResponse = `Hola, soy el admin. Hemos recibido tu mensaje: "${content}"`;
-      const adminMessage = new Chat({
-        senderId: adminObjectId, // Usamos el ObjectId ficticio para el admin
-        receiverId: userId, // El mensaje se envía al usuario
-        content: adminResponse,
-      });
-      await adminMessage.save();
+      console.log(`Usuario ${userId}: ${content}`);
+    });
 
-      // Emitir la respuesta del admin al usuario
+  });
+
+  // Leer mensajes desde la consola y emitirlos a la sala correspondiente
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  
+  rl.on('line', async (input) => {
+    try {
+      const [userId, ...messageParts] = input.split(' ');
+      const message = messageParts.join(' ');  // El mensaje puede contener espacios
+      const room = `user_${userId}`; // La sala es el userId prepended con 'user_'
+  
+      console.log(`Enviando mensaje a la sala ${room}: ${message}`);
+  
+      // Emitir el mensaje de la consola a la sala correspondiente
       io.to(room).emit('chat message', {
         sender: 'admin',
-        content: adminMessage.content,
+        content: message,
       });
-    });
-
-    // Evento cuando un cliente se desconecta
-    socket.on('disconnect', () => {
-      console.log('Cliente desconectado');
-    });
+  
+      // Usamos un ObjectId ficticio para el admin
+      const adminObjectId = new mongoose.Types.ObjectId('673346ac726d5fd18ecac2a7'); // Usamos un ObjectId ficticio aquí
+  
+      // Guardar el mensaje del admin en la base de datos
+      const adminMessage = new Chat({
+        senderId: adminObjectId, // Usamos un ObjectId válido para el admin
+        receiverId: new mongoose.Types.ObjectId(userId), // Convertimos el userId a ObjectId
+        content: message,
+      });
+  
+      // Guardar el mensaje en la base de datos
+      await adminMessage.save();
+      console.log('Mensaje guardado en la base de datos');
+    } catch (err) {
+      console.error('Error al procesar el mensaje:', err);
+    }
   });
+  
 }
 
 module.exports = { setupSockets };
