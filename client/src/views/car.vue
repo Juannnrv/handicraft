@@ -52,7 +52,7 @@
         <div class="homeGridSection">
             <div class="bellotaBold" id="couponDiv" @click="showCouponInput">
                 <p v-if="!isCouponInputVisible">Añadir cupón de descuento</p>
-                <input class="bellotaRegular" placeholder="Ingrese código del cupón..." v-if="isCouponInputVisible" id="couponInput" type="text">
+                <input class="bellotaRegular" placeholder="Ingrese código del cupón..." v-if="isCouponInputVisible" id="couponInput" type="text" v-model="couponCode" @keydown.enter="applyCoupon">
             </div>
         </div>
         <div class="homeGridSection2">
@@ -84,6 +84,8 @@ import homeBGImg from '../images/homeBG.svg';
 import productImg from '../images/test/workshop.svg';
 import trashImg from '../images/trash.svg';
 import giantCheckImg from '../images/giantCheck.svg';
+import Swal from 'sweetalert2'; // Importamos SweetAlert2
+import 'sweetalert2/dist/sweetalert2.min.css'; // Estilo de SweetAlert2
 
 import minusImg from '../images/minus.svg';
 import plusImg from '../images/plus.svg';
@@ -109,6 +111,7 @@ export default {
             isMenuVisible: false,
             succes: false,
             products: this.getProductsFromLocalStorage(),
+            couponCode: "", // Aquí añadimos el código del cupón
         };
     },
     components: {
@@ -150,62 +153,69 @@ export default {
             this.$router.push('/home');
         },
         async buy() {
-    // Crear el array de objetos con la estructura requerida
-    const orderDetails = this.products.map(product => ({
-        productId: product.productData._id, // Suponiendo que cada producto tiene un _id único
-        quantity: product.quantity,
-        price: parseFloat(product.price.replace('$', '').trim()) // Asegúrate de convertir el precio a número
-    }));
+            const orderDetails = this.products.map(product => ({
+                productId: product.productData._id,
+                quantity: product.quantity,
+                price: parseFloat(product.price.replace('$', '').trim())
+            }));
 
-    // Obtener la fecha de hoy en formato DD/MM/YYYY
-    const today = new Date();
-    const day = String(today.getDate()).padStart(2, '0'); // Asegura que el día tenga 2 dígitos
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexed, por eso sumamos 1
-    const year = today.getFullYear();
-    const formattedDate = `${day}/${month}/${year}`;
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const year = today.getFullYear();
+            const formattedDate = `${day}/${month}/${year}`;
 
-    const order = {
-        products: orderDetails,
-        total: this.total, // Utiliza el total calculado en la propiedad computada
-        date: formattedDate, // La fecha en formato DD/MM/YYYY
-        coupons: [] // Si tienes un cupón, puedes añadirlo aquí más adelante
-    };
+           // Recuperar cart del localStorage (suponiendo que es un string JSON)
+            const cart = JSON.parse(localStorage.getItem('cart'));
 
-    // Mostrar el array de objetos en consola
-    console.log(order);
+            // Crear la orden
+            const order = {
+                products: orderDetails,
+                total: this.total,
+                date: formattedDate,
+                coupons: [] 
+            };
 
-    try {
-        // Realizar la solicitud POST a la API para crear la orden
-        const response = await fetch('http://localhost:5000/orders/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-version': '1.0.0'
-            },
-            body: JSON.stringify(order),
-            credentials: 'include' // Esto asegura que se envíen las cookies de sesión si las hay
-        });
+            // Recorrer los elementos de cart
+            cart.forEach(item => {
+                if (item.usedCoupons && Array.isArray(item.usedCoupons)) {
+                    item.usedCoupons.forEach(coupon => {
+                        // Verificar si el cupón ya está en la lista de cupones de la orden
+                        if (!order.coupons.includes(coupon)) {
+                            order.coupons.push(coupon); // Agregar el cupón si no existe
+                        }
+                    });
+                }
+            });
 
-        if (!response.ok) {
-            throw new Error('Error al crear la orden');
-        }
-
-        const data = await response.json(); // Esperar la respuesta JSON
-        // Aquí puedes manejar la respuesta exitosa
-        console.log('Respuesta de la API:', data); // Imprime la respuesta completa
-        console.log('Orden creada con éxito:', data);
-
-        // Vaciar el carrito después de la compra
-        localStorage.removeItem('cart');
-        this.succes = true;
-    } catch (error) {
-        // Aquí puedes manejar los errores
-        console.error('Error en la solicitud:', error);
-    }
-}
+            console.log(order.coupons);
 
 
-,
+            try {
+                const response = await fetch('http://localhost:5000/orders/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-version': '1.0.0'
+                    },
+                    body: JSON.stringify(order),
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al crear la orden');
+                }
+
+                const data = await response.json();
+                console.log('Respuesta de la API:', data);
+                console.log('Orden creada con éxito:', data);
+
+                localStorage.removeItem('cart');
+                this.succes = true;
+            } catch (error) {
+                console.error('Error en la solicitud:', error);
+            }
+        },
         getProductsFromLocalStorage() {
             const storedProducts = localStorage.getItem('cart');
             return storedProducts ? JSON.parse(storedProducts) : [];
@@ -213,12 +223,117 @@ export default {
         updateLocalStorage() {
             localStorage.setItem('cart', JSON.stringify(this.products));
         },
+        async applyCoupon() {
+            if (this.couponCode.trim()) {
+                try {
+      const response = await fetch(`http://localhost:5000/coupons/search?code=${this.couponCode.trim()}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-version': '1.0.0',
+        },
+        credentials: 'include',
+      });
+  
+      const res = await response.json();
+  
+      if (response.ok && res.data.length > 0) {
+        const coupon = res.data[0];
+  
+        // Si el tipo de cupón es "workshop", validar que solo se aplique a productos con los ids correctos
+        if (coupon.type === 'workshop') {
+          const cart = JSON.parse(localStorage.getItem('cart')) || [];
+          let couponApplied = false;
+  
+          cart.forEach(product => {
+            if (!product.usedCoupons) product.usedCoupons = [];
+            // Validar si el producto tiene el id adecuado para aplicar el cupón de tipo "workshop"
+
+            if (!product.usedCoupons.includes(coupon._id) && product.productData.workshopId._id == coupon.workshopId) {
+              const priceNumber = parseFloat(product.price.replace('$', ''));
+              const discountedPrice = (priceNumber * (1 - coupon.discount / 100)).toFixed(2);
+              product.price = `$${discountedPrice}`;
+              product.usedCoupons.push(coupon._id);
+              couponApplied = true;
+            }
+          });
+  
+          if (couponApplied) {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            this.products = this.getProductsFromLocalStorage()
+            Swal.fire({
+              icon: 'success',
+              title: 'Cupón aplicado',
+              text: `El cupón de tipo "workshop" fue aplicado exitosamente a los productos elegibles.`,
+            });
+          } else {
+            Swal.fire({
+              icon: 'info',
+              title: 'Sin cambios',
+              text: 'El cupón no se aplicó porque no es válido para los productos en el carrito.',
+            });
+          }
+        } else {
+          // Si el cupón no es de tipo "workshop", aplicar normalmente a todos los productos
+          const cart = JSON.parse(localStorage.getItem('cart')) || [];
+          let couponApplied = false;
+  
+          cart.forEach(product => {
+            console.log(product)
+            if (!product.usedCoupons) product.usedCoupons = [];
+            if (!product.usedCoupons.includes(coupon._id)) {
+                const priceNumber = parseFloat(product.price.replace('$', ''));
+                console.log(product)
+              const discountedPrice = (priceNumber * (1 - coupon.discount / 100)).toFixed(2);
+              product.price = `$${discountedPrice}`;
+              product.usedCoupons.push(coupon._id);
+              couponApplied = true;
+            }
+          });
+  
+          if (couponApplied) {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            this.products = this.getProductsFromLocalStorage()
+            Swal.fire({
+              icon: 'success',
+              title: 'Cupón aplicado',
+              text: `El cupón fue aplicado exitosamente a los productos elegibles.`,
+            });
+          } else {
+            Swal.fire({
+              icon: 'info',
+              title: 'Sin cambios',
+              text: 'El cupón ya fue utilizado o no es aplicable a ningún producto.',
+            });
+          }
+        }
+      } else if (response.status === 401) {
+        router.push('/login');
+      } else if (response.status === 404) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Cupón no válido',
+          text: 'Cupón no encontrado o inválido.',
+        });
+      } else {
+        console.error('Error al validar cupón:', response.status);
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Ocurrió un error al validar el cupón.',
+      });
+    }
+            }
+        }
     },
     computed: {
         subtotal() {
             return this.products.reduce((total, product) => {
-                const price = parseFloat(product.price.replace('$', '').trim()); // Convertir el precio a número
-                return total + price * product.quantity; // Ahora puedes multiplicar correctamente
+                const price = parseFloat(product.price.replace('$', '').trim());
+                return total + price * product.quantity;
             }, 0);
         },
         envioCost() {
@@ -230,6 +345,15 @@ export default {
     },
     mounted() {
         document.addEventListener('mousedown', this.handleClickOutside);
+        // Asegurarse de que el ref esté correctamente asignado en el template
+        const couponInput = this.$refs.couponInput;
+        if (couponInput) {
+            couponInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    this.applyCoupon();
+                }
+            });
+        }
     },
     beforeDestroy() {
         document.removeEventListener('mousedown', this.handleClickOutside);
@@ -237,6 +361,7 @@ export default {
     name: 'TestComponent'
 }
 </script>
+
 
 
 <style scoped>
