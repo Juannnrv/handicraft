@@ -6,7 +6,13 @@
         <div class="workshopsGridSectionB">
             <img id="menuImg" :src="menuImg" @click="toggleMenuVisibility">
             <div id="homeInputDiv">
-                <input class="bellotaRegular" type="text" id="homeInput" placeholder="Buscar producto o tienda...">
+                <input
+                    class="bellotaRegular"
+                    type="text"
+                    id="homeInput"
+                    placeholder="Buscar producto o tienda..."
+                    v-model="searchQuery"
+                >
                 <img id="glassImg" :src="glassImg">
             </div>
         </div>
@@ -27,23 +33,21 @@
             </div>
         </div>
         <div class="workshopsGridSection" id="wrokshopsGrid">
-            <div class="wrokshopsGridSection" v-for="(workshop, index) in workshops" :key="index">
+            <div class="wrokshopsGridSection" v-for="(product, index) in filteredProducts" :key="index" @click="goToProductDetails(product._id)">
                 <div class="discountPercentDiv">
-                    <p class="discountPercent bellotaBold">-{{ workshop.percent }}%</p>
-                    <img class="dcImg" :src="workshop.dcImg">
+                    <p class="discountPercent bellotaBold">-{{ product.percentage }}%</p>
+                    <img class="dcImg" :src="dcImg">
                 </div>
                 <div class="wrokshopsGridSectionDiv">
-                    <img class="workshopImg" :src="workshop.img">
+                    <img class="workshopImg" :src="product.photos[0]">
                 </div>
                 <div class="wrokshopsGridSectionDivB">
-                    <p class="wrokshopsGridSectionText bellotaBold">{{ workshop.title }}</p>
-                    <p class="wrokshopsGridSectionPrice bellotaBold"><span class="lineText">{{ workshop.Oprice }}</span> / {{ workshop.Fprice }}</p>
-                    <p class="wrokshopsGridSectionText2 bellotaRegular">{{ workshop.location }}</p>
+                    <p class="wrokshopsGridSectionText bellotaBold">{{ product.name }}</p>
+                    <p class="wrokshopsGridSectionPrice bellotaBold">${{ product.price }}</p>
                 </div>
             </div>
         </div>
     </div>
-
     <Footer :selectedIndex="1" />
 </template>
 
@@ -54,38 +58,37 @@ import Menu from '../components/menu.vue';
 import menuImg from '../images/menu.svg';
 import glassImg from '../images/glass.svg';
 import squareImg from '../images/square.svg';
-import workshopImg from '../images/test/workshop.svg';
-import discountImg from '../images/discount.svg';
+import dcImg from '../images/discount.svg';
 
 export default {
     data() {
         return {
+            isMenuVisible: false,
             menuImg,
             glassImg,
             squareImg,
+            dcImg,
+            searchQuery: '',
             categories: [
-                'Textileria', 'Cerámica', 'Joyería', 'Talla en piedra',
+                'Todos', 'Textileria', 'Cerámica', 'Joyería', 'Talla en piedra',
                 'Talla en madera', 'Orfebrería', 'Estampado', 'Pintura tradicional',
                 'Hojalatería', 'Bordado'
             ],
-            workshops: [
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', Fprice: '$16', dcImg: discountImg, percent: '25'},
-                { title: 'Arte Abedail Aller', location: 'Cusco', img: workshopImg, Oprice: '$20', Fprice: '$16', dcImg: discountImg, percent: '50'}
-            ],
+            products: [],
             selectedCategoryIndex: 0,
-            isMenuVisible: false
         };
     },
     components: {
         Footer,
         Menu
     },
+    mounted() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+        this.fetchProducts(this.categories[this.selectedCategoryIndex]);
+    },
     methods: {
-        selectCategory(index) {
-            this.selectedCategoryIndex = index;
-        },
-        getCategoryClass(index) {
-            return index === this.selectedCategoryIndex ? 'categoryGridDivB' : 'categoryGridDiv';
+        goToProductDetails(productId) {
+            this.$router.push(`/productdetails?id=${productId}`);
         },
         toggleMenuVisibility() {
             this.isMenuVisible = !this.isMenuVisible;
@@ -94,15 +97,56 @@ export default {
             if (this.isMenuVisible && this.$refs.menu && !this.$refs.menu.contains(event.target)) {
                 this.isMenuVisible = false;
             }
+        },
+        selectCategory(index) {
+            this.selectedCategoryIndex = index;
+            this.fetchProducts(this.categories[index]);
+        },
+        getCategoryClass(index) {
+            return index === this.selectedCategoryIndex ? 'categoryGridDivB' : 'categoryGridDiv';
+        },
+        fetchProducts(category) {
+            const url =
+                category === 'Todos'
+                    ? 'http://localhost:5000/product'
+                    : `http://localhost:5000/product?category=${category}`;
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-version': '1.0.0'
+                },
+                credentials: 'include'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.products = data.data.products;
+                })
+                .catch(error => {
+                    console.error('Error al obtener los productos: ', error);
+                });
         }
-    },
-    mounted() {
-        document.addEventListener('mousedown', this.handleClickOutside);
     },
     beforeDestroy() {
         document.removeEventListener('mousedown', this.handleClickOutside);
     },
-    name: 'TestComponent'
+    computed: {
+        filteredProducts() {
+            const query = this.searchQuery.toLowerCase();
+            const filteredBySearch = this.products.filter(product =>
+                product.name.toLowerCase().includes(query)
+            );
+
+            if (this.categories[this.selectedCategoryIndex] === 'Todos') {
+                return filteredBySearch;
+            }
+
+            const category = this.categories[this.selectedCategoryIndex];
+            return filteredBySearch.filter(product => product.category === category);
+        }
+    },
+    name: 'WorkshopsDiscounts',
 };
 </script>
 
@@ -200,34 +244,25 @@ export default {
     .wrokshopsGridSectionDivB {
         position: relative;
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        justify-content: center;
         overflow: hidden;
         background-color: var(--color-B);
     }
     .wrokshopsGridSectionText {
-        position: absolute;
         top: 0;
         left: 0;
-        margin-top: 6px;
-        margin-left: 4px;
         color: var(--color-W);
         font-size: 16px;
     }
     .wrokshopsGridSectionText2 {
-        position: absolute;
         bottom: 0;
         left: 0;
-        margin-bottom: 6px;
-        margin-left: 4px;
         color: var(--color-W);
         font-size: 16px;
     }
     .wrokshopsGridSectionPrice{
-        position: absolute;
         left: 0;
-        margin-bottom: 6px;
-        margin-left: 4px;
-        margin-top: 8px;
         color: var(--color-W);
         font-size: 16px;
     }
