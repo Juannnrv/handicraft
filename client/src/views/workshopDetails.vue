@@ -6,7 +6,7 @@
           <img class="square-title" :src="rotatedSquare" alt="">
           <h1 class="workshop-title bellotaBold">{{ workshop.name }}</h1>
           <img class="square-bg" style="filter: invert(100%);" :src="rotatedSquare" alt="">
-          <a class="a-back" href="workshops">
+          <a class="a-back" :href="`workshop?id=${workshop._id}`">
             <img class="back-arrow" style="filter: invert(100%);" :src="backArrow" alt="">
           </a>
         </div>
@@ -60,6 +60,7 @@
   import rotatedSquare from '../images/rotatedSquare.svg'
   import backArrow from '../images/backArrow.svg'
   import suscribe from '../images/suscribe.svg'
+  import Swal from 'sweetalert2' // Importamos SweetAlert2
   
   // Variable para guardar los datos del taller
   const workshop = ref({})
@@ -69,25 +70,25 @@
     const params = new URLSearchParams(window.location.search)
     return params.get('id') // Obtiene el parámetro "id" de la URL
   }
-
-  // Función para formatear la fecha
-const formatDate = (dateString) => {
-  const date = new Date(dateString)  // Convertimos la cadena a un objeto Date
   
-  // Formateamos la fecha a "8 de julio de 2023"
-  return date.toLocaleDateString('es-PE', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  })
-}
+  // Función para formatear la fecha
+  const formatDate = (dateString) => {
+    const date = new Date(dateString)  // Convertimos la cadena a un objeto Date
+    
+    // Formateamos la fecha a "8 de julio de 2023"
+    return date.toLocaleDateString('es-PE', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    })
+  }
   
   const workshopId = getWorkshopIdFromUrl()
   
   // Realizar la petición para obtener los datos del taller
   onMounted(async () => {
     try {
-     console.log(workshopId)
+      console.log(workshopId)
       const response = await fetch(`http://localhost:5000/workshop/${workshopId}`, {
         method: 'GET',
         headers: {
@@ -112,14 +113,59 @@ const formatDate = (dateString) => {
     }
   })
   
-  // Función para manejar la inscripción (esto es solo un ejemplo)
-  const handleSignup = () => {
-    console.log('Inscribiéndose al taller:', workshopId)
-    // Lógica para inscribirse al taller
+  // Función para manejar la inscripción
+  const handleSignup = async () => {
+    try {
+      console.log('Inscribiéndose al taller:', workshopId)
+  
+      // Realizamos la petición POST para inscribir al usuario en el taller
+      const response = await fetch('http://localhost:5000/user/favorites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-version': '1.0.0',
+        },
+        body: JSON.stringify({ favoriteId: workshopId }), // Cuerpo de la solicitud
+        credentials: 'include', // Incluye las credenciales (como el token)
+      })
+  
+      // Verificar si la respuesta es exitosa (status 200)
+      if (response.ok) {
+        const data = await response.json()
+        console.log('Usuario inscrito en el taller:', data)
+  
+        // Mostrar SweetAlert de éxito
+        Swal.fire({
+          title: '¡Inscripción exitosa!',
+          text: 'Te has inscrito al taller correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        })
+      } else {
+        console.error('Error al inscribirse en el taller:', response.statusText)
+  
+        // Mostrar SweetAlert de error
+        Swal.fire({
+          title: 'Error al inscribirse',
+          text: 'Hubo un problema al intentar inscribirte. Por favor, intenta nuevamente.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        })
+      }
+    } catch (error) {
+      console.error('Error al hacer la inscripción:', error)
+  
+      // Mostrar SweetAlert de error
+      Swal.fire({
+        title: 'Error',
+        text: 'Ocurrió un error al procesar tu inscripción. Por favor, intenta nuevamente más tarde.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      })
+    }
   }
   </script>
-  
-  
+    
     
     <style scoped>
     .workshop-page {
