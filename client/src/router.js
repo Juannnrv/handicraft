@@ -10,8 +10,8 @@ import car from './views/car.vue';
 import favorites from './views/favorites.vue';
 import workshop from './views/workshop.vue';
 import productDetails from './views/productDetails.vue';
-import RegistrationView from './views/registerEmail.vue'
-import RegistrationPhoneView from './views/registerPhone.vue'
+import RegistrationView from './views/registerEmail.vue';
+import RegistrationPhoneView from './views/registerPhone.vue';
 import ConfirmRegisterPhone from './views/confirmRegisPhone.vue';
 import ConfirmRegisterEmail from './views/confirmRegisEmail.vue';
 import loginForm from './views/loginForm.vue';
@@ -29,132 +29,179 @@ const routes = [
   {
     path: '/signup',
     name: 'signUp',
-    component: signUp
+    component: signUp,
   },
   {
     path: '/login',
     name: 'login',
-    component: login
+    component: login,
   },
   {
     path: '/home',
     name: 'Home',
-    component: home
+    component: home,
+    meta: { requiresAuth: true },
   },
   {
     path: '/workshops',
     name: 'Workshops',
-    component: workshops
+    component: workshops,
+    meta: { requiresAuth: true },
   },
   {
     path: '/discounts',
     name: 'Discounts',
-    component: discounts
+    component: discounts,
+    meta: { requiresAuth: true },
   },
   {
     path: '/categories',
     name: 'Categories',
-    component: categories
+    component: categories,
+    meta: { requiresAuth: true },
   },
   {
     path: '/car',
     name: 'Car',
-    component: car
+    component: car,
+    meta: { requiresAuth: true },
   },
   {
     path: '/favorites',
     name: 'Favorites',
-    component: favorites
+    component: favorites,
+    meta: { requiresAuth: true },
   },
   {
     path: '/workshop',
     name: 'Workshop',
-    component: workshop
+    component: workshop,
+    meta: { requiresAuth: true },
   },
   {
     path: '/productDetails',
     name: 'ProductDetails',
-    component: productDetails
+    component: productDetails,
+    meta: { requiresAuth: true },
   },
-  { 
+  {
     path: '/registerEmail',
     name: 'Register',
-    component: RegistrationView 
+    component: RegistrationView,
   },
-  { 
+  {
     path: '/registerPhone',
     name: 'RegisterPhone',
-    component: RegistrationPhoneView 
+    component: RegistrationPhoneView,
   },
   {
     path: '/confirmRegisterPhone',
     name: 'confirmRegisterPhone',
     component: ConfirmRegisterPhone,
   },
-  { 
+  {
     path: '/confirmRegisterEmail',
     name: 'confirmRegisterEmail',
-    component: ConfirmRegisterEmail 
+    component: ConfirmRegisterEmail,
   },
-  { 
+  {
     path: '/loginForm',
     name: 'loginForm',
-    component: loginForm 
+    component: loginForm,
   },
-  { 
+  {
     path: '/settings',
     name: 'settings',
-    component: settings 
+    component: settings,
+    meta: { requiresAuth: true },
   },
-  { 
+  {
     path: '/customerService',
     name: 'customerService',
-    component: customerService 
+    component: customerService,
+    meta: { requiresAuth: true },
   },
-  { 
+  {
     path: '/comments',
     name: 'comments',
-    component: comments 
+    component: comments,
+    meta: { requiresAuth: true },
   },
-  { 
+  {
     path: '/workshopDetails',
     name: 'workshopDetails',
-    component: workshopDetails 
+    component: workshopDetails,
+    meta: { requiresAuth: true },
   },
-  { 
+  {
     path: '/redeemCoupon',
-    name: 'redeemCsoupon',
-    component: redeemCoupon 
+    name: 'redeemCoupon',
+    component: redeemCoupon,
+    meta: { requiresAuth: true },
   },
-  { 
+  {
     path: '/workshopQR',
     name: 'workshopQR',
-    component: workshopQR 
+    component: workshopQR,
+    meta: { requiresAuth: true },
   },
-  { 
+  {
     path: '/chat',
     name: 'chat',
-    component: chat 
+    component: chat,
+    meta: { requiresAuth: true },
   },
-  { 
+  {
     path: '/workshopsgallery',
     name: 'Workshopsgallery',
-    component: workshops2 
+    component: workshops2,
+    meta: { requiresAuth: true },
   },
-  { 
+  {
     path: '/profile',
     name: 'Profile',
-    component: profile 
+    component: profile,
+    meta: { requiresAuth: true },
   },
   {
     path: '/',
-    redirect: '/signup'
+    redirect: '/signup',
   },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+  if (to.meta.requiresAuth) {
+    try {
+      const response = await fetch('http://localhost:5000/product', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-version': '1.0.0',
+        },
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        next();
+      } else if (response.status === 401) {
+        console.warn('Usuario no autenticado. Redirigiendo a login...');
+        next('/login');
+      } else {
+        console.error('Error inesperado:', response.status);
+        next('/error');
+      }
+    } catch (error) {
+      console.error('Error de red:', error);
+      next('/error');
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;
