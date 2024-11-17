@@ -10,7 +10,7 @@ class ProductController {
    */
   static async listProducts(req, res) {
     try {
-        const { page = 1, limit = 10, category, minPrice, maxPrice, workshopId } = req.query;
+        const { page = 1, limit = 100, category, minPrice, maxPrice, workshopId } = req.query;
 
         let filter = {};
         if (category) {
