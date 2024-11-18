@@ -129,11 +129,10 @@ class UserController {
   }
 
   static async createUserFavorite(req, res) {
-    const userId = req.user._id;  // El ID del usuario actual
-    const { favoriteId } = req.body;  // El ID del favorito (puede ser producto o taller)
-  
+    const userId = req.user._id;
+    const { favoriteId } = req.body;
+
     try {
-      // Buscar al usuario por ID
       const user = await User.findById(userId);
       if (!user) {
         return res.status(404).json({
@@ -141,53 +140,59 @@ class UserController {
           message: "User not found",
         });
       }
-  
-      // Buscar si el favorito es un producto o un taller
+
       const [productFavorite, workshopFavorite] = await Promise.all([
         Product.findById(favoriteId),
         Workshop.findById(favoriteId),
       ]);
-  
-      // Verificar que al menos uno exista
+
       if (!productFavorite && !workshopFavorite) {
         return res.status(404).json({
           status: 404,
           message: "Product or Workshop not found",
         });
       }
-  
-      // Lógica para agregar un producto favorito
+
       if (productFavorite) {
         if (!user.favorites.products) {
-          user.favorites.products = [];  // Si no existe la lista de productos favoritos, la creamos
+          user.favorites.products = [];
         }
-        user.favorites.products.push(new mongoose.Types.ObjectId(favoriteId));  // Asegúrate de usar un ObjectId válido
+        if (user.favorites.products.includes(favoriteId)) {
+          return res.status(400).json({
+            status: 400,
+            message: "Product already in favorites",
+          });
+        }
+        user.favorites.products.push(new mongoose.Types.ObjectId(favoriteId));
         await user.save();
-        // await user.populate("favorites.products").execPopulate();  // Poblar los productos favoritos
-  
+
         return res.status(200).json({
           status: 200,
           message: "User product favorite added",
           data: user.favorites.products,
         });
       }
-  
-      // Lógica para agregar un taller favorito
+
       if (workshopFavorite) {
         if (!user.favorites.workshops) {
-          user.favorites.workshops = [];  // Si no existe la lista de talleres favoritos, la creamos
+          user.favorites.workshops = [];
         }
-        user.favorites.workshops.push(new mongoose.Types.ObjectId(favoriteId));  // Asegúrate de usar un ObjectId válido
+        if (user.favorites.workshops.includes(favoriteId)) {
+          return res.status(400).json({
+            status: 400,
+            message: "Workshop already in favorites",
+          });
+        }
+        user.favorites.workshops.push(new mongoose.Types.ObjectId(favoriteId));
         await user.save();
-        // await user.populate("favorites.workshops").execPopulate();  // Poblar los talleres favoritos
-  
+
         return res.status(200).json({
           status: 200,
           message: "User workshop favorite added",
           data: user.favorites.workshops,
         });
       }
-  
+
     } catch (error) {
       res.status(500).json({
         status: 500,
@@ -273,7 +278,7 @@ class UserController {
       res.status(200).json({
         status: 200,
         message: "User orders found",
-        data: user.orders,
+        data: orders,
       });
     } catch (error) {
       res.status(500).json({
@@ -283,6 +288,18 @@ class UserController {
     }
   }
 
+  /**
+   * Finds and returns the coupons associated with the authenticated user.
+   * 
+   * @param {Object} req - The request object.
+   * @param {Object} req.user - The authenticated user object.
+   * @param {string} req.user._id - The ID of the authenticated user.
+   * @param {Object} res - The response object.
+   * 
+   * @returns {Promise<void>} - A promise that resolves to void.
+   * 
+   * @throws {Error} - If there is an error while finding user coupons.
+   */
   static async findUserCoupons(req, res) {
     const userId = req.user._id
 
