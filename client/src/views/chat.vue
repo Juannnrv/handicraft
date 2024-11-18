@@ -58,7 +58,11 @@ export default {
       user: {}, // Información del usuario
       socket: null, // Conexión de socket
       newMessage: "", // Mensaje nuevo a enviar
-      chatMessages: [], // Mensajes del chat
+      chatMessages: [],
+      rotatedSquare, // Mensajes del chat
+      backArrow,
+      chatImg,
+      send
     };
   },
   mounted() {
