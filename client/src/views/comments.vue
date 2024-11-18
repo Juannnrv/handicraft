@@ -38,9 +38,6 @@
         </section>
   
         <div class="form-actions">
-          <button type="button" class="attach-button bellotaBold" @click="handleAttachment">
-            Adjuntar captura
-          </button>
           <button type="submit" class="submit-button bellotaBold">
             Enviar
           </button>
@@ -54,7 +51,8 @@
   import { ref } from 'vue'
   import titleSquare from '../images/titleSquare.svg'
   import rotatedSquare from '../images/rotatedSquare.svg'
-    import backArrow from '../images/backArrow.svg'
+  import backArrow from '../images/backArrow.svg'
+  import Swal from 'sweetalert2' // Importar SweetAlert2
   
   const commonProblems = [
     'La aplicación no carga de manera correcta',
@@ -72,17 +70,34 @@
     selectedProblem.value = problem
   }
   
-  const handleAttachment = () => {
-    // Implement file attachment logic
-    console.log('Attaching file...')
-  }
+  // Función para manejar el envío
+  const handleSubmit = async () => {
+    try {
+      console.log('Submitting feedback:', {
+        selectedProblem: selectedProblem.value,
+        customFeedback: customFeedback.value,
+      })
   
-  const handleSubmit = () => {
-    // Implement form submission logic
-    console.log('Submitting feedback:', {
-      selectedProblem: selectedProblem.value,
-      customFeedback: customFeedback.value
-    })
+      // Simula una solicitud exitosa
+      setTimeout(() => {
+        Swal.fire({
+          title: '¡Comentario enviado!',
+          text: 'Gracias por ayudarnos a mejorar nuestra aplicación.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar',
+        })
+      }, 500) // Simula un retraso en la respuesta del servidor
+    } catch (error) {
+      console.error('Error al enviar el comentario:', error)
+  
+      // Muestra un mensaje de error
+      Swal.fire({
+        title: 'Error',
+        text: 'Hubo un problema al enviar tu comentario. Por favor, intenta nuevamente.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+      })
+    }
   }
   </script>
   
@@ -170,7 +185,7 @@
   
   .form-actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 16px;
 
   }
