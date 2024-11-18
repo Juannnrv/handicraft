@@ -37,10 +37,10 @@ export default {
     return {
       profileImg,
       squaresImg,
-      username: "Cargando...", // Nombre de usuario inicial
+      username: "Cargando...",
       menuOptions: [
         { imgSrc: favoriteImg, text: 'Lista de favoritos', route: '/favorites' },
-        { imgSrc: shopsImg, text: 'Compras', route: '/car' },
+        { imgSrc: shopsImg, text: 'Compras', route: '/shops' },
         { imgSrc: workshopsImg, text: 'Talleres', route: '/workshops' },
         { imgSrc: couponImg, text: 'Canjear cupón', route: '/redeemCoupon' }
       ],
