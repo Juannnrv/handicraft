@@ -256,37 +256,31 @@ class UserController {
     const userId = req.user._id;
 
     try {
-      const user = await User.findById(userId);
+        const user = await User.findById(userId);
 
-      if (!user) {
-        return res.status(404).json({
-          status: 404,
-          message: "User not found",
-        });
-      }
+        if (!user) {
+            return res.status(404).json({ status: 404, message: "User not found" });
+        }
 
-      if (user.purchases.length === 0) {
-        return res.status(200).json({
-          status: 200,
-          message: "User has not made any purchases",
-          data: [],
-        });
-      }
+        if (user.purchases.length === 0) {
+            return res.status(200).json({ status: 200, message: "User has not made any purchases", data: [] });
+        }
 
-      const orders = await Order.find({ _id: { $in: user.purchases } });
+        const orders = await Order.find({ _id: { $in: user.purchases } }).lean();
 
-      res.status(200).json({
-        status: 200,
-        message: "User orders found",
-        data: orders,
-      });
+        const ordersWithProductDetails = await Promise.all(orders.map(async (order) => {
+            order.products = await Promise.all(order.products.map(async (product) => {
+                product.productDetails = await Product.findById(product.productId).lean();
+                return product;
+            }));
+            return order;
+        }));
+
+        res.status(200).json({ status: 200, message: "User orders found", data: ordersWithProductDetails });
     } catch (error) {
-      res.status(500).json({
-        status: 500,
-        message: "Error finding user orders",
-      });
+        res.status(500).json({ status: 500, message: "Error finding user orders", error: error.message });
     }
-  }
+}
 
   /**
    * Finds and returns the coupons associated with the authenticated user.
